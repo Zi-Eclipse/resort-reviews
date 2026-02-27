@@ -1,42 +1,67 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Resort Staff Reviews Maldives</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
 
 <header>
     <h1>Resort Staff Reviews Maldives</h1>
+    <div id="review-count" style="text-align: center; font-size: 18px; margin: 10px 0; color: #0070f3;"></div>
     <p>Anonymous reviews of resort staff living conditions</p>
+    
 </header>
 
 <div class="container">
-
     <h2>Available Resorts</h2>
 
     <div class="resort-card">
         <h3>Taj Coral Reef Resort & Spa</h3>
-        <p>Accommodation Rating: 7/10</p>
-        <button>View Reviews</button>
+        <p>Accommodation Rating: <span id="rating-taj">Loading...</span></p>
     </div>
 
     <div class="resort-card">
         <h3>Baros Maldives</h3>
-        <p>Accommodation Rating: 6/10</p>
-        <button>View Reviews</button>
+        <p>Accommodation Rating: <span id="rating-baros">Loading...</span></p>
     </div>
 
     <div class="resort-card">
         <h3>Meeru Island Resort</h3>
-        <p>Accommodation Rating: 8/10</p>
-        <button>View Reviews</button>
+        <p>Accommodation Rating: <span id="rating-meeru">Loading...</span></p>
     </div>
 
+    <hr>
+
+    <h2>Recent Reviews</h2>
+    <div id="reviews-list">
+        <p>Loading reviews...</p>
+    </div>
+
+    <hr>
+
+    <h2>Submit Anonymous Review</h2>
+
+    <form id="reviewForm" class="resort-card">
+        <label>Resort Name:</label><br>
+        <input id="resort_name" type="text" placeholder="Enter resort name" required><br><br>
+
+        <label>Rating (1–10):</label><br>
+        <input id="rating" type="number" min="1" max="10" placeholder="Enter rating" required><br><br>
+
+        <label>Your Review:</label><br>
+        <textarea id="review_text" placeholder="Describe staff accommodation, food, facilities..." required></textarea><br><br>
+
+        <button type="submit">Submit Review</button>
+    </form>
+
+    <div id="message"></div>
 </div>
 
-</body>
+<!-- Load Supabase and your script -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
 
-</html> 
+</body>
+</html>

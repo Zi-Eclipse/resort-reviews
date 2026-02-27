@@ -36,3 +36,40 @@ button {
 button:hover {
     background-color: #0059c1;
 }
+.review-item {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-left: 4px solid #0070f3;
+}
+
+.review-item h3 {
+    margin: 0 0 5px 0;
+    color: #0a2540;
+}
+
+.review-item .rating {
+    color: #0070f3;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.review-item .review-text {
+    font-style: italic;
+    color: #333;
+    margin: 10px 0;
+}
+
+.review-item small {
+    color: #666;
+    font-size: 0.8em;
+}
+
+#reviews-list {
+    margin: 20px 0;
+}
+.rating-high { color: green; font-weight: bold; }
+.rating-medium { color: orange; font-weight: bold; }
+.rating-low { color: red; font-weight: bold; }
