@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Resort Reviews Maldives</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 4rem auto;
+        }
+        
+        .pending-review {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .photo-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .photo-grid img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-approve {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .warning-box {
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            color: #92400e;
+        }
+        
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background: #0070f3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container" id="loginScreen">
+    <div class="login-form">
+        <h2 style="margin-bottom: 1.5rem;">🔐 Admin Login</h2>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+        </div>
+        <button class="btn btn-primary" onclick="checkPassword()">Login</button>
+        <p style="margin-top: 1rem; color: #666; font-size: 0.875rem;">
+            (Use password: admin123 - you can change this later)
+        </p>
+    </div>
+</div>
+
+<div class="admin-container" id="adminPanel" style="display: none;">
+    <div class="admin-header">
+        <div>
+            <h1>🛡️ Moderation Dashboard</h1>
+            <p style="color: #94a3b8;">Review pending submissions</p>
+        </div>
+        <button class="btn btn-primary" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="tab-nav">
+        <button class="tab active" onclick="loadPending()" id="tabPending">Pending</button>
+        <button class="tab" onclick="loadApproved()" id="tabApproved">Approved</button>
+        <button class="tab" onclick="loadRejected()" id="tabRejected">Rejected</button>
+    </div>
+    
+    <div id="reviewsList"></div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
+    
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    // Simple password (change this to something secure)
+    const ADMIN_PASSWORD = "admin123";
+    
+    function checkPassword() {
+        const password = document.getElementById('adminPassword').value;
+        if (password === ADMIN_PASSWORD) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadPending();
+        } else {
+            alert('Wrong password!');
+        }
+    }
+    
+    function logout() {
+        document.getElementById('loginScreen').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('adminPassword').value = '';
+    }
+    
+    async function loadPending() {
+        setActiveTab('pending');
+        const { data: reviews } = await supabaseClient
+            .from('reviews')
+            .select('*')
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false });
+        
+        displayReviews(reviews, 'pending');
+    }
+    
+    async function loadApproved() {
+        setActiveTab('approved');
+        const { data: reviews } = await supabaseClient
+            .from('reviews')
+            .select('*')
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false });
+        
+        displayReviews(reviews, 'approved');
+    }
+    
+    async function loadRejected() {
+        setActiveTab('rejected');
+        const { data: reviews } = await supabaseClient
+            .from('reviews')
+            .select('*')
+            .eq('status', 'rejected')
+            .order('created_at', { ascending: false });
+        
+        displayReviews(reviews, 'rejected');
+    }
+    
+    function setActiveTab(tab) {
+        document.getElementById('tabPending').className = 'tab';
+        document.getElementById('tabApproved').className = 'tab';
+        document.getElementById('tabRejected').className = 'tab';
+        
+        if (tab === 'pending') document.getElementById('tabPending').className = 'tab active';
+        if (tab === 'approved') document.getElementById('tabApproved').className = 'tab active';
+        if (tab === 'rejected') document.getElementById('tabRejected').className = 'tab active';
+    }
+    
+    function displayReviews(reviews, type) {
+        const container = document.getElementById('reviewsList');
+        
+        if (!reviews || reviews.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No reviews found</p>';
+            return;
+        }
+        
+        let html = '';
+        
+        for (const review of reviews) {
+            const date = new Date(review.created_at).toLocaleString();
+            
+            html += `
+                <div class="pending-review">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin:0;">${review.resort_name}</h3>
+                        <span style="background: #f3f4f6; padding: 0.25rem 0.75rem; border-radius: 9999px;">⭐ ${review.rating}/10</span>
+                    </div>
+                    
+                    <p style="color: #374151; margin-bottom: 1rem;">"${review.review_text}"</p>
+                    
+                    <div style="background: #f9fafb; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                        <p style="font-weight: 500; margin-bottom: 0.5rem;">📋 Review Checklist:</p>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 0.25rem;">✅ Relevant to staff accommodation</li>
+                            <li style="margin-bottom: 0.25rem;">❌ No visible room numbers</li>
+                            <li style="margin-bottom: 0.25rem;">❌ No identifiable faces</li>
+                            <li style="margin-bottom: 0.25rem;">❌ No personal belongings visible</li>
+                        </ul>
+                    </div>
+            `;
+            
+            // Show photos if any
+            if (review.photo_urls && review.photo_urls !== '[]') {
+                try {
+                    const urls = JSON.parse(review.photo_urls);
+                    if (urls.length > 0) {
+                        html += '<div class="photo-grid">';
+                        urls.forEach(url => {
+                            html += `<img src="${url}" onclick="window.open('${url}')" style="cursor: pointer;">`;
+                        });
+                        html += '</div>';
+                    }
+                } catch (e) {}
+            }
+            
+            if (type === 'pending') {
+                html += `
+                    <div class="action-buttons">
+                        <button class="btn-approve" onclick="updateStatus(${review.id}, 'approved')">✅ Approve</button>
+                        <button class="btn-reject" onclick="updateStatus(${review.id}, 'rejected')">❌ Reject</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="margin-top: 1rem;">
+                        <span style="background: ${type === 'approved' ? '#10b981' : '#ef4444'}; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem;">
+                            ${type === 'approved' ? '✓ Approved' : '✗ Rejected'}
+                        </span>
+                        <small style="display: block; margin-top: 0.5rem; color: #666;">${date}</small>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+        }
+        
+        container.innerHTML = html;
+    }
+    
+    async function updateStatus(id, status) {
+        const { error } = await supabaseClient
+            .from('reviews')
+            .update({ status: status })
+            .eq('id', id);
+        
+        if (error) {
+            alert('Error updating review: ' + error.message);
+        } else {
+            alert(`Review ${status}!`);
+            loadPending(); // Reload the pending list
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -3,60 +3,96 @@
 <head>
     <title>Resort Staff Reviews Maldives</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
 <header>
-    <h1>Resort Staff Reviews Maldives</h1>
-    <div id="review-count" style="text-align: center; font-size: 18px; margin: 10px 0; color: #0070f3;"></div>
-    <p>Anonymous reviews of resort staff living conditions</p>
-    
+    <div class="header-content">
+        <div class="header-title">
+            <h1>🏝️ Resort Staff Reviews</h1>
+            <p>Honest reviews from resort staff in the Maldives</p>
+        </div>
+        
+        <!-- Modern Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search resorts...">
+            <span>🔍</span>
+        </div>
+    </div>
 </header>
 
 <div class="container">
+    <!-- Stats Card -->
+    <div class="stats-card" id="review-count">
+        <div class="stats-icon">📊</div>
+        <div class="stats-info">
+            <h3>Total Reviews</h3>
+            <p>Loading...</p>
+        </div>
+    </div>
+
     <h2>Available Resorts</h2>
+    
+    <div class="resorts-grid">
+        <div class="resort-card">
+            <h3>Taj Coral Reef Resort & Spa</h3>
+            <p>
+                <span class="rating-badge" style="background: #f3f4f6;">⭐</span>
+                <span id="rating-taj">Loading...</span>
+            </p>
+        </div>
 
-    <div class="resort-card">
-        <h3>Taj Coral Reef Resort & Spa</h3>
-        <p>Accommodation Rating: <span id="rating-taj">Loading...</span></p>
+        <div class="resort-card">
+            <h3>Baros Maldives</h3>
+            <p>
+                <span class="rating-badge" style="background: #f3f4f6;">⭐</span>
+                <span id="rating-baros">Loading...</span>
+            </p>
+        </div>
+
+        <div class="resort-card">
+            <h3>Meeru Island Resort</h3>
+            <p>
+                <span class="rating-badge" style="background: #f3f4f6;">⭐</span>
+                <span id="rating-meeru">Loading...</span>
+            </p>
+        </div>
     </div>
 
-    <div class="resort-card">
-        <h3>Baros Maldives</h3>
-        <p>Accommodation Rating: <span id="rating-baros">Loading...</span></p>
-    </div>
-
-    <div class="resort-card">
-        <h3>Meeru Island Resort</h3>
-        <p>Accommodation Rating: <span id="rating-meeru">Loading...</span></p>
-    </div>
-
-    <hr>
-
-    <h2>Recent Reviews</h2>
-    <div id="reviews-list">
+    <h2>Recent Reviews with Photos</h2>
+    <div class="reviews-container" id="reviews-list">
         <p>Loading reviews...</p>
     </div>
 
-    <hr>
+    <h2>Share Your Experience</h2>
+    <div class="form-container">
+        <form id="reviewForm">
+            <div class="form-group">
+                <label>Resort Name</label>
+                <input id="resort_name" type="text" placeholder="e.g., Baros Maldives" required>
+            </div>
 
-    <h2>Submit Anonymous Review</h2>
+            <div class="form-group">
+                <label>Rating (1-10)</label>
+                <input id="rating" type="number" min="1" max="10" placeholder="Enter rating" required>
+            </div>
 
-    <form id="reviewForm" class="resort-card">
-        <label>Resort Name:</label><br>
-        <input id="resort_name" type="text" placeholder="Enter resort name" required><br><br>
+            <div class="form-group">
+                <label>Your Review</label>
+                <textarea id="review_text" placeholder="Describe staff accommodation, food, facilities..." required></textarea>
+            </div>
 
-        <label>Rating (1–10):</label><br>
-        <input id="rating" type="number" min="1" max="10" placeholder="Enter rating" required><br><br>
+            <div class="form-group">
+                <label>Upload Photos (optional - max 3)</label>
+                <input id="photos" type="file" accept="image/*" multiple>
+                <div class="form-help">📸 Photos help others see real conditions!</div>
+            </div>
 
-        <label>Your Review:</label><br>
-        <textarea id="review_text" placeholder="Describe staff accommodation, food, facilities..." required></textarea><br><br>
-
-        <button type="submit">Submit Review</button>
-    </form>
-
-    <div id="message"></div>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
 </div>
 
 <!-- Load Supabase and your script -->
