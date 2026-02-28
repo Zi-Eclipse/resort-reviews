@@ -1,103 +1,183 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Resort Staff Reviews Maldives</title>
+    <title>Resort Reviews Maldives</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-<header>
-    <div class="header-content">
-        <div class="header-title">
-            <h1>🏝️ Resort Staff Reviews</h1>
-            <p>Honest reviews from resort staff in the Maldives</p>
-        </div>
-        
-        <!-- Modern Search Bar -->
+<!-- Top Navigation Bar (Facebook Style) -->
+<div class="top-nav">
+    <div class="nav-left">
         <div class="search-container">
+            <i class="fas fa-search"></i>
             <input type="text" id="searchInput" placeholder="Search resorts...">
-            <span>🔍</span>
         </div>
     </div>
-</header>
-
-<div class="container">
-    <!-- Stats Card -->
-    <div class="stats-card" id="review-count">
-        <div class="stats-icon">📊</div>
-        <div class="stats-info">
-            <h3>Total Reviews</h3>
-            <p>Loading...</p>
-        </div>
-    </div>
-
-    <h2>Available Resorts</h2>
     
-    <div class="resorts-grid">
-        <div class="resort-card">
-            <h3>Taj Coral Reef Resort & Spa</h3>
-            <p>
-                <span class="rating-badge" style="background: #f3f4f6;">⭐</span>
-                <span id="rating-taj">Loading...</span>
-            </p>
-        </div>
-
-        <div class="resort-card">
-            <h3>Baros Maldives</h3>
-            <p>
-                <span class="rating-badge" style="background: #f3f4f6;">⭐</span>
-                <span id="rating-baros">Loading...</span>
-            </p>
-        </div>
-
-        <div class="resort-card">
-            <h3>Meeru Island Resort</h3>
-            <p>
-                <span class="rating-badge" style="background: #f3f4f6;">⭐</span>
-                <span id="rating-meeru">Loading...</span>
-            </p>
+    <div class="nav-center">
+        <div class="logo">
+            <i class="fas fa-umbrella-beach"></i>
+            <span>ResortReviews</span>
         </div>
     </div>
-
-    <h2>Recent Reviews with Photos</h2>
-    <div class="reviews-container" id="reviews-list">
-        <p>Loading reviews...</p>
-    </div>
-
-    <h2>Share Your Experience</h2>
-    <div class="form-container">
-        <form id="reviewForm">
-            <div class="form-group">
-                <label>Resort Name</label>
-                <input id="resort_name" type="text" placeholder="e.g., Baros Maldives" required>
-            </div>
-
-            <div class="form-group">
-                <label>Rating (1-10)</label>
-                <input id="rating" type="number" min="1" max="10" placeholder="Enter rating" required>
-            </div>
-
-            <div class="form-group">
-                <label>Your Review</label>
-                <textarea id="review_text" placeholder="Describe staff accommodation, food, facilities..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Upload Photos (optional - max 3)</label>
-                <input id="photos" type="file" accept="image/*" multiple>
-                <div class="form-help">📸 Photos help others see real conditions!</div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit Review</button>
-        </form>
-        <div id="message" class="message" style="display: none;"></div>
+    
+    <div class="nav-right">
+        <div class="nav-icons">
+            <i class="fas fa-cog settings-icon" onclick="toggleSettings()"></i>
+        </div>
     </div>
 </div>
 
-<!-- Load Supabase and your script -->
+<!-- Main Layout (3 Column Facebook Style) -->
+<div class="main-layout">
+
+    <!-- LEFT SIDEBAR - Empty for now (or future use) -->
+    <div class="left-sidebar">
+        <!-- Reserved for future features -->
+    </div>
+
+    <!-- MAIN CONTENT - Feed -->
+    <div class="main-content">
+        
+        <!-- Top Resorts Bar (Highest Rated) -->
+        <div class="top-resorts-bar">
+            <h3><i class="fas fa-trophy"></i> Top Rated Resorts</h3>
+            <div class="resort-rankings" id="topResorts">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Share Your Experience Box (Like Facebook "What's on your mind") -->
+        <div class="share-box" onclick="toggleForm()">
+            <div class="share-input">
+                <i class="fas fa-pen"></i>
+                <span>Share your experience...</span>
+            </div>
+            <div class="share-actions">
+                <div class="share-action">
+                    <i class="fas fa-camera" style="color: #4caf50;"></i>
+                    <span>Photo</span>
+                </div>
+                <!-- Excluding Live Video & Feeling/Activity -->
+            </div>
+        </div>
+
+        <!-- Hidden Form (Expands when clicked) -->
+        <div class="review-form-container" id="reviewFormContainer" style="display: none;">
+            <form id="reviewForm">
+                <div class="form-header">
+                    <h3>Create Post</h3>
+                    <i class="fas fa-times" onclick="toggleForm()"></i>
+                </div>
+                
+                <select id="resort_name" required>
+                    <option value="">Select a resort</option>
+                    <option value="Taj Coral Reef Resort & Spa">Taj Coral Reef Resort & Spa</option>
+                    <option value="Baros Maldives">Baros Maldives</option>
+                    <option value="Meeru Island Resort">Meeru Island Resort</option>
+                </select>
+
+                <div class="rating-selector">
+                    <label>Rating: <span id="ratingValue">0</span>/10</label>
+                    <input type="range" id="rating" min="1" max="10" value="5">
+                </div>
+
+                <textarea id="review_text" placeholder="Describe staff accommodation, food, facilities..." required></textarea>
+
+                <div class="photo-upload">
+                    <label for="photos" class="photo-label">
+                        <i class="fas fa-camera"></i> Add Photos (max 3)
+                    </label>
+                    <input type="file" id="photos" accept="image/*" multiple style="display: none;">
+                    <div class="photo-preview" id="photoPreview"></div>
+                </div>
+
+                <button type="submit" class="post-btn">
+                    <i class="fas fa-paper-plane"></i> Post
+                </button>
+            </form>
+            <div id="message" class="message"></div>
+        </div>
+
+        <!-- Recent Posts Feed -->
+        <div class="feed-header">
+            <h3><i class="fas fa-newspaper"></i> Recent Reviews</h3>
+            <span id="review-count">0 reviews</span>
+        </div>
+        
+        <div class="feed" id="reviews-list">
+            <!-- Reviews will be loaded here -->
+            <div class="loading-spinner">Loading reviews...</div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR - Resort Rankings (Like Facebook Contacts) -->
+    <div class="right-sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-star"></i> Resort Rankings</h3>
+        </div>
+        <div class="resort-list" id="resortRankings">
+            <!-- Will be populated by JavaScript -->
+            <div class="loading-spinner">Loading...</div>
+        </div>
+        
+        <!-- Mini Share Button (Bottom Right, Like Messenger) -->
+        <div class="mini-share-btn" onclick="toggleForm()">
+            <i class="fas fa-plus-circle"></i>
+            <span>Share Experience</span>
+        </div>
+    </div>
+</div>
+
+<!-- Load scripts -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+<script>
+    function toggleForm() {
+        const form = document.getElementById('reviewFormContainer');
+        if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+
+    function toggleSettings() {
+        alert('Settings coming soon!');
+    }
+
+    // Rating slider
+    document.addEventListener('DOMContentLoaded', function() {
+        const ratingSlider = document.getElementById('rating');
+        const ratingValue = document.getElementById('ratingValue');
+        
+        if (ratingSlider) {
+            ratingSlider.addEventListener('input', function() {
+                ratingValue.textContent = this.value;
+            });
+        }
+
+        // Photo preview
+        document.getElementById('photos').addEventListener('change', function(e) {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            
+            for (let i = 0; i < Math.min(e.target.files.length, 3); i++) {
+                const file = e.target.files[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

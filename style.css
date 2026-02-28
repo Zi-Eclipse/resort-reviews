@@ -1,30 +1,12 @@
-/* Modern CSS for Resort Reviews Maldives */
 :root {
-    --primary: #0a2540;
-    --primary-light: #1e3a5f;
-    --secondary: #0070f3;
-    --secondary-light: #4d9eff;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-    --radius-sm: 0.375rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
+    --bg-color: #f0f2f5;
+    --white: #ffffff;
+    --primary: #1877f2;
+    --primary-hover: #166fe5;
+    --text-dark: #1c1e21;
+    --text-light: #65676b;
+    --border: #e4e6eb;
+    --hover-bg: #f0f2f5;
 }
 
 * {
@@ -34,491 +16,588 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: var(--gray-50);
-    color: var(--gray-900);
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    padding-top: 60px;
 }
 
-/* Modern Header */
-header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white;
-    padding: 2rem 1rem;
-    box-shadow: var(--shadow-lg);
-    position: sticky;
+/* ==================== TOP NAVIGATION ==================== */
+.top-nav {
+    position: fixed;
     top: 0;
-    z-index: 50;
-}
-
-.header-content {
-    max-width: 1200px;
-    margin: 0 auto;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
+    padding: 0 16px;
+    z-index: 1000;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-.header-title h1 {
-    font-size: 1.875rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    margin-bottom: 0.25rem;
+.nav-left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
 }
 
-.header-title p {
-    color: var(--gray-300);
-    font-size: 0.875rem;
-}
-
-/* Modern Search Bar */
 .search-container {
-    background: white;
-    border-radius: 9999px;
-    padding: 0.25rem;
-    box-shadow: var(--shadow-md);
+    background: var(--bg-color);
+    border-radius: 24px;
+    padding: 8px 16px;
     display: flex;
     align-items: center;
-    min-width: 300px;
+    width: 280px;
+}
+
+.search-container i {
+    color: var(--text-light);
+    margin-right: 8px;
+    font-size: 14px;
 }
 
 .search-container input {
-    flex: 1;
-    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 9999px;
+    background: transparent;
     outline: none;
-    font-size: 0.95rem;
-    color: var(--gray-900);
+    width: 100%;
+    font-size: 15px;
 }
 
 .search-container input::placeholder {
-    color: var(--gray-400);
+    color: var(--text-light);
 }
 
-.search-container span {
-    padding: 0 1rem;
-    color: var(--gray-400);
-    font-size: 1.25rem;
+.nav-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
 }
 
-/* Container */
-.container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-/* Section Titles */
-h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--gray-800);
-    margin: 2rem 0 1.5rem;
-    position: relative;
-}
-
-h2:after {
-    content: '';
-    position: absolute;
-    bottom: -0.5rem;
-    left: 0;
-    width: 3rem;
-    height: 0.25rem;
-    background: var(--secondary);
-    border-radius: 9999px;
-}
-
-/* Resort Cards Grid */
-.resorts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.resort-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    transition: all 0.3s ease;
-    border: 1px solid var(--gray-200);
-    position: relative;
-    overflow: hidden;
-}
-
-.resort-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-xl);
-    border-color: var(--secondary-light);
-}
-
-.resort-card h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--gray-800);
-    margin-bottom: 0.75rem;
-}
-
-.resort-card p {
-    color: var(--gray-600);
-    font-size: 0.95rem;
+.logo {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
+    color: var(--primary);
+    font-size: 24px;
+    font-weight: bold;
 }
 
-.rating-badge {
-    display: inline-flex;
+.logo i {
+    font-size: 28px;
+}
+
+.nav-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 16px;
+}
+
+.nav-icons i {
+    font-size: 20px;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    background: var(--bg-color);
+    width: 40px;
+    height: 40px;
+    display: flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-weight: 500;
-    font-size: 0.875rem;
+    justify-content: center;
 }
 
-/* Reviews Section */
-.reviews-container {
+.nav-icons i:hover {
+    background: var(--border);
+}
+
+/* ==================== MAIN 3-COLUMN LAYOUT ==================== */
+.main-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* ==================== LEFT SIDEBAR ==================== */
+.left-sidebar {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+/* ==================== MAIN CONTENT ==================== */
+.main-content {
+    min-height: calc(100vh - 100px);
+}
+
+/* Top Resorts Bar */
+.top-resorts-bar {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.top-resorts-bar h3 {
+    font-size: 16px;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-resorts-bar h3 i {
+    color: gold;
+}
+
+.resort-rankings {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ranking-item {
+    flex: 1;
+    background: var(--bg-color);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+
+.ranking-item .rank {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.ranking-item .name {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 4px 0;
+}
+
+.ranking-item .rating {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+/* Share Box (Facebook Style) */
+.share-box {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.share-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: var(--bg-color);
+    border-radius: 24px;
+    color: var(--text-light);
+    margin-bottom: 12px;
+}
+
+.share-input:hover {
+    background: #e4e6e9;
+}
+
+.share-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.share-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.share-action:hover {
+    background: var(--hover-bg);
+}
+
+.share-action i {
+    font-size: 18px;
+}
+
+/* Review Form (Hidden by default) */
+.review-form-container {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.form-header i {
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.form-header i:hover {
+    background: var(--hover-bg);
+    border-radius: 50%;
+}
+
+.review-form-container select,
+.review-form-container textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.rating-selector {
+    margin-bottom: 12px;
+}
+
+.rating-selector label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.rating-selector input {
+    width: 100%;
+}
+
+.photo-upload {
+    margin-bottom: 16px;
+}
+
+.photo-label {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--hover-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.photo-label:hover {
+    background: var(--border);
+}
+
+.photo-preview {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.photo-preview img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.post-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.post-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* Feed Header */
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 4px;
+}
+
+.feed-header h3 {
+    font-size: 18px;
+    color: var(--text-dark);
+}
+
+.feed-header span {
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+/* Feed Items (Facebook Style Posts) */
+.feed {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 16px;
 }
 
 .review-item {
-    background: white;
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--gray-200);
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.review-item:hover {
-    box-shadow: var(--shadow-lg);
-    border-color: var(--secondary-light);
-}
-
-.review-item.search-match {
-    border: 2px solid var(--warning);
-    background: linear-gradient(to right, white, #fffbeb);
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .review-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    margin-bottom: 12px;
 }
 
 .review-header h3 {
-    font-size: 1.25rem;
+    font-size: 16px;
     font-weight: 600;
-    color: var(--gray-800);
+    color: var(--text-dark);
 }
 
 .review-rating {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.75rem;
-    background: var(--secondary);
+    background: var(--primary);
     color: white;
-    border-radius: 9999px;
-    font-weight: 500;
-    font-size: 0.875rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .review-text {
-    color: var(--gray-700);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    font-style: italic;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-dark);
+    margin-bottom: 16px;
 }
 
-/* Photo Gallery */
 .photo-gallery {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin: 1rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    margin: 12px 0;
 }
 
 .photo-thumbnail {
-    width: 100px;
-    height: 100px;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 2px solid var(--gray-200);
-    cursor: pointer;
-    transition: all 0.3s ease;
     position: relative;
-}
-
-.photo-thumbnail:hover {
-    transform: scale(1.05);
-    border-color: var(--secondary);
-    box-shadow: var(--shadow-md);
+    padding-bottom: 75%;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 .photo-thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.photo-thumbnail:hover img {
+    transform: scale(1.05);
 }
 
 .review-date {
-    color: var(--gray-400);
-    font-size: 0.75rem;
-    display: block;
-    margin-top: 0.75rem;
+    color: var(--text-light);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
 }
 
-/* Form Styling */
-.form-container {
-    background: white;
-    padding: 2rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--gray-200);
-    max-width: 600px;
-    margin: 2rem auto;
+/* ==================== RIGHT SIDEBAR ==================== */
+.right-sidebar {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
 }
 
-.form-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--gray-800);
-    margin-bottom: 1.5rem;
+.sidebar-header {
+    background: var(--white);
+    padding: 16px;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid var(--border);
 }
 
-.form-group {
-    margin-bottom: 1.5rem;
+.sidebar-header h3 {
+    font-size: 16px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.form-group label {
-    display: block;
-    font-weight: 500;
-    color: var(--gray-700);
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
+.resort-list {
+    background: var(--white);
+    border-radius: 0 0 12px 12px;
+    padding: 8px 0;
+    margin-bottom: 20px;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--gray-300);
-    border-radius: var(--radius-md);
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: white;
-}
-
-.form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--secondary);
-    box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.1);
-}
-
-.form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.form-group input[type="file"] {
-    width: 100%;
-    padding: 0.5rem;
-    border: 2px dashed var(--gray-300);
-    border-radius: var(--radius-md);
-    background: var(--gray-50);
+.resort-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
     cursor: pointer;
 }
 
-.form-group input[type="file"]:hover {
-    border-color: var(--secondary);
-    background: var(--gray-100);
+.resort-list-item:hover {
+    background: var(--hover-bg);
 }
 
-.form-help {
-    color: var(--gray-500);
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-}
-
-/* Buttons */
-.btn {
-    display: inline-flex;
+.resort-list-item .rank-badge {
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: 500;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    gap: 0.5rem;
+    font-size: 12px;
+    font-weight: bold;
 }
 
-.btn-primary {
-    background: var(--secondary);
+.resort-list-item .rank-1 { background: gold; color: black; }
+.resort-list-item .rank-2 { background: silver; color: black; }
+.resort-list-item .rank-3 { background: #cd7f32; color: white; }
+
+.resort-list-item .resort-info {
+    flex: 1;
+}
+
+.resort-list-item .resort-name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.resort-list-item .resort-rating {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.resort-list-item i {
+    color: var(--primary);
+}
+
+/* Mini Share Button (Bottom Right) */
+.mini-share-btn {
+    position: sticky;
+    bottom: 20px;
+    background: var(--primary);
     color: white;
-    box-shadow: var(--shadow-sm);
+    border-radius: 40px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    width: fit-content;
+    margin-left: auto;
+    transition: transform 0.2s;
 }
 
-.btn-primary:hover {
-    background: var(--secondary-light);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+.mini-share-btn:hover {
+    transform: scale(1.05);
+    background: var(--primary-hover);
 }
 
-.btn-primary:active {
-    transform: translateY(0);
+.mini-share-btn i {
+    font-size: 20px;
 }
 
-/* Message Alerts */
+/* Loading Spinner */
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-light);
+}
+
+/* Message */
 .message {
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    margin-top: 1rem;
-    font-weight: 500;
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
 }
 
 .message.success {
-    background: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    background: #d4edda;
+    color: #155724;
+    display: block;
 }
 
 .message.error {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-.message.info {
-    background: #dbeafe;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
-}
-
-/* Stats Card */
-.stats-card {
-    background: white;
-    padding: 1rem 1.5rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    border: 1px solid var(--gray-200);
-    margin-bottom: 1.5rem;
-}
-
-.stats-icon {
-    font-size: 2rem;
-}
-
-.stats-info h3 {
-    font-size: 0.875rem;
-    color: var(--gray-500);
-    font-weight: 500;
-}
-
-.stats-info p {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--gray-800);
+    background: #f8d7da;
+    color: #721c24;
+    display: block;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .search-container {
-        width: 100%;
-    }
-    
-    .resorts-grid {
+@media (max-width: 1024px) {
+    .main-layout {
         grid-template-columns: 1fr;
     }
     
-    .form-container {
-        padding: 1.5rem;
+    .left-sidebar, .right-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-left {
+        display: none;
     }
     
-    .review-header {
-        flex-direction: column;
-        align-items: flex-start;
+    .nav-center {
+        justify-content: flex-start;
     }
-}
-
-/* Loading Animation */
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-}
-
-.loading {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    background: linear-gradient(90deg, var(--gray-200), var(--gray-300), var(--gray-200));
-    background-size: 200% 100%;
-    height: 1rem;
-    border-radius: var(--radius-md);
-}
-
-/* Tooltip */
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
-
-.tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--gray-800);
-    color: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-    z-index: 60;
-}
-
-.tooltip-text::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: var(--gray-800) transparent transparent transparent;
 }

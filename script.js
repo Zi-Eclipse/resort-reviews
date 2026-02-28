@@ -2,9 +2,8 @@
 const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
 const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
 
-console.log("🚀 Starting with moderation...");
+console.log("🚀 Facebook-style Resort Reviews");
 
-// Store all reviews globally for search
 let allReviews = [];
 
 window.addEventListener('load', async function() {
@@ -12,11 +11,9 @@ window.addEventListener('load', async function() {
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Load ONLY approved reviews
         await loadApprovedReviews(supabaseClient);
-        await calculateAndDisplayAverages(supabaseClient);
-        
-        // Setup search
+        await loadResortRankings(supabaseClient);
+        await loadTopResorts(supabaseClient);
         setupSearch();
         
     } catch (err) {
@@ -24,109 +21,190 @@ window.addEventListener('load', async function() {
     }
 });
 
-// ===========================================
-// LOAD ONLY APPROVED REVIEWS
-// ===========================================
 async function loadApprovedReviews(supabase) {
     try {
         const { data: reviews } = await supabase
             .from('reviews')
             .select('*')
-            .eq('status', 'approved')  // Only get approved reviews
+            .eq('status', 'approved')
             .order('created_at', { ascending: false });
         
         allReviews = reviews || [];
         displayReviews(allReviews);
-        
-        console.log(`Loaded ${allReviews.length} approved reviews`);
+        document.getElementById('review-count').textContent = `${allReviews.length} reviews`;
         
     } catch (error) {
         console.error("Error loading reviews:", error);
     }
 }
 
-// ===========================================
-// DISPLAY REVIEWS (with optional filter)
-// ===========================================
-function displayReviews(reviewsToShow) {
-    const reviewsList = document.getElementById('reviews-list');
+function displayReviews(reviews) {
+    const feed = document.getElementById('reviews-list');
     
-    if (reviewsToShow && reviewsToShow.length > 0) {
-        let html = '';
+    if (!reviews || reviews.length === 0) {
+        feed.innerHTML = '<div class="review-item">No reviews yet. Be the first to share!</div>';
+        return;
+    }
+    
+    let html = '';
+    
+    reviews.forEach(review => {
+        const date = new Date(review.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
         
-        for (const review of reviewsToShow) {
-            const date = new Date(review.created_at).toLocaleString();
-            
-            // Handle photos
-            let photosHtml = '';
-            if (review.photo_urls && review.photo_urls !== '[]' && review.photo_urls !== 'null') {
-                try {
-                    let photoUrls = [];
-                    if (typeof review.photo_urls === 'string') {
-                        photoUrls = JSON.parse(review.photo_urls);
-                    } else {
-                        photoUrls = review.photo_urls;
-                    }
-                    
-                    if (photoUrls.length > 0) {
-                        photosHtml = '<div class="photo-gallery">';
-                        
-                        photoUrls.forEach((url, index) => {
-                            photosHtml += `
-                                <div class="photo-thumbnail">
-                                    <img src="${url}" 
-                                         onclick="window.open('${url}')"
-                                         alt="Review photo">
-                                </div>
-                            `;
-                        });
-                        photosHtml += '</div>';
-                    }
-                } catch (e) {
-                    console.error("Error parsing photos:", e);
+        // Handle photos
+        let photosHtml = '';
+        if (review.photo_urls && review.photo_urls !== '[]') {
+            try {
+                const photoUrls = JSON.parse(review.photo_urls);
+                if (photoUrls.length > 0) {
+                    photosHtml = '<div class="photo-gallery">';
+                    photoUrls.forEach(url => {
+                        photosHtml += `
+                            <div class="photo-thumbnail" onclick="window.open('${url}')">
+                                <img src="${url}" loading="lazy">
+                            </div>
+                        `;
+                    });
+                    photosHtml += '</div>';
                 }
+            } catch (e) {}
+        }
+        
+        html += `
+            <div class="review-item">
+                <div class="review-header">
+                    <h3>${review.resort_name}</h3>
+                    <span class="review-rating">${review.rating}/10</span>
+                </div>
+                <p class="review-text">${review.review_text}</p>
+                ${photosHtml}
+                <div class="review-date">
+                    <i class="far fa-calendar"></i> ${date}
+                </div>
+            </div>
+        `;
+    });
+    
+    feed.innerHTML = html;
+}
+
+async function loadResortRankings(supabase) {
+    try {
+        const { data: reviews } = await supabase
+            .from('reviews')
+            .select('resort_name, rating')
+            .eq('status', 'approved');
+        
+        // Calculate averages
+        const resortRatings = {};
+        reviews.forEach(r => {
+            if (!resortRatings[r.resort_name]) {
+                resortRatings[r.resort_name] = { total: 0, count: 0 };
             }
-            
-            // Highlight if this is a search result
-            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
-            let highlightClass = '';
-            if (searchTerm && review.resort_name.toLowerCase().includes(searchTerm)) {
-                highlightClass = 'search-match';
-            }
+            resortRatings[r.resort_name].total += r.rating;
+            resortRatings[r.resort_name].count++;
+        });
+        
+        // Convert to array and sort by average
+        const sorted = Object.entries(resortRatings)
+            .map(([name, data]) => ({
+                name,
+                avg: data.total / data.count,
+                count: data.count
+            }))
+            .sort((a, b) => b.avg - a.avg);
+        
+        // Display in right sidebar
+        const resortList = document.querySelector('.resort-list');
+        if (!resortList) return;
+        
+        let html = '';
+        sorted.forEach((resort, index) => {
+            let rankClass = '';
+            if (index === 0) rankClass = 'rank-1';
+            else if (index === 1) rankClass = 'rank-2';
+            else if (index === 2) rankClass = 'rank-3';
             
             html += `
-                <div class="review-item ${highlightClass}">
-                    <div class="review-header">
-                        <h3>${review.resort_name}</h3>
-                        <span class="review-rating">⭐ ${review.rating}/10</span>
+                <div class="resort-list-item">
+                    <div class="rank-badge ${rankClass}">${index + 1}</div>
+                    <div class="resort-info">
+                        <div class="resort-name">${resort.name}</div>
+                        <div class="resort-rating">⭐ ${resort.avg.toFixed(1)} (${resort.count} reviews)</div>
                     </div>
-                    <p class="review-text">"${review.review_text}"</p>
-                    ${photosHtml}
-                    <small class="review-date">${date}</small>
+                    <i class="fas fa-chevron-right"></i>
                 </div>
             `;
-        }
-        reviewsList.innerHTML = html;
-    } else {
-        reviewsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">📭 No approved reviews yet. Check back soon!</p>';
+        });
+        
+        resortList.innerHTML = html;
+        
+    } catch (error) {
+        console.error("Error loading rankings:", error);
     }
 }
 
-// ===========================================
-// SETUP SEARCH FUNCTIONALITY
-// ===========================================
+async function loadTopResorts(supabase) {
+    try {
+        const { data: reviews } = await supabase
+            .from('reviews')
+            .select('resort_name, rating')
+            .eq('status', 'approved');
+        
+        // Calculate averages
+        const resortRatings = {};
+        reviews.forEach(r => {
+            if (!resortRatings[r.resort_name]) {
+                resortRatings[r.resort_name] = { total: 0, count: 0 };
+            }
+            resortRatings[r.resort_name].total += r.rating;
+            resortRatings[r.resort_name].count++;
+        });
+        
+        // Get top 3
+        const sorted = Object.entries(resortRatings)
+            .map(([name, data]) => ({
+                name,
+                avg: data.total / data.count
+            }))
+            .sort((a, b) => b.avg - a.avg)
+            .slice(0, 3);
+        
+        const rankingsDiv = document.getElementById('topResorts');
+        if (!rankingsDiv) return;
+        
+        let html = '';
+        sorted.forEach((resort, index) => {
+            html += `
+                <div class="ranking-item">
+                    <div class="rank">#${index + 1}</div>
+                    <div class="name">${resort.name.split(' ')[0]}</div>
+                    <div class="rating">⭐ ${resort.avg.toFixed(1)}</div>
+                </div>
+            `;
+        });
+        
+        rankingsDiv.innerHTML = html;
+        
+    } catch (error) {
+        console.error("Error loading top resorts:", error);
+    }
+}
+
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
-    
     if (searchInput) {
         searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            
-            if (searchTerm === '') {
+            const term = e.target.value.toLowerCase().trim();
+            if (term === '') {
                 displayReviews(allReviews);
             } else {
-                const filtered = allReviews.filter(review => 
-                    review.resort_name.toLowerCase().includes(searchTerm)
+                const filtered = allReviews.filter(r => 
+                    r.resort_name.toLowerCase().includes(term)
                 );
                 displayReviews(filtered);
             }
@@ -134,51 +212,7 @@ function setupSearch() {
     }
 }
 
-// ===========================================
-// CALCULATE AND DISPLAY AVERAGES (ONLY APPROVED)
-// ===========================================
-async function calculateAndDisplayAverages(supabase) {
-    try {
-        const { data: reviews } = await supabase
-            .from('reviews')
-            .select('resort_name, rating')
-            .eq('status', 'approved');  // Only count approved reviews
-        
-        const resorts = {
-            'Taj Coral Reef Resort & Spa': 'rating-taj',
-            'Baros Maldives': 'rating-baros',
-            'Meeru Island Resort': 'rating-meeru'
-        };
-        
-        for (let resort in resorts) {
-            const resortReviews = reviews.filter(r => r.resort_name === resort);
-            const element = document.getElementById(resorts[resort]);
-            
-            if (element) {
-                if (resortReviews.length > 0) {
-                    const avg = resortReviews.reduce((sum, r) => sum + r.rating, 0) / resortReviews.length;
-                    element.innerHTML = `${avg.toFixed(1)}/10 (${resortReviews.length} ${resortReviews.length === 1 ? 'review' : 'reviews'})`;
-                    element.style.color = avg >= 7 ? 'green' : avg >= 4 ? 'orange' : 'red';
-                } else {
-                    element.innerHTML = 'No reviews yet';
-                    element.style.color = '#666';
-                }
-            }
-        }
-        
-        const reviewCountDiv = document.querySelector('.stats-info p');
-        if (reviewCountDiv) {
-            reviewCountDiv.innerHTML = reviews.length;
-        }
-        
-    } catch (error) {
-        console.error("Error calculating averages:", error);
-    }
-}
-
-// ===========================================
-// HANDLE FORM SUBMISSION (NEW REVIEWS ARE PENDING)
-// ===========================================
+// Form submission
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('reviewForm');
     const messageDiv = document.getElementById('message');
@@ -190,25 +224,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const { createClient } = supabase;
             const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
             
-            const resort_name = document.getElementById('resort_name').value.trim();
+            const resort_name = document.getElementById('resort_name').value;
             const rating = parseInt(document.getElementById('rating').value);
             const review_text = document.getElementById('review_text').value.trim();
             const photoFiles = document.getElementById('photos').files;
             
-            messageDiv.innerHTML = "⏳ Submitting...";
-            messageDiv.style.color = "blue";
-            messageDiv.style.display = "block";
+            messageDiv.style.display = 'block';
+            messageDiv.textContent = "Submitting...";
+            messageDiv.className = "message";
             
             try {
                 let photoUrls = [];
                 
                 if (photoFiles.length > 0) {
                     const maxPhotos = Math.min(photoFiles.length, 3);
-                    
                     for (let i = 0; i < maxPhotos; i++) {
                         const file = photoFiles[i];
-                        const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-                        const fileName = `${Date.now()}_${i}_${cleanFileName}`;
+                        const fileName = `${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                         
                         const { error } = await supabaseClient.storage
                             .from('resort-photos')
@@ -221,7 +253,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // Submit review with status = 'pending'
                 const { error } = await supabaseClient
                     .from('reviews')
                     .insert([{ 
@@ -229,19 +260,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         rating, 
                         review_text,
                         photo_urls: JSON.stringify(photoUrls),
-                        status: 'pending'  // New reviews start as pending
+                        status: 'pending'
                     }]);
                 
                 if (error) throw error;
                 
-                messageDiv.innerHTML = "✅ Review submitted for moderation! It will appear once approved.";
-                messageDiv.style.color = "green";
+                messageDiv.textContent = "✅ Review submitted for moderation!";
                 messageDiv.className = "message success";
                 form.reset();
+                document.getElementById('photoPreview').innerHTML = '';
+                
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                    document.getElementById('reviewFormContainer').style.display = 'none';
+                }, 3000);
                 
             } catch (error) {
-                messageDiv.innerHTML = "❌ Error: " + error.message;
-                messageDiv.style.color = "red";
+                messageDiv.textContent = "Error: " + error.message;
                 messageDiv.className = "message error";
             }
         });
