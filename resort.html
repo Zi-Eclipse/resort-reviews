@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resort Profile - ResortReviews</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Top Navigation Bar -->
+<div class="top-nav">
+    <div class="nav-left">
+        <a href="guest-feed.html" class="home-btn" title="Home">
+            <i class="fas fa-home"></i>
+        </a>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search resorts...">
+        </div>
+    </div>
+    
+    <div class="nav-center">
+        <a href="guest-feed.html" class="logo">
+            <i class="fas fa-umbrella-beach"></i>
+            <span>ResortReviews</span>
+        </a>
+    </div>
+    
+    <div class="nav-right">
+        <div class="nav-icons">
+            <!-- Only settings icon - NO resort login button -->
+            <button class="icon-btn" onclick="openSettings()" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </div>
+</div>
+    
+
+<!-- Main Layout -->
+<div class="main-layout">
+    <!-- LEFT SIDEBAR -->
+    <div class="left-sidebar"></div>
+
+    <!-- MAIN CONTENT - Resort Profile -->
+    <div class="main-content">
+        <div class="profile-container" id="profileContainer">
+            <div class="loading-spinner">Loading resort information...</div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-info-circle"></i> Quick Actions</h3>
+        </div>
+        <div class="quick-actions">
+            <button class="quick-action-btn" onclick="openModal()">
+                <i class="fas fa-pen"></i>
+                <span>Write a Review</span>
+            </button>
+            <a href="guest-feed.html" class="quick-action-btn">
+    <i class="fas fa-arrow-left"></i>
+    <span>Back to Home</span>
+</a>
+        </div>
+        
+        <div class="sidebar-header" style="margin-top: 20px;">
+            <h3><i class="fas fa-star"></i> Resort Stats</h3>
+        </div>
+        <div class="stats-container" id="resortStats">
+            <div class="loading-spinner">Loading stats...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Popup -->
+<div class="modal-overlay" id="shareModal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-pen-fancy"></i> Create Post</h3>
+            <i class="fas fa-times modal-close" onclick="closeModal()"></i>
+        </div>
+        
+        <form id="modalReviewForm">
+            <div class="searchable-dropdown">
+                <input type="text" id="resort_search" placeholder="Search for a resort..." autocomplete="off" required>
+                <input type="hidden" id="modal_resort_id" required>
+                <div id="resort_suggestions" class="suggestions-box"></div>
+            </div>
+
+            <div class="rating-selector">
+                <label>Rating: <span id="modalRatingValue">5</span>/10</label>
+                <input type="range" id="modal_rating" min="1" max="10" value="5">
+            </div>
+
+            <textarea id="modal_review_text" placeholder="Describe staff accommodation, food, facilities..." required></textarea>
+
+            <div class="photo-upload">
+                <label for="modal_photos" class="photo-label">
+                    <i class="fas fa-camera"></i> Add Photos (max 3)
+                </label>
+                <input type="file" id="modal_photos" accept="image/*" multiple style="display: none;">
+                <div class="photo-preview" id="modalPhotoPreview"></div>
+            </div>
+
+            <button type="submit" class="post-btn">
+                <i class="fas fa-paper-plane"></i> Post Review
+            </button>
+        </form>
+        <div id="modalMessage" class="message"></div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    // Your Supabase credentials
+    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
+    
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    // Get resort ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const resortId = urlParams.get('id');
+    
+    let allResorts = [];
+    let resortsMap = new Map();
+    
+    window.addEventListener('load', async function() {
+        if (!resortId) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        await loadResorts();
+        await loadResortInfo();
+        await loadResortReviews();
+        await loadResortStats();
+    });
+    
+    async function loadResorts() {
+        const { data: resorts } = await supabaseClient
+            .from('resorts')
+            .select('id, name');
+        
+        allResorts = resorts || [];
+        resorts.forEach(r => resortsMap.set(r.id, r.name));
+        setupResortSearch();
+    }
+    
+    async function loadResortInfo() {
+        const { data: resort, error } = await supabaseClient
+            .from('resorts')
+            .select('*')
+            .eq('id', resortId)
+            .single();
+        
+        if (error || !resort) {
+            document.getElementById('profileContainer').innerHTML = '<div class="error-message">Resort not found</div>';
+            return;
+        }
+        
+        document.title = `${resort.name} - ResortReviews`;
+        
+        const html = `
+            <div class="profile-header">
+                <div class="profile-hero">
+                    <h1>${resort.name}</h1>
+                    <div class="profile-ratings">
+                        <div class="rating-card">
+                            <span class="rating-value">★ ${resort.avg_staff_rating || '0.0'}</span>
+                            <span class="rating-label">Staff Rating</span>
+                        </div>
+                        <div class="rating-card">
+                            <span class="rating-value">${resort.total_reviews || 0}</span>
+                            <span class="rating-label">Reviews</span>
+                        </div>
+                        <div class="rating-card">
+                            <span class="rating-value">★ ${resort.google_rating || 'N/A'}</span>
+                            <span class="rating-label">Google Rating</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="info-content">
+                            <h4>Location</h4>
+                            <p>${resort.address || 'Address not available'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-phone"></i>
+                        <div class="info-content">
+                            <h4>Contact</h4>
+                            <p>${resort.phone || 'Phone not available'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="info-content">
+                            <h4>Hours</h4>
+                            <p>${resort.hours || 'Open 24 hours'}</p>
+                        </div>
+                    </div>
+                    
+                    ${resort.website ? `
+                    <div class="info-card website-card">
+                        <i class="fas fa-globe"></i>
+                        <div class="info-content">
+                            <h4>Website</h4>
+                            <a href="${resort.website}" target="_blank" class="website-link">Visit Official Website →</a>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+            
+            <div class="reviews-section">
+                <h2><i class="fas fa-comments"></i> Staff Reviews</h2>
+                <div id="reviewsList" class="reviews-list"></div>
+            </div>
+        `;
+        
+        document.getElementById('profileContainer').innerHTML = html;
+    }
+    
+    async function loadResortReviews() {
+        const { data: reviews } = await supabaseClient
+            .from('reviews')
+            .select('*')
+            .eq('resort_id', resortId)
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false });
+        
+        const reviewsList = document.getElementById('reviewsList');
+        
+        if (!reviews || reviews.length === 0) {
+            reviewsList.innerHTML = '<div class="no-reviews">No reviews yet. Be the first to share your experience!</div>';
+            return;
+        }
+        
+        let html = '';
+        reviews.forEach(review => {
+            const date = new Date(review.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            let photosHtml = '';
+            if (review.photo_urls && review.photo_urls !== '[]') {
+                try {
+                    const photoUrls = JSON.parse(review.photo_urls);
+                    if (photoUrls.length > 0) {
+                        photosHtml = '<div class="photo-gallery">';
+                        photoUrls.forEach(url => {
+                            photosHtml += `
+                                <div class="photo-thumbnail" onclick="window.open('${url}')">
+                                    <img src="${url}" loading="lazy">
+                                </div>
+                            `;
+                        });
+                        photosHtml += '</div>';
+                    }
+                } catch (e) {}
+            }
+            
+            html += `
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-rating">${review.rating}/10</span>
+                    </div>
+                    <p class="review-text">${review.review_text}</p>
+                    ${photosHtml}
+                    <div class="review-date">
+                        <i class="far fa-calendar"></i> ${date}
+                    </div>
+                </div>
+            `;
+        });
+        
+        reviewsList.innerHTML = html;
+    }
+    
+    async function loadResortStats() {
+        const { data: reviews } = await supabaseClient
+            .from('reviews')
+            .select('rating')
+            .eq('resort_id', resortId)
+            .eq('status', 'approved');
+        
+        const statsContainer = document.getElementById('resortStats');
+        
+        if (!reviews || reviews.length === 0) {
+            statsContainer.innerHTML = '<div class="stat-item">No stats available</div>';
+            return;
+        }
+        
+        const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+        const ratings = reviews.map(r => r.rating);
+        const highest = Math.max(...ratings);
+        const lowest = Math.min(...ratings);
+        
+        statsContainer.innerHTML = `
+            <div class="stat-item">
+                <span class="stat-label">Average Rating</span>
+                <span class="stat-value">${avgRating.toFixed(1)}/10</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total Reviews</span>
+                <span class="stat-value">${reviews.length}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Highest Rating</span>
+                <span class="stat-value">${highest}/10</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Lowest Rating</span>
+                <span class="stat-value">${lowest}/10</span>
+            </div>
+        `;
+    }
+    
+    function setupResortSearch() {
+        const searchInput = document.getElementById('resort_search');
+        const suggestionsBox = document.getElementById('resort_suggestions');
+        const hiddenInput = document.getElementById('modal_resort_id');
+        
+        if (!searchInput) return;
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            if (searchTerm.length < 3) {
+                suggestionsBox.classList.remove('active');
+                hiddenInput.value = '';
+                return;
+            }
+            
+            const matches = allResorts.filter(resort => 
+                resort.name.toLowerCase().includes(searchTerm)
+            );
+            
+            if (matches.length > 0) {
+                let html = '';
+                matches.slice(0, 8).forEach(resort => {
+                    html += `<div class="suggestion-item" data-id="${resort.id}" data-name="${resort.name.replace(/'/g, "\\'")}">${resort.name}</div>`;
+                });
+                suggestionsBox.innerHTML = html;
+                suggestionsBox.classList.add('active');
+            } else {
+                suggestionsBox.innerHTML = '<div class="no-results">No resorts found</div>';
+                suggestionsBox.classList.add('active');
+            }
+        });
+        
+        suggestionsBox.addEventListener('click', function(e) {
+            const suggestion = e.target.closest('.suggestion-item');
+            if (suggestion) {
+                searchInput.value = suggestion.dataset.name;
+                hiddenInput.value = suggestion.dataset.id;
+                suggestionsBox.classList.remove('active');
+            }
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.classList.remove('active');
+            }
+        });
+    }
+    
+    function openModal() {
+        document.getElementById('shareModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        document.getElementById('resort_search').value = '';
+        document.getElementById('modal_resort_id').value = '';
+        document.getElementById('modal_review_text').value = '';
+        document.getElementById('modalPhotoPreview').innerHTML = '';
+        document.getElementById('modalRatingValue').textContent = '5';
+        document.getElementById('modal_rating').value = '5';
+    }
+    
+    function closeModal() {
+        document.getElementById('shareModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalRating = document.getElementById('modal_rating');
+        const modalRatingValue = document.getElementById('modalRatingValue');
+        
+        if (modalRating) {
+            modalRating.addEventListener('input', function() {
+                modalRatingValue.textContent = this.value;
+            });
+        }
+        
+        const modalPhotos = document.getElementById('modal_photos');
+        if (modalPhotos) {
+            modalPhotos.addEventListener('change', function(e) {
+                const preview = document.getElementById('modalPhotoPreview');
+                preview.innerHTML = '';
+                
+                for (let i = 0; i < Math.min(e.target.files.length, 3); i++) {
+                    const file = e.target.files[i];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        const modalForm = document.getElementById('modalReviewForm');
+        if (modalForm) {
+            modalForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const resort_id = parseInt(document.getElementById('modal_resort_id').value);
+                const rating = parseInt(document.getElementById('modal_rating').value);
+                const review_text = document.getElementById('modal_review_text').value.trim();
+                const photoFiles = document.getElementById('modal_photos').files;
+                
+                if (!resort_id) {
+                    alert('Please select a valid resort');
+                    return;
+                }
+                
+                const messageDiv = document.getElementById('modalMessage');
+                messageDiv.style.display = 'block';
+                messageDiv.textContent = "Submitting...";
+                
+                try {
+                    let photoUrls = [];
+                    
+                    if (photoFiles.length > 0) {
+                        const maxPhotos = Math.min(photoFiles.length, 3);
+                        for (let i = 0; i < maxPhotos; i++) {
+                            const file = photoFiles[i];
+                            const fileName = `${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                            
+                            const { error } = await supabaseClient.storage
+                                .from('resort-photos')
+                                .upload(`public/${fileName}`, file);
+                            
+                            if (error) throw error;
+                            
+                            const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/resort-photos/public/${fileName}`;
+                            photoUrls.push(publicUrl);
+                        }
+                    }
+                    
+                    const resortName = resortsMap.get(resort_id) || '';
+                    
+                    const { error } = await supabaseClient
+                        .from('reviews')
+                        .insert([{ 
+                            resort_id: resort_id,
+                            resort_name: resortName,
+                            rating: rating,
+                            review_text: review_text,
+                            photo_urls: JSON.stringify(photoUrls),
+                            status: 'pending'
+                        }]);
+                    
+                    if (error) throw error;
+                    
+                    messageDiv.textContent = "✅ Review submitted for moderation!";
+                    messageDiv.className = "message success";
+                    
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                        closeModal();
+                    }, 2000);
+                    
+                } catch (error) {
+                    messageDiv.textContent = "Error: " + error.message;
+                    messageDiv.className = "message error";
+                }
+            });
+        }
+    });
+    // Settings function - you can customize what this does later
+function openSettings() {
+    alert('Settings coming soon!');
+    // Later you can replace this with a settings modal or page
+}
+</script>
+
+</body>
+</html>

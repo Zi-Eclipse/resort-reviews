@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resort Reviews Maldives</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Top Navigation Bar - SINGLE CLEAN HEADER -->
+<div class="top-nav">
+    <div class="nav-left">
+        <a href="guest-feed.html" class="home-btn" title="Home">
+    <i class="fas fa-home"></i>
+</a>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search resorts...">
+        </div>
+    </div>
+    
+    <div class="nav-center">
+        <a href="guest-feed.html" class="logo">
+    <i class="fas fa-umbrella-beach"></i>
+    <span>ResortReviews</span>
+</a>
+    </div>
+    
+    <div class="nav-right">
+        <div class="nav-icons">
+            <a href="resort-login.html" class="icon-btn" title="Resort Login">
+                <i class="fas fa-building"></i>
+            </a>
+            <button class="icon-btn" onclick="openSettings()" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main-layout">
+    <!-- LEFT SIDEBAR -->
+    <div class="left-sidebar"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        
+        <!-- Top Resorts Bar -->
+        <div class="top-resorts-bar">
+            <h3><i class="fas fa-trophy"></i> Top Rated Resorts</h3>
+            <div class="resort-rankings" id="topResorts">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Share Box -->
+        <div class="share-box" onclick="openModal()">
+            <div class="share-input">
+                <i class="fas fa-pen"></i>
+                <span>Share your experience...</span>
+            </div>
+            <div class="share-actions">
+                <div class="share-action">
+                    <i class="fas fa-camera" style="color: #4caf50;"></i>
+                    <span>Photo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feed Header -->
+        <div class="feed-header">
+            <h3><i class="fas fa-newspaper"></i> Recent Reviews</h3>
+            <span id="review-count">0 reviews</span>
+        </div>
+        
+        <!-- Reviews Feed -->
+        <div class="feed" id="reviews-list">
+            <div class="loading-spinner">Loading reviews...</div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-list"></i> All Resorts A-Z</h3>
+        </div>
+        <div class="resort-list" id="resortRankings">
+            <div class="loading-spinner">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Popup -->
+<div class="modal-overlay" id="shareModal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-pen-fancy"></i> Create Post</h3>
+            <i class="fas fa-times modal-close" onclick="closeModal()"></i>
+        </div>
+        
+        <form id="modalReviewForm">
+            <div class="searchable-dropdown">
+                <input type="text" id="resort_search" placeholder="Search for a resort..." autocomplete="off" required>
+                <input type="hidden" id="modal_resort_id" required>
+                <div id="resort_suggestions" class="suggestions-box"></div>
+            </div>
+
+            <div class="rating-selector">
+                <label>Rating: <span id="modalRatingValue">5</span>/10</label>
+                <input type="range" id="modal_rating" min="1" max="10" value="5">
+            </div>
+
+            <textarea id="modal_review_text" placeholder="Describe staff accommodation, food, facilities..." required></textarea>
+
+            <div class="photo-upload">
+                <label for="modal_photos" class="photo-label">
+                    <i class="fas fa-camera"></i> Add Photos (max 3)
+                </label>
+                <input type="file" id="modal_photos" accept="image/*" multiple style="display: none;">
+                <div class="photo-preview" id="modalPhotoPreview"></div>
+            </div>
+
+            <button type="submit" class="post-btn">
+                <i class="fas fa-paper-plane"></i> Post Review
+            </button>
+        </form>
+        <div id="modalMessage" class="message"></div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+<script>
+    function openSettings() {
+        alert('Settings coming soon!');
+    }
+</script>
+</body>
+</html>

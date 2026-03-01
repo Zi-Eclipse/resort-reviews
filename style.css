@@ -176,6 +176,12 @@ body {
     border-radius: 8px;
     padding: 12px;
     text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ranking-item:hover {
+    background: var(--border);
 }
 
 .ranking-item .rank {
@@ -244,109 +250,6 @@ body {
     font-size: 18px;
 }
 
-/* Review Form (Hidden by default) */
-.review-form-container {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-.form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-}
-
-.form-header i {
-    font-size: 20px;
-    cursor: pointer;
-    padding: 4px;
-}
-
-.form-header i:hover {
-    background: var(--hover-bg);
-    border-radius: 50%;
-}
-
-.review-form-container select,
-.review-form-container textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 15px;
-}
-
-.rating-selector {
-    margin-bottom: 12px;
-}
-
-.rating-selector label {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 500;
-}
-
-.rating-selector input {
-    width: 100%;
-}
-
-.photo-upload {
-    margin-bottom: 16px;
-}
-
-.photo-label {
-    display: inline-block;
-    padding: 8px 16px;
-    background: var(--hover-bg);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.photo-label:hover {
-    background: var(--border);
-}
-
-.photo-preview {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.photo-preview img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.post-btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.post-btn:hover {
-    background: var(--primary-hover);
-}
-
 /* Feed Header */
 .feed-header {
     display: flex;
@@ -366,7 +269,7 @@ body {
     font-size: 14px;
 }
 
-/* Feed Items (Facebook Style Posts) */
+/* Feed Items */
 .feed {
     display: flex;
     flex-direction: column;
@@ -409,6 +312,7 @@ body {
     margin-bottom: 16px;
 }
 
+/* Photo Gallery */
 .photo-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -485,6 +389,7 @@ body {
     gap: 12px;
     padding: 8px 16px;
     cursor: pointer;
+    transition: background 0.2s;
 }
 
 .resort-list-item:hover {
@@ -526,7 +431,7 @@ body {
     color: var(--primary);
 }
 
-/* Mini Share Button (Bottom Right) */
+/* Mini Share Button */
 .mini-share-btn {
     position: sticky;
     bottom: 20px;
@@ -554,7 +459,234 @@ body {
     font-size: 20px;
 }
 
-/* Loading Spinner */
+/* ==================== MODAL POPUP ==================== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: white;
+    border-radius: 16px 16px 0 0;
+}
+
+.modal-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+}
+
+.modal-close {
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background: var(--hover-bg);
+}
+
+.modal-content form {
+    padding: 20px;
+}
+
+/* ==================== SEARCHABLE DROPDOWN ==================== */
+.searchable-dropdown {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+#resort_search {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+    background: white;
+}
+
+#resort_search:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(24,119,242,0.2);
+}
+
+.suggestions-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: none;
+}
+
+.suggestions-box.active {
+    display: block;
+}
+
+.suggestion-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: var(--hover-bg);
+}
+
+.suggestion-item.selected {
+    background: #e6f2ff;
+}
+
+.no-results {
+    padding: 10px 12px;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Rating selector */
+.rating-selector {
+    margin-bottom: 15px;
+}
+
+.rating-selector label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.rating-selector input {
+    width: 100%;
+}
+
+/* Photo upload */
+.photo-upload {
+    margin-bottom: 15px;
+}
+
+.photo-label {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--hover-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.photo-label:hover {
+    background: var(--border);
+}
+
+.photo-preview {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.photo-preview img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+}
+
+/* Post button */
+.post-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.post-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* Resort link */
+.resort-link {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.resort-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Loading spinner */
 .loading-spinner {
     text-align: center;
     padding: 20px;
@@ -563,7 +695,7 @@ body {
 
 /* Message */
 .message {
-    margin-top: 12px;
+    margin: 12px 20px 20px;
     padding: 10px;
     border-radius: 8px;
     display: none;
@@ -600,4 +732,377 @@ body {
     .nav-center {
         justify-content: flex-start;
     }
+}
+/* A-Z Directory Styles */
+.az-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 10px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.az-letter {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.az-letter:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.az-resort-list {
+    padding: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.az-section {
+    margin-bottom: 20px;
+}
+
+.az-section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 50px;
+    background: var(--white);
+    z-index: 5;
+}
+
+.az-resort-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-radius: 6px;
+    margin-bottom: 2px;
+}
+
+.az-resort-item:hover {
+    background: var(--hover-bg);
+}
+
+.az-resort-item .resort-name {
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.az-resort-item i {
+    font-size: 12px;
+    color: var(--text-light);
+    opacity: 0.5;
+}
+
+.az-resort-item:hover i {
+    opacity: 1;
+    color: var(--primary);
+}
+/* Top Resorts Bar - ensure it displays */
+.top-resorts-bar {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    min-height: 100px;
+}
+
+.resort-rankings {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ranking-item {
+    flex: 1;
+    background: var(--bg-color);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ranking-item:hover {
+    background: var(--border);
+    transform: translateY(-2px);
+}
+
+.ranking-item .rank {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.ranking-item .name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 4px 0;
+}
+
+.ranking-item .rating {
+    font-size: 13px;
+    color: var(--text-light);
+}
+.rating {
+    font-family: Arial, Helvetica, sans-serif;
+}
+/* Resort Profile Styles */
+.profile-container {
+    background: transparent;
+}
+
+.profile-header {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.profile-hero {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: white;
+    padding: 30px;
+}
+
+.profile-hero h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.profile-ratings {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.rating-card {
+    text-align: center;
+    min-width: 100px;
+}
+
+.rating-value {
+    font-size: 32px;
+    font-weight: bold;
+    display: block;
+    line-height: 1.2;
+}
+
+.rating-label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.profile-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.info-card {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.info-card i {
+    font-size: 24px;
+    color: var(--primary);
+    min-width: 30px;
+}
+
+.info-content h4 {
+    font-size: 16px;
+    color: var(--text-light);
+    margin-bottom: 5px;
+}
+
+.info-content p {
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.website-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.website-link:hover {
+    text-decoration: underline;
+}
+
+.reviews-section {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.reviews-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dark);
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Quick Actions Sidebar */
+.quick-actions {
+    background: var(--white);
+    border-radius: 0 0 12px 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: var(--hover-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+}
+
+.quick-action-btn:hover {
+    background: var(--border);
+}
+
+.quick-action-btn i {
+    color: var(--primary);
+    font-size: 16px;
+}
+
+/* Stats Container */
+.stats-container {
+    background: var(--white);
+    border-radius: 0 0 12px 12px;
+    padding: 16px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.error-message {
+    text-align: center;
+    padding: 60px;
+    color: var(--danger);
+    font-size: 18px;
+}
+/* Optional: Make home icon slightly more prominent */
+.home-btn i {
+    font-size: 20px;
+    color: var(--primary);
+}
+
+.home-btn {
+    padding: 8px 10px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.home-btn:hover {
+    background: var(--hover-bg);
+}
+/* Remove default button outline */
+.icon-btn {
+    outline: none !important;
+    border: none !important;
+    background: transparent;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.icon-btn:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.icon-btn:active {
+    outline: none !important;
+    border: none !important;
+}
+
+.icon-btn::-moz-focus-inner {
+    border: 0 !important;
+}
+
+/* Optional: Add a subtle hover effect */
+.icon-btn:hover {
+    background: var(--hover-bg);
+}
+
+/* Make the icon a bit larger */
+.icon-btn i {
+    font-size: 20px;
+    color: var(--text-dark);
+}
+
+.icon-btn:hover i {
+    color: var(--primary);
 }
