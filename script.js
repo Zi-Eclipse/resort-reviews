@@ -580,3 +580,71 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// ===========================================
+// DARK MODE FUNCTIONS
+// ===========================================
+
+// Check for saved theme preference
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    console.log('Saved theme:', savedTheme); // For debugging
+    
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle) toggle.checked = true;
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle) toggle.checked = false;
+    }
+}
+
+// Initialize theme when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+});
+
+// Toggle dark mode
+function toggleDarkMode() {
+    const toggle = document.getElementById('darkModeToggle');
+    if (toggle.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        console.log('Dark mode enabled'); // For debugging
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        console.log('Light mode enabled'); // For debugging
+    }
+}
+
+// Settings modal functions
+function openSettings() {
+    document.getElementById('settingsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Update toggle state based on current theme
+    const toggle = document.getElementById('darkModeToggle');
+    if (toggle) {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        toggle.checked = currentTheme === 'dark';
+    }
+}
+
+function closeSettingsModal() {
+    document.getElementById('settingsModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Initialize theme when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+    
+    // Close settings with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSettingsModal();
+        }
+    });
+});

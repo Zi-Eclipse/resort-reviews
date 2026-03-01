@@ -1,3 +1,4 @@
+/* Light mode (default) */
 :root {
     --bg-color: #f0f2f5;
     --white: #ffffff;
@@ -7,8 +8,67 @@
     --text-light: #65676b;
     --border: #e4e6eb;
     --hover-bg: #f0f2f5;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --shadow: 0 1px 2px rgba(0,0,0,0.1);
+    --modal-overlay: rgba(0, 0, 0, 0.5);
+    --danger: #dc2626;
 }
 
+/* Dark mode */
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --white: #2d2d2d;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --text-dark: #e5e7eb;
+    --text-light: #9ca3af;
+    --border: #404040;
+    --hover-bg: #374151;
+    --card-bg: #2d2d2d;
+    --input-bg: #374151;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3);
+    --modal-overlay: rgba(0, 0, 0, 0.8);
+    --danger: #ef4444;
+}
+
+/* Dark mode link colors - Sky Blue */
+[data-theme="dark"] .resort-link {
+    color: #38bdf8;  /* Sky blue that pops in dark mode */
+}
+
+[data-theme="dark"] .resort-link:hover {
+    color: #7dd3fc;  /* Lighter sky blue on hover */
+    text-decoration: underline;
+}
+
+[data-theme="dark"] .az-resort-item .resort-name {
+    color: #e5e7eb;  /* Light gray for A-Z directory names */
+}
+
+[data-theme="dark"] .az-resort-item:hover .resort-name {
+    color: #38bdf8;  /* Turns sky blue on hover */
+}
+
+[data-theme="dark"] .ranking-item .name {
+    color: #e5e7eb;  /* Light gray for top resort names */
+}
+
+[data-theme="dark"] .ranking-item:hover .name {
+    color: #38bdf8;  /* Turns sky blue on hover */
+}
+
+[data-theme="dark"] .review-header h3 {
+    color: #e5e7eb;  /* Light gray for review headers */
+}
+
+[data-theme="dark"] .review-header h3 a {
+    color: inherit;  /* Inherits the light gray */
+}
+
+[data-theme="dark"] .review-header h3 a:hover {
+    color: #38bdf8;  /* Turns sky blue on hover */
+}
 * {
     margin: 0;
     padding: 0;
@@ -35,13 +95,35 @@ body {
     align-items: center;
     padding: 0 16px;
     z-index: 1000;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 .nav-left {
     flex: 1;
     display: flex;
-    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+}
+
+.home-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 50%;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.home-btn:hover {
+    background: var(--hover-bg);
+}
+
+.home-btn i {
+    font-size: 20px;
+    color: var(--primary);
 }
 
 .search-container {
@@ -65,6 +147,7 @@ body {
     outline: none;
     width: 100%;
     font-size: 15px;
+    color: var(--text-dark);
 }
 
 .search-container input::placeholder {
@@ -84,6 +167,12 @@ body {
     color: var(--primary);
     font-size: 24px;
     font-weight: bold;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 .logo i {
@@ -98,25 +187,39 @@ body {
 
 .nav-icons {
     display: flex;
-    gap: 16px;
+    gap: 8px;
 }
 
-.nav-icons i {
-    font-size: 20px;
-    color: var(--text-dark);
+.icon-btn {
+    outline: none !important;
+    border: none !important;
+    background: transparent;
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    background: var(--bg-color);
-    width: 40px;
-    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background 0.2s;
 }
 
-.nav-icons i:hover {
-    background: var(--border);
+.icon-btn:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.icon-btn:hover {
+    background: var(--hover-bg);
+}
+
+.icon-btn i {
+    font-size: 20px;
+    color: var(--text-dark);
+}
+
+.icon-btn:hover i {
+    color: var(--primary);
 }
 
 /* ==================== MAIN 3-COLUMN LAYOUT ==================== */
@@ -148,7 +251,8 @@ body {
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
+    min-height: 100px;
 }
 
 .top-resorts-bar h3 {
@@ -177,11 +281,12 @@ body {
     padding: 12px;
     text-align: center;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 
 .ranking-item:hover {
     background: var(--border);
+    transform: translateY(-2px);
 }
 
 .ranking-item .rank {
@@ -191,23 +296,25 @@ body {
 }
 
 .ranking-item .name {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     margin: 4px 0;
+    color: var(--text-dark);
 }
 
 .ranking-item .rating {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-light);
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Share Box (Facebook Style) */
+/* Share Box */
 .share-box {
     background: var(--white);
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
     cursor: pointer;
 }
 
@@ -223,7 +330,7 @@ body {
 }
 
 .share-input:hover {
-    background: #e4e6e9;
+    background: var(--border);
 }
 
 .share-actions {
@@ -280,7 +387,7 @@ body {
     background: var(--white);
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 .review-header {
@@ -326,6 +433,7 @@ body {
     overflow: hidden;
     border-radius: 8px;
     cursor: pointer;
+    border-color: var(--border);
 }
 
 .photo-thumbnail img {
@@ -420,6 +528,7 @@ body {
 .resort-list-item .resort-name {
     font-weight: 500;
     font-size: 14px;
+    color: var(--text-dark);
 }
 
 .resort-list-item .resort-rating {
@@ -431,35 +540,7 @@ body {
     color: var(--primary);
 }
 
-/* Mini Share Button */
-.mini-share-btn {
-    position: sticky;
-    bottom: 20px;
-    background: var(--primary);
-    color: white;
-    border-radius: 40px;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    width: fit-content;
-    margin-left: auto;
-    transition: transform 0.2s;
-}
-
-.mini-share-btn:hover {
-    transform: scale(1.05);
-    background: var(--primary-hover);
-}
-
-.mini-share-btn i {
-    font-size: 20px;
-}
-
-/* ==================== MODAL POPUP ==================== */
+/* ==================== MODAL STYLES ==================== */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -467,7 +548,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--modal-overlay);
     z-index: 2000;
     align-items: center;
     justify-content: center;
@@ -478,7 +559,7 @@ body {
 }
 
 .modal-content {
-    background: white;
+    background: var(--white);
     border-radius: 16px;
     width: 90%;
     max-width: 500px;
@@ -507,7 +588,7 @@ body {
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    background: white;
+    background: var(--white);
     border-radius: 16px 16px 0 0;
 }
 
@@ -528,6 +609,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text-dark);
 }
 
 .modal-close:hover {
@@ -536,6 +618,115 @@ body {
 
 .modal-content form {
     padding: 20px;
+}
+
+/* Settings Modal */
+.settings-modal {
+    max-width: 450px !important;
+}
+
+.settings-content {
+    padding: 20px;
+}
+
+.settings-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.settings-section h4 {
+    color: var(--text-light);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+}
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.settings-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-dark);
+}
+
+.settings-info i {
+    width: 20px;
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.settings-btn {
+    padding: 6px 12px;
+    background: var(--hover-bg);
+    border-radius: 6px;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.settings-btn:hover {
+    background: var(--border);
+}
+
+/* Dark Mode Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border);
+    transition: .3s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
 }
 
 /* ==================== SEARCHABLE DROPDOWN ==================== */
@@ -552,7 +743,8 @@ body {
     border-radius: 8px;
     font-size: 15px;
     box-sizing: border-box;
-    background: white;
+    background: var(--input-bg);
+    color: var(--text-dark);
 }
 
 #resort_search:focus {
@@ -568,10 +760,10 @@ body {
     right: 0;
     max-height: 300px;
     overflow-y: auto;
-    background: white;
+    background: var(--white);
     border: 1px solid var(--border);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: var(--shadow);
     z-index: 1000;
     display: none;
 }
@@ -585,6 +777,7 @@ body {
     cursor: pointer;
     border-bottom: 1px solid var(--border);
     transition: background 0.2s;
+    color: var(--text-dark);
 }
 
 .suggestion-item:last-child {
@@ -596,7 +789,7 @@ body {
 }
 
 .suggestion-item.selected {
-    background: #e6f2ff;
+    background: rgba(24,119,242,0.1);
 }
 
 .no-results {
@@ -605,7 +798,7 @@ body {
     font-style: italic;
 }
 
-/* Rating selector */
+/* ==================== FORM ELEMENTS ==================== */
 .rating-selector {
     margin-bottom: 15px;
 }
@@ -614,13 +807,15 @@ body {
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
+    color: var(--text-dark);
 }
 
 .rating-selector input {
     width: 100%;
+    background: var(--input-bg);
+    color: var(--text-dark);
 }
 
-/* Photo upload */
 .photo-upload {
     margin-bottom: 15px;
 }
@@ -632,6 +827,7 @@ body {
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    color: var(--text-dark);
 }
 
 .photo-label:hover {
@@ -653,7 +849,6 @@ body {
     border: 2px solid var(--border);
 }
 
-/* Post button */
 .post-btn {
     width: 100%;
     padding: 12px;
@@ -668,72 +863,14 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    transition: background 0.2s;
 }
 
 .post-btn:hover {
     background: var(--primary-hover);
 }
 
-/* Resort link */
-.resort-link {
-    color: var(--primary);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.resort-link:hover {
-    color: var(--primary-hover);
-    text-decoration: underline;
-}
-
-/* Loading spinner */
-.loading-spinner {
-    text-align: center;
-    padding: 20px;
-    color: var(--text-light);
-}
-
-/* Message */
-.message {
-    margin: 12px 20px 20px;
-    padding: 10px;
-    border-radius: 8px;
-    display: none;
-}
-
-.message.success {
-    background: #d4edda;
-    color: #155724;
-    display: block;
-}
-
-.message.error {
-    background: #f8d7da;
-    color: #721c24;
-    display: block;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .main-layout {
-        grid-template-columns: 1fr;
-    }
-    
-    .left-sidebar, .right-sidebar {
-        display: none;
-    }
-}
-
-@media (max-width: 768px) {
-    .nav-left {
-        display: none;
-    }
-    
-    .nav-center {
-        justify-content: flex-start;
-    }
-}
-/* A-Z Directory Styles */
+/* ==================== A-Z DIRECTORY ==================== */
 .az-nav {
     display: flex;
     flex-wrap: wrap;
@@ -758,6 +895,7 @@ body {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
+    color: var(--text-dark);
 }
 
 .az-letter:hover {
@@ -818,57 +956,8 @@ body {
     opacity: 1;
     color: var(--primary);
 }
-/* Top Resorts Bar - ensure it displays */
-.top-resorts-bar {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    min-height: 100px;
-}
 
-.resort-rankings {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.ranking-item {
-    flex: 1;
-    background: var(--bg-color);
-    border-radius: 8px;
-    padding: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.ranking-item:hover {
-    background: var(--border);
-    transform: translateY(-2px);
-}
-
-.ranking-item .rank {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--primary);
-}
-
-.ranking-item .name {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 4px 0;
-}
-
-.ranking-item .rating {
-    font-size: 13px;
-    color: var(--text-light);
-}
-.rating {
-    font-family: Arial, Helvetica, sans-serif;
-}
-/* Resort Profile Styles */
+/* ==================== RESORT PROFILE ==================== */
 .profile-container {
     background: transparent;
 }
@@ -878,7 +967,7 @@ body {
     border-radius: 16px;
     overflow: hidden;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 .profile-hero {
@@ -959,7 +1048,7 @@ body {
     background: var(--white);
     border-radius: 16px;
     padding: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 .reviews-section h2 {
@@ -1048,61 +1137,59 @@ body {
     color: var(--danger);
     font-size: 18px;
 }
-/* Optional: Make home icon slightly more prominent */
-.home-btn i {
-    font-size: 20px;
-    color: var(--primary);
+
+/* ==================== MESSAGES ==================== */
+.message {
+    margin: 12px 20px 20px;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
 }
 
-.home-btn {
-    padding: 8px 10px;
-    border-radius: 50%;
-    transition: background 0.2s;
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    display: block;
 }
 
-.home-btn:hover {
-    background: var(--hover-bg);
-}
-/* Remove default button outline */
-.icon-btn {
-    outline: none !important;
-    border: none !important;
-    background: transparent;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    display: block;
 }
 
-.icon-btn:focus {
-    outline: none !important;
-    border: none !important;
-    box-shadow: none !important;
+/* ==================== LOADING SPINNER ==================== */
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-light);
 }
 
-.icon-btn:active {
-    outline: none !important;
-    border: none !important;
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 1024px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .left-sidebar, .right-sidebar {
+        display: none;
+    }
 }
 
-.icon-btn::-moz-focus-inner {
-    border: 0 !important;
-}
-
-/* Optional: Add a subtle hover effect */
-.icon-btn:hover {
-    background: var(--hover-bg);
-}
-
-/* Make the icon a bit larger */
-.icon-btn i {
-    font-size: 20px;
-    color: var(--text-dark);
-}
-
-.icon-btn:hover i {
-    color: var(--primary);
+@media (max-width: 768px) {
+    .nav-left {
+        display: none;
+    }
+    
+    .nav-center {
+        justify-content: flex-start;
+    }
+    
+    .home-btn span {
+        display: none;
+    }
+    
+    .home-btn {
+        padding: 8px;
+    }
 }

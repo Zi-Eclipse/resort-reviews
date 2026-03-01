@@ -29,14 +29,13 @@
     
     <div class="nav-right">
         <div class="nav-icons">
-            <!-- Only settings icon - NO resort login button -->
+            <!-- Only settings icon -->
             <button class="icon-btn" onclick="openSettings()" title="Settings">
                 <i class="fas fa-cog"></i>
             </button>
         </div>
     </div>
 </div>
-    
 
 <!-- Main Layout -->
 <div class="main-layout">
@@ -61,9 +60,9 @@
                 <span>Write a Review</span>
             </button>
             <a href="guest-feed.html" class="quick-action-btn">
-    <i class="fas fa-arrow-left"></i>
-    <span>Back to Home</span>
-</a>
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
         </div>
         
         <div class="sidebar-header" style="margin-top: 20px;">
@@ -75,7 +74,65 @@
     </div>
 </div>
 
-<!-- Modal Popup -->
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal()">
+    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-cog"></i> Settings</h3>
+            <i class="fas fa-times modal-close" onclick="closeSettingsModal()"></i>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Dark Mode Toggle -->
+            <div class="settings-section">
+                <h4>Appearance</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="settings-section">
+                <h4>Navigation</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Back to Login Page</span>
+                    </div>
+                    <a href="index.html" class="settings-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="settings-section">
+                <h4>About</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Version 1.0.0</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Anonymous & Verified</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Post Modal -->
 <div class="modal-overlay" id="shareModal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div class="modal-header">
@@ -394,13 +451,69 @@
         document.body.style.overflow = '';
     }
     
+    // ===========================================
+    // DARK MODE FUNCTIONS
+    // ===========================================
+    
+    // Check for saved theme preference
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        console.log('Saved theme:', savedTheme);
+        
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = true;
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = false;
+        }
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            console.log('Dark mode enabled');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            console.log('Light mode enabled');
+        }
+    }
+
+    // Settings modal functions
+    function openSettings() {
+        document.getElementById('settingsModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Update toggle state based on current theme
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle) {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            toggle.checked = currentTheme === 'dark';
+        }
+    }
+
+    function closeSettingsModal() {
+        document.getElementById('settingsModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeModal();
+            closeSettingsModal();
         }
     });
     
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize theme
+        initTheme();
+        
         const modalRating = document.getElementById('modal_rating');
         const modalRatingValue = document.getElementById('modalRatingValue');
         
@@ -498,11 +611,6 @@
             });
         }
     });
-    // Settings function - you can customize what this does later
-function openSettings() {
-    alert('Settings coming soon!');
-    // Later you can replace this with a settings modal or page
-}
 </script>
 
 </body>
