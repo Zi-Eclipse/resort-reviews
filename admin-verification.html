@@ -213,6 +213,28 @@
             color: #065f46;
             font-size: 13px;
         }
+
+        .resort-not-found {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #991b1b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .resort-found {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #065f46;
+            font-size: 14px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -334,7 +356,7 @@
         
         let html = '';
         
-        requests.forEach(request => {
+        for (const request of requests) {
             const date = new Date(request.created_at).toLocaleDateString();
             
             html += `
@@ -372,11 +394,11 @@
                         ` : ''}
                     </div>
                     
+                    <div class="domain-check">
+                        ${checkEmailDomain(request.contact_email)}
+                    </div>
+                    
                     ${request.status === 'pending' ? `
-                        <div class="domain-check">
-                            ${checkEmailDomain(request.contact_email)}
-                        </div>
-                        
                         <div class="request-actions">
                             <button class="action-btn btn-approve" onclick="approveRequest(${request.id})">
                                 <i class="fas fa-check"></i> Approve
@@ -388,7 +410,7 @@
                     ` : ''}
                 </div>
             `;
-        });
+        }
         
         container.innerHTML = html;
     }
@@ -445,131 +467,129 @@
         }
     }
     
-async function approveRequest(requestId) {
-    console.log('✅ Approve button clicked for request:', requestId);
-    
-    try {
-        const { data: request, error: fetchError } = await supabaseClient
-            .from('verification_requests')
-            .select('*')
-            .eq('id', requestId)
-            .single();
+    async function approveRequest(requestId) {
+        console.log('✅ Approve button clicked for request:', requestId);
         
-        if (fetchError) throw fetchError;
-        
-        // GENERATE PASSWORD ONCE AND STORE IT
-// Generate password ONCE
-const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
-
-// Log it immediately
-console.log('🔐 Generated password:', tempPassword);
-
-// Save to database with THIS EXACT password
-const { error: updateError } = await supabaseClient
-    .from('resorts')
-    .update({
-        verified: true,
-        login_email: request.contact_email,
-        temp_password: tempPassword,  // ← Use the same variable
-        phone: request.phone || existingResort.phone
-    })
-    .eq('id', existingResort.id);
-
-// Send email with THE SAME password variable
-const emailHtml = `
-    ...
-    <p><strong>Temporary Password:</strong> <code>${tempPassword}</code></p>
-    ...
-`;
-        
-        // Create a URL-friendly slug from the resort name
-        const slug = request.resort_name
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-|-$/g, '');
-        
-        // Prepare resort data with ALL required fields
-        const resortData = {
-            name: request.resort_name,
-            slug: slug,
-            verified: true,
-            login_email: request.contact_email,
-            temp_password: tempPassword, // USE THE SAME PASSWORD
-            phone: request.phone || '',
-            address: '',
-            hours: 'Open 24 hours',
-            website: ''
-        };
-        
-        console.log('📝 Saving to database with password:', resortData.temp_password);
-        
-        // Check if resort already exists
-        const { data: existingResort } = await supabaseClient
-            .from('resorts')
-            .select('id')
-            .eq('name', request.resort_name)
-            .maybeSingle();
-        
-        if (existingResort) {
-            const { error } = await supabaseClient
-                .from('resorts')
-                .update(resortData)
-                .eq('id', existingResort.id);
-            if (error) throw error;
-        } else {
-            const { error } = await supabaseClient
-                .from('resorts')
-                .insert([resortData]);
-            if (error) throw error;
-        }
-        
-        // Update request status
-        await supabaseClient
-            .from('verification_requests')
-            .update({ 
-                status: 'approved',
-                reviewed_at: new Date()
-            })
-            .eq('id', requestId);
-        
-        // Create email HTML with THE SAME PASSWORD
-        const emailHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h1 style="color: #1877f2;">🏝️ ResortReviews</h1>
-                <h2>Welcome ${request.resort_name}!</h2>
-                
-                <div style="background: #f0f2f5; padding: 20px; border-radius: 12px;">
-                    <p><strong>Resort:</strong> ${request.resort_name}</p>
-                    <p><strong>Email:</strong> ${request.contact_email}</p>
-                    <p><strong>Temporary Password:</strong> <code style="background: #e4e6eb; padding: 4px 8px;">${tempPassword}</code></p>
-                    <p><a href="https://resort-reviews.vercel.app/resort-login.html" style="background: #1877f2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px;">Login to Dashboard</a></p>
-                </div>
-                
-                <p style="color: #65676b; font-size: 12px; margin-top: 20px;">⚠️ Please change your password after logging in.</p>
-            </div>
-        `;
-        
-        // Send email
         try {
-            await sendEmailViaAPI(
-                request.contact_email,
-                `🎉 Your ResortReviews Login Credentials - ${request.resort_name}`,
-                emailHtml
-            );
-            alert(`✅ Resort approved! Login credentials sent to ${request.contact_email}`);
-        } catch (emailError) {
-            console.error('Email failed but resort approved:', emailError);
-            alert(`✅ Resort approved! But email failed to send. Password: ${tempPassword}\n\nLogin with this password at resort-login.html`);
+            const { data: request, error: fetchError } = await supabaseClient
+                .from('verification_requests')
+                .select('*')
+                .eq('id', requestId)
+                .single();
+            
+            if (fetchError) throw fetchError;
+            
+            console.log('📋 Request details:', request);
+            
+            // FIRST: Check if this resort exists in your database
+            const { data: existingResort, error: resortError } = await supabaseClient
+                .from('resorts')
+                .select('*')
+                .eq('name', request.resort_name)
+                .maybeSingle();
+            
+            if (resortError) throw resortError;
+            
+            if (!existingResort) {
+                alert(`❌ Resort "${request.resort_name}" does not exist in our database.\n\nPlease add it to the resorts table first.`);
+                return;
+            }
+            
+            console.log('🏨 Found existing resort:', existingResort);
+            
+            // Generate temporary password ONCE
+            const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
+            console.log('🔐 Generated password for email and database:', tempPassword);
+            
+            // Update the EXISTING resort with verification details
+            const { error: updateError } = await supabaseClient
+                .from('resorts')
+                .update({
+                    verified: true,
+                    login_email: request.contact_email,
+                    temp_password: tempPassword,
+                    phone: request.phone || existingResort.phone
+                })
+                .eq('id', existingResort.id);
+            
+            if (updateError) throw updateError;
+            
+            // Verify the password was saved correctly
+            const { data: verifyResort } = await supabaseClient
+                .from('resorts')
+                .select('temp_password')
+                .eq('id', existingResort.id)
+                .single();
+            
+            console.log('🔍 Verification - Password in DB:', verifyResort?.temp_password);
+            console.log('✅ Passwords match?', tempPassword === verifyResort?.temp_password);
+            
+            // Update request status
+            const { error: statusError } = await supabaseClient
+                .from('verification_requests')
+                .update({ 
+                    status: 'approved',
+                    reviewed_at: new Date()
+                })
+                .eq('id', requestId);
+            
+            if (statusError) throw statusError;
+            
+            // Create email HTML with THE SAME password
+            const emailHtml = `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e6eb; border-radius: 12px;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #1877f2;">🏝️ ResortReviews</h1>
+                        <h2>Welcome ${existingResort.name}!</h2>
+                    </div>
+                    
+                    <div style="background: #f0f2f5; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <p style="margin: 0 0 15px 0; font-size: 16px;">Your resort has been verified. Here are your login credentials:</p>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <p><strong>Resort:</strong> ${existingResort.name}</p>
+                            <p><strong>Email:</strong> ${request.contact_email}</p>
+                            <p><strong>Temporary Password:</strong> <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 16px;">${tempPassword}</code></p>
+                        </div>
+                        
+                        <p style="color: #65676b; font-size: 14px;">⚠️ Please change your password immediately after logging in.</p>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <a href="https://resort-reviews.vercel.app/resort-login.html" 
+                           style="background: #1877f2; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block;">
+                            Login to Dashboard
+                        </a>
+                    </div>
+                    
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e4e6eb; color: #65676b; font-size: 12px; text-align: center;">
+                        <p>This email was sent regarding your ResortReviews verification.</p>
+                        <p>© 2026 ResortReviews. All rights reserved.</p>
+                    </div>
+                </div>
+            `;
+            
+            // Send email
+            try {
+                await sendEmailViaAPI(
+                    request.contact_email,
+                    `🎉 Your ResortReviews Login Credentials - ${existingResort.name}`,
+                    emailHtml
+                );
+                alert(`✅ ${existingResort.name} verified! Login credentials sent to ${request.contact_email}`);
+            } catch (emailError) {
+                console.error('Email failed but resort approved:', emailError);
+                alert(`✅ Resort verified! But email failed to send.\n\nResort: ${existingResort.name}\nEmail: ${request.contact_email}\nPassword: ${tempPassword}\n\nUse these credentials to login.`);
+            }
+            
+            await loadStats();
+            await loadRequests(currentStatus);
+            
+        } catch (error) {
+            console.error('❌ Error in approveRequest:', error);
+            alert('Error approving request: ' + error.message);
         }
-        
-        await loadStats();
-        await loadRequests(currentStatus);
-        
-    } catch (error) {
-        console.error('❌ Error in approveRequest:', error);
-        alert('Error approving request: ' + error.message);
     }
-}
     
     async function rejectRequest(requestId) {
         console.log('❌ Reject button clicked for request:', requestId);

@@ -379,12 +379,12 @@
     <form class="login-form" id="loginForm">
         <div class="form-group">
             <label><i class="fas fa-envelope"></i> Email</label>
-            <input type="email" id="email" placeholder="resort@example.com" required>
+            <input type="email" id="email" placeholder="resort@example.com" required autocomplete="username">
         </div>
         
         <div class="form-group">
             <label><i class="fas fa-lock"></i> Password</label>
-            <input type="password" id="password" placeholder="••••••••" required>
+            <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
         </div>
         
         <div class="forgot-password">
@@ -479,70 +479,66 @@
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
-// Login form submission
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    
-    console.log('🔐 Login attempt:');
-    console.log('Email:', email);
-    console.log('Password entered:', password);
-    
-    // Clear previous error
-    document.getElementById('errorMessage').style.display = 'none';
-    
-    try {
-        // First, check if it's the demo account
-        if (email === 'demo@resort.com' && password === 'resort123') {
-            console.log('✅ Demo login successful');
-            localStorage.setItem('resort_id', '1');
-            localStorage.setItem('resort_name', 'Demo Resort');
-            window.location.href = 'resort-dashboard.html';
-            return;
-        }
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        console.log('🔍 Searching for resort with email:', email);
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
         
-        // Check for real resort in database
-        const { data: resort, error } = await supabaseClient
-            .from('resorts')
-            .select('*')
-            .eq('login_email', email)
-            .eq('verified', true)
-            .maybeSingle();
+        console.log('🔐 Login attempt - Email:', email);
         
-        if (error) {
-            console.error('❌ Database error:', error);
-            throw error;
-        }
+        // Clear previous error
+        document.getElementById('errorMessage').style.display = 'none';
         
-        console.log('📊 Resort found:', resort);
-        
-        if (resort) {
-            console.log('Stored password:', resort.temp_password);
-            console.log('Password match?', password === resort.temp_password);
-        }
-        
-        // Check if resort exists AND password matches temp_password
-        if (resort && password === resort.temp_password) {
-            console.log('✅ Login successful for:', resort.name);
-            localStorage.setItem('resort_id', resort.id);
-            localStorage.setItem('resort_name', resort.name);
-            window.location.href = 'resort-dashboard.html';
-        } else {
-            console.log('❌ Login failed - invalid credentials');
-            document.getElementById('errorMessage').textContent = 'Invalid email or password.';
+        try {
+            // First, check if it's the demo account
+            if (email === 'demo@resort.com' && password === 'resort123') {
+                console.log('✅ Demo login successful');
+                localStorage.setItem('resort_id', '1');
+                localStorage.setItem('resort_name', 'Demo Resort');
+                window.location.href = 'resort-dashboard.html';
+                return;
+            }
+            
+            // Check for real resort in database
+            const { data: resort, error } = await supabaseClient
+                .from('resorts')
+                .select('*')
+                .eq('login_email', email)
+                .eq('verified', true)
+                .maybeSingle();
+            
+            if (error) {
+                console.error('❌ Database error:', error);
+                throw error;
+            }
+            
+            console.log('📊 Resort found:', resort ? 'Yes' : 'No');
+            
+            if (resort) {
+                console.log('Password match?', password === resort.temp_password);
+            }
+            
+            // Check if resort exists AND password matches temp_password
+            if (resort && password === resort.temp_password) {
+                console.log('✅ Login successful for:', resort.name);
+                localStorage.setItem('resort_id', resort.id);
+                localStorage.setItem('resort_name', resort.name);
+                window.location.href = 'resort-dashboard.html';
+            } else {
+                console.log('❌ Login failed - invalid credentials');
+                document.getElementById('errorMessage').textContent = 'Invalid email or password.';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        } catch (error) {
+            console.error('❌ Login error:', error);
+            document.getElementById('errorMessage').textContent = 'Login failed. Please try again.';
             document.getElementById('errorMessage').style.display = 'block';
         }
-    } catch (error) {
-        console.error('❌ Login error:', error);
-        document.getElementById('errorMessage').textContent = 'Login failed. Please try again.';
-        document.getElementById('errorMessage').style.display = 'block';
-    }
-});
+    });
     
+    // Request verification form
     function showRequestForm() {
         document.getElementById('requestModal').classList.add('active');
     }
@@ -554,12 +550,32 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     document.getElementById('requestForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        const resortName = document.getElementById('req_resort').value;
+        const contactPerson = document.getElementById('req_contact').value;
+        const contactEmail = document.getElementById('req_email').value;
+        const phone = document.getElementById('req_phone').value;
+        const message = document.getElementById('req_message').value;
+        
+        // First check if this resort exists in our database
+        const { data: existingResort } = await supabaseClient
+            .from('resorts')
+            .select('name')
+            .eq('name', resortName)
+            .maybeSingle();
+        
+        if (!existingResort) {
+            const confirmAdd = confirm(`⚠️ "${resortName}" is not in our database.\n\nWould you like to request it to be added? This will be reviewed by our team.`);
+            if (!confirmAdd) {
+                return;
+            }
+        }
+        
         const request = {
-            resort_name: document.getElementById('req_resort').value,
-            contact_person: document.getElementById('req_contact').value,
-            contact_email: document.getElementById('req_email').value,
-            phone: document.getElementById('req_phone').value,
-            message: document.getElementById('req_message').value,
+            resort_name: resortName,
+            contact_person: contactPerson,
+            contact_email: contactEmail,
+            phone: phone,
+            message: message,
             status: 'pending'
         };
         
@@ -610,22 +626,17 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             return;
         }
         
+        // Generate reset token
         const token = Math.random().toString(36).slice(-32);
         const expires = new Date();
         expires.setHours(expires.getHours() + 24);
         
-        await supabaseClient
-            .from('password_resets')
-            .insert([{
-                resort_id: resort.id,
-                token: token,
-                expires_at: expires
-            }]);
-        
+        // In production, you'd have a password_resets table
+        // For now, we'll just show the link
         const resetLink = `https://resort-reviews.vercel.app/reset-password.html?token=${token}`;
         console.log(`Reset link: ${resetLink}`);
         
-        alert(`Demo: Reset link sent to ${email}`);
+        alert(`Demo: Reset link sent to ${email}\n\nCheck console for the link.`);
         closeForgotPassword();
     }
 </script>
