@@ -217,6 +217,22 @@
             color: #ffd700;
         }
 
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             display: none;
@@ -371,6 +387,10 @@
             <input type="password" id="password" placeholder="••••••••" required>
         </div>
         
+        <div class="forgot-password">
+            <a href="#" onclick="showForgotPassword()">Forgot password?</a>
+        </div>
+        
         <button type="submit" class="login-btn">
             <i class="fas fa-sign-in-alt"></i> Login to Dashboard
         </button>
@@ -383,13 +403,8 @@
     <div class="demo-credentials">
         <p><i class="fas fa-info-circle"></i> Demo credentials:</p>
         <p>Email: <code>demo@resort.com</code> | Password: <code>resort123</code></p>
-        <p style="margin-top: 8px; font-size: 0.8rem;">*Real resorts will receive official credentials</p>
+        <p style="margin-top: 8px; font-size: 0.8rem;">*Real resorts receive official credentials</p>
     </div>
-</div>
-
-<!-- Add this to the login form -->
-<div class="forgot-password">
-    <a href="#" onclick="showForgotPassword()">Forgot password?</a>
 </div>
 
 <!-- Forgot Password Modal -->
@@ -414,56 +429,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    function showForgotPassword() {
-        document.getElementById('forgotPasswordModal').classList.add('active');
-    }
-    
-    function closeForgotPassword() {
-        document.getElementById('forgotPasswordModal').classList.remove('active');
-    }
-    
-    async function sendResetLink() {
-        const email = document.getElementById('resetEmail').value;
-        if (!email) {
-            alert('Please enter your email');
-            return;
-        }
-        
-        // Check if email exists
-        const { data: resort } = await supabaseClient
-            .from('resorts')
-            .select('id, name')
-            .eq('login_email', email)
-            .single();
-        
-        if (!resort) {
-            alert('No account found with this email');
-            return;
-        }
-        
-        // Generate reset token
-        const token = Math.random().toString(36).slice(-32);
-        const expires = new Date();
-        expires.setHours(expires.getHours() + 24); // 24 hour expiry
-        
-        await supabaseClient
-            .from('password_resets')
-            .insert([{
-                resort_id: resort.id,
-                token: token,
-                expires_at: expires
-            }]);
-        
-        // Send email with reset link
-        const resetLink = `https://resortreviews.vercel.app/reset-password.html?token=${token}`;
-        console.log(`Reset link: ${resetLink}`);
-        
-        alert(`Demo: Reset link sent to ${email}`);
-        closeForgotPassword();
-    }
-</script>
 
 <!-- Verification Request Modal -->
 <div class="modal-overlay" id="requestModal" onclick="closeRequestModal()">
@@ -521,26 +486,47 @@
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
-        // For demo purposes - in production, use proper authentication
-        const { data: resort, error } = await supabaseClient
-            .from('resorts')
-            .select('*')
-            .eq('login_email', email)
-            .eq('verified', true)
-            .single();
+        // Clear previous error
+        document.getElementById('errorMessage').style.display = 'none';
         
-        if (resort && password === 'resort123') { // Simple for demo
-            // Login successful
-            localStorage.setItem('resort_id', resort.id);
-            localStorage.setItem('resort_name', resort.name);
-            window.location.href = 'resort-dashboard.html';
-        } else if (email === 'demo@resort.com' && password === 'resort123') {
-            // Demo login
-            localStorage.setItem('resort_id', '1');
-            localStorage.setItem('resort_name', 'Demo Resort');
-            window.location.href = 'resort-dashboard.html';
-        } else {
-            document.getElementById('errorMessage').textContent = 'Invalid email or password. Try demo@resort.com / resort123';
+        try {
+            // First, check if it's the demo account
+            if (email === 'demo@resort.com' && password === 'resort123') {
+                localStorage.setItem('resort_id', '1');
+                localStorage.setItem('resort_name', 'Demo Resort');
+                window.location.href = 'resort-dashboard.html';
+                return;
+            }
+            
+            // Check for real resort in database
+            const { data: resort, error } = await supabaseClient
+                .from('resorts')
+                .select('*')
+                .eq('login_email', email)
+                .eq('verified', true)
+                .maybeSingle();
+            
+            if (error) {
+                console.error('Database error:', error);
+                throw error;
+            }
+            
+            // Log for debugging (remove in production)
+            console.log('Found resort:', resort);
+            
+            // Check if resort exists AND password matches temp_password
+            if (resort && password === resort.temp_password) {
+                // Login successful
+                localStorage.setItem('resort_id', resort.id);
+                localStorage.setItem('resort_name', resort.name);
+                window.location.href = 'resort-dashboard.html';
+            } else {
+                document.getElementById('errorMessage').textContent = 'Invalid email or password.';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            document.getElementById('errorMessage').textContent = 'Login failed. Please try again.';
             document.getElementById('errorMessage').style.display = 'block';
         }
     });
@@ -576,7 +562,6 @@
             closeRequestModal();
             document.getElementById('requestForm').reset();
             
-            // Show success message
             document.getElementById('successMessage').textContent = 'Request submitted successfully!';
             document.getElementById('successMessage').style.display = 'block';
             
@@ -585,6 +570,52 @@
             }, 5000);
         }
     });
+    
+    // Forgot password functions
+    function showForgotPassword() {
+        document.getElementById('forgotPasswordModal').classList.add('active');
+    }
+    
+    function closeForgotPassword() {
+        document.getElementById('forgotPasswordModal').classList.remove('active');
+    }
+    
+    async function sendResetLink() {
+        const email = document.getElementById('resetEmail').value;
+        if (!email) {
+            alert('Please enter your email');
+            return;
+        }
+        
+        const { data: resort } = await supabaseClient
+            .from('resorts')
+            .select('id, name')
+            .eq('login_email', email)
+            .maybeSingle();
+        
+        if (!resort) {
+            alert('No account found with this email');
+            return;
+        }
+        
+        const token = Math.random().toString(36).slice(-32);
+        const expires = new Date();
+        expires.setHours(expires.getHours() + 24);
+        
+        await supabaseClient
+            .from('password_resets')
+            .insert([{
+                resort_id: resort.id,
+                token: token,
+                expires_at: expires
+            }]);
+        
+        const resetLink = `https://resort-reviews.vercel.app/reset-password.html?token=${token}`;
+        console.log(`Reset link: ${resetLink}`);
+        
+        alert(`Demo: Reset link sent to ${email}`);
+        closeForgotPassword();
+    }
 </script>
 
 </body>
