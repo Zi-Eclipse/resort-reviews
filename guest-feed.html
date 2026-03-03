@@ -5,6 +5,525 @@
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Comment Section Styles */
+        .comment-preview {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .comment-preview-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            background: var(--bg-color);
+        }
+        
+        .comment-preview-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .comment-preview-content {
+            flex: 1;
+        }
+        
+        .comment-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .comment-preview-author {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+        
+        .verified-badge {
+            background: #1877f2;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: 6px;
+        }
+        
+        .verified-badge i {
+            font-size: 10px;
+        }
+        
+        .comment-preview-date {
+            color: var(--text-light);
+            font-size: 11px;
+            margin-left: auto;
+        }
+        
+        .comment-preview-text {
+            font-size: 13px;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .comment-preview-actions {
+            margin-top: 6px;
+        }
+        
+        .comment-preview-action {
+            font-size: 14px;
+            padding: 6px 12px;
+            gap: 8px;
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background 0.2s;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        
+        .comment-preview-action i {
+            font-size: 16px;
+        }
+        
+        .comment-preview-action:hover {
+            background: var(--hover-bg);
+            border-color: var(--border);
+            color: var(--primary);
+        }
+        
+        .comment-preview-action.reacted {
+            color: var(--primary);
+        }
+        
+        .comment-preview-action.reacted i {
+            font-weight: 900;
+        }
+        
+        /* Reaction Picker - Facebook Style */
+        .reaction-picker-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .reaction-picker {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 8px;
+            background: var(--white);
+            border-radius: 40px;
+            padding: 8px 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            gap: 8px;
+            border: 1px solid var(--border);
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        
+        .reaction-picker.active {
+            display: flex;
+        }
+        
+        .reaction-option {
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+            line-height: 1;
+        }
+        
+        .reaction-option:hover {
+            transform: scale(1.2);
+        }
+        
+        .reaction-option:hover::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-dark);
+            color: white;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            white-space: nowrap;
+            margin-bottom: 5px;
+            z-index: 10000;
+        }
+        
+        .view-all-comments {
+            text-align: center;
+            padding: 8px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            background: var(--bg-color);
+            margin-top: 8px;
+        }
+        
+        .view-all-comments:hover {
+            background: var(--border);
+        }
+        
+        /* Comment Modal - Facebook Style */
+        .comment-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .comment-modal-overlay.active {
+            display: flex;
+        }
+        
+        .comment-modal {
+            background: var(--white);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .comment-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .comment-modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .comment-modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+        
+        .comment-modal-close:hover {
+            background: var(--hover-bg);
+        }
+        
+        .comment-modal-content {
+            display: flex;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 500px;
+            max-height: 70vh;
+        }
+        
+        /* Left side - Post */
+        .modal-post {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+        
+        .modal-post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-post-rating {
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .modal-post-date {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+        
+        .modal-post-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+        
+        .modal-post-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .modal-post-photo {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: transform 0.2s;
+        }
+        
+        .modal-post-photo:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+        
+        .modal-post-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Right side - Comments */
+        .modal-comments {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .modal-comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            background: var(--bg-color);
+        }
+        
+        .modal-comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .modal-comment-content {
+            flex: 1;
+        }
+        
+        .modal-comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .modal-comment-author {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        
+        .modal-comment-text {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .modal-comment-actions {
+            margin-top: 10px;
+        }
+        
+        /* Modal Reaction Button */
+        .modal-reaction-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-family: inherit;
+            line-height: normal;
+        }
+        
+        .modal-reaction-btn i {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+        
+        .modal-reaction-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .modal-reaction-btn:hover i {
+            color: var(--primary);
+        }
+        
+        .modal-reaction-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .modal-reaction-btn.active i {
+            color: white;
+        }
+        
+        /* Dark mode support */
+        [data-theme="dark"] .modal-reaction-btn {
+            color: #e5e7eb;
+            border-color: #404040;
+        }
+        
+        [data-theme="dark"] .modal-reaction-btn i {
+            color: #9ca3af;
+        }
+        
+        [data-theme="dark"] .modal-reaction-btn:hover {
+            background: #374151;
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        
+        [data-theme="dark"] .modal-reaction-btn:hover i {
+            color: #3b82f6;
+        }
+        
+        [data-theme="dark"] .modal-reaction-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        [data-theme="dark"] .modal-reaction-btn.active i {
+            color: white;
+        }
+        
+        [data-theme="dark"] .reaction-picker {
+            background: #2d2d2d;
+            border-color: #404040;
+        }
+        
+        [data-theme="dark"] .reaction-option:hover::after {
+            background: #404040;
+            color: #e5e7eb;
+        }
+        
+        .comment-date-small {
+            color: var(--text-light);
+            font-size: 11px;
+            margin-left: auto;
+        }
+        
+        .no-comments-modal {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        /* Review Actions */
+        .review-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .action-btn i {
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
 
@@ -88,6 +607,19 @@
         </div>
         <div class="resort-list" id="resortRankings">
             <div class="loading-spinner">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Comment Modal -->
+<div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal()">
+    <div class="comment-modal" onclick="event.stopPropagation()">
+        <div class="comment-modal-header">
+            <h3><i class="far fa-comments"></i> Comments</h3>
+            <i class="fas fa-times comment-modal-close" onclick="closeCommentModal()"></i>
+        </div>
+        <div class="comment-modal-content" id="commentModalContent">
+            <!-- Populated by JavaScript -->
         </div>
     </div>
 </div>
@@ -195,33 +727,23 @@
     // DARK MODE FUNCTIONS
     // ===========================================
     
-    // Check for saved theme preference
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
-        console.log('Saved theme:', savedTheme);
-        
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             const toggle = document.getElementById('darkModeToggle');
             if (toggle) toggle.checked = true;
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            const toggle = document.getElementById('darkModeToggle');
-            if (toggle) toggle.checked = false;
         }
     }
 
-    // Toggle dark mode
     function toggleDarkMode() {
         const toggle = document.getElementById('darkModeToggle');
         if (toggle.checked) {
             document.documentElement.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
-            console.log('Dark mode enabled');
         } else {
             document.documentElement.setAttribute('data-theme', 'light');
             localStorage.setItem('theme', 'light');
-            console.log('Light mode enabled');
         }
     }
 
@@ -229,8 +751,6 @@
     function openSettings() {
         document.getElementById('settingsModal').classList.add('active');
         document.body.style.overflow = 'hidden';
-        
-        // Update toggle state based on current theme
         const toggle = document.getElementById('darkModeToggle');
         if (toggle) {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -247,8 +767,6 @@
     function openModal() {
         document.getElementById('shareModal').classList.add('active');
         document.body.style.overflow = 'hidden';
-        
-        // Clear form
         document.getElementById('resort_search').value = '';
         document.getElementById('modal_resort_id').value = '';
         document.getElementById('modal_review_text').value = '';
@@ -262,18 +780,322 @@
         document.body.style.overflow = '';
     }
 
-    // Initialize theme when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        initTheme();
+    // ===========================================
+    // COMMENT MODAL FUNCTIONS
+    // ===========================================
+
+    window.openCommentModal = async function(reviewId) {
+        currentReviewId = reviewId;
         
-        // Close modals with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeSettingsModal();
-                closeModal();
-            }
+        // Fetch review details
+        const { data: review } = await supabaseClient
+            .from('reviews')
+            .select('*')
+            .eq('id', reviewId)
+            .single();
+        
+        // Fetch comments for this review
+        const { data: comments } = await supabaseClient
+            .from('resort_comments')
+            .select('*')
+            .eq('review_id', reviewId)
+            .order('created_at', { ascending: false });
+        
+        const date = new Date(review.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
+        
+        // Handle photos
+        let photosHtml = '';
+        if (review.photo_urls && review.photo_urls !== '[]') {
+            try {
+                const photoUrls = JSON.parse(review.photo_urls);
+                if (photoUrls.length > 0) {
+                    photosHtml = '<div class="modal-post-photos">';
+                    photoUrls.forEach(url => {
+                        photosHtml += `
+                            <div class="modal-post-photo" onclick="openCommentModal(${review.id})">
+                                <img src="${url}" loading="lazy">
+                            </div>
+                        `;
+                    });
+                    photosHtml += '</div>';
+                }
+            } catch (e) {}
+        }
+        
+        // Build comments HTML with reaction pickers
+        let commentsHtml = '';
+        if (comments && comments.length > 0) {
+            comments.forEach(comment => {
+                const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                // Get resort name for official comments
+                const commentAuthor = comment.is_official ? (window.resortsMap?.get(review.resort_id) || 'Resort') : 'Guest';
+                
+                commentsHtml += `
+                    <div class="modal-comment-item">
+                        <div class="modal-comment-avatar">
+                            ${comment.is_official ? '🏨' : '👤'}
+                        </div>
+                        <div class="modal-comment-content">
+                            <div class="modal-comment-header">
+                                <span class="modal-comment-author">
+                                    ${commentAuthor}
+                                </span>
+                                ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                                <span class="comment-date-small">${commentDate}</span>
+                            </div>
+                            <p class="modal-comment-text">${comment.comment_text}</p>
+                            <div class="modal-comment-actions">
+                                <div class="reaction-picker-container" style="position: relative; display: inline-block;">
+                                    <button class="modal-reaction-btn" 
+                                            onmouseenter="showModalReactionPicker(${comment.id})" 
+                                            onmouseleave="hideModalReactionPicker(${comment.id})"
+                                            id="modal-reaction-btn-${comment.id}">
+                                        <i class="far fa-thumbs-up"></i> Like
+                                    </button>
+                                    <div class="reaction-picker" id="modal-reaction-picker-${comment.id}">
+                                        <span class="reaction-option" data-label="Like" onclick="reactToComment(${comment.id}, 'like', true)">👍</span>
+                                        <span class="reaction-option" data-label="Love" onclick="reactToComment(${comment.id}, 'love', true)">❤️</span>
+                                        <span class="reaction-option" data-label="Wow" onclick="reactToComment(${comment.id}, 'wow', true)">😮</span>
+                                        <span class="reaction-option" data-label="Sad" onclick="reactToComment(${comment.id}, 'sad', true)">😢</span>
+                                        <span class="reaction-option" data-label="Angry" onclick="reactToComment(${comment.id}, 'angry', true)">😡</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            commentsHtml = '<div class="no-comments-modal">No comments yet. Be the first to react!</div>';
+        }
+        
+        const modalContent = `
+            <div class="modal-post">
+                <div class="modal-post-header">
+                    <span class="modal-post-rating">${review.rating}/10</span>
+                    <span class="modal-post-date">${date}</span>
+                </div>
+                <p class="modal-post-text">${review.review_text}</p>
+                ${photosHtml}
+            </div>
+            <div class="modal-comments">
+                <div class="comments-list">
+                    ${commentsHtml}
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('commentModalContent').innerHTML = modalContent;
+        document.getElementById('commentModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+    
+    window.closeCommentModal = function() {
+        document.getElementById('commentModal').classList.remove('active');
+        document.body.style.overflow = '';
+        currentReviewId = null;
+    };
+    
+    // ===========================================
+    // REACTION FUNCTIONS
+    // ===========================================
+    window.reactToComment = async function(commentId, reaction, isModal = false) {
+        console.log(`Reacted with ${reaction} to comment ${commentId}`);
+        
+        // Hide the picker
+        const pickerId = isModal ? `modal-reaction-picker-${commentId}` : `reaction-picker-${commentId}`;
+        const picker = document.getElementById(pickerId);
+        if (picker) {
+            picker.style.display = 'none';
+        }
+        
+        // Update the button to show selected reaction
+        if (isModal) {
+            const actionBtn = document.getElementById(`modal-reaction-btn-${commentId}`);
+            if (actionBtn) {
+                const icons = {
+                    like: 'fa-thumbs-up',
+                    love: 'fa-heart',
+                    wow: 'fa-surprise',
+                    sad: 'fa-sad-tear',
+                    angry: 'fa-angry'
+                };
+                
+                actionBtn.innerHTML = `
+                    <i class="fas ${icons[reaction]}"></i> ${reaction.charAt(0).toUpperCase() + reaction.slice(1)}
+                `;
+                actionBtn.classList.add('active');
+            }
+        } else {
+            const actionBtn = document.querySelector(`.comment-preview-action[onclick*="reactToComment(${commentId}"]`);
+            if (actionBtn) {
+                const icons = {
+                    like: 'fa-thumbs-up',
+                    love: 'fa-heart',
+                    wow: 'fa-surprise',
+                    sad: 'fa-sad-tear',
+                    angry: 'fa-angry'
+                };
+                
+                actionBtn.innerHTML = `
+                    <i class="fas ${icons[reaction]}"></i> ${reaction.charAt(0).toUpperCase() + reaction.slice(1)}
+                `;
+                actionBtn.classList.add('reacted');
+            }
+        }
+        
+        alert(`Reacted with ${reaction}!`);
+    };
+
+    window.shareReview = function(reviewId) {
+        const url = `https://resortreviews.vercel.app/resort.html?id=${reviewId}`;
+        navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+    };
+
+    // Feed Reaction Picker Functions
+window.showReactionPicker = function(commentId) {
+    console.log('Feed hover detected on comment:', commentId);
+    
+    // Hide any other open pickers
+    document.querySelectorAll('.reaction-picker').forEach(p => {
+        p.style.display = 'none';
+        p.classList.remove('active');
+    });
+    
+    const picker = document.getElementById(`reaction-picker-${commentId}`);
+    if (picker) {
+        picker.style.display = 'flex';
+        picker.classList.add('active');
+        console.log('Feed picker activated for comment:', commentId);
+    }
+};
+
+window.hideReactionPicker = function(commentId) {
+    setTimeout(() => {
+        const picker = document.getElementById(`reaction-picker-${commentId}`);
+        const btn = document.querySelector(`.comment-preview-action[onclick*="reactToComment(${commentId}"]`);
+        
+        if (picker && !picker.matches(':hover') && btn && !btn.matches(':hover')) {
+            picker.style.display = 'none';
+            picker.classList.remove('active');
+        }
+    }, 200);
+};
+
+    window.showModalReactionPicker = function(commentId) {
+    console.log('Hover detected on comment:', commentId);
+    
+    // Hide any other open pickers
+    document.querySelectorAll('.reaction-picker').forEach(p => {
+        p.style.display = 'none';
+        p.classList.remove('active');
+    });
+    
+    const picker = document.getElementById(`modal-reaction-picker-${commentId}`);
+    if (picker) {
+        picker.style.display = 'flex';
+        picker.classList.add('active');
+        console.log('Picker activated for comment:', commentId);
+    }
+};
+
+window.hideModalReactionPicker = function(commentId) {
+    setTimeout(() => {
+        const picker = document.getElementById(`modal-reaction-picker-${commentId}`);
+        const btn = document.getElementById(`modal-reaction-btn-${commentId}`);
+        
+        if (picker && !picker.matches(':hover') && btn && !btn.matches(':hover')) {
+            picker.style.display = 'none';
+            picker.classList.remove('active');
+        }
+    }, 200);
+};
+
+    // Initialize theme
+    initTheme();
+
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSettingsModal();
+            closeModal();
+            closeCommentModal();
+        }
+    });
+
+    // Close reaction pickers when clicking elsewhere
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.reaction-picker') && !e.target.closest('.comment-preview-action') && !e.target.closest('.modal-reaction-btn')) {
+            document.querySelectorAll('.reaction-picker').forEach(p => {
+                p.style.display = 'none';
+            });
+        }
     });
 </script>
+
+<style>
+    /* Fix reaction picker positioning */
+    .modal-comment-actions .reaction-picker-container {
+        position: relative !important;
+        display: inline-block !important;
+    }
+
+    .modal-comment-actions .reaction-picker {
+        position: absolute !important;
+        bottom: 100% !important;
+        left: 0 !important;
+        margin-bottom: 10px !important;
+        background: var(--white) !important;
+        border-radius: 40px !important;
+        padding: 8px 12px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+        display: none !important;
+        gap: 8px !important;
+        border: 1px solid var(--border) !important;
+        z-index: 999999 !important;
+        white-space: nowrap !important;
+        transform: translateY(0) !important;
+    }
+
+    .modal-comment-actions .reaction-picker.active,
+    .modal-comment-actions .reaction-picker[style*="display: flex"] {
+        display: flex !important;
+        bottom: 100% !important;
+        left: 0 !important;
+    }
+
+<style>
+    /* Force reaction picker to show */
+    .modal-comment-actions .reaction-picker.active {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        position: absolute !important;
+        bottom: 100% !important;
+        left: 0 !important;
+        margin-bottom: 10px !important;
+        background: white !important;
+        border-radius: 40px !important;
+        padding: 8px 12px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+        z-index: 999999 !important;
+    }
+
+    .modal-comment-actions .reaction-picker {
+        display: none !important;
+        position: absolute !important;
+        bottom: 100% !important;
+        left: 0 !important;
+    }
+</style>
 </body>
 </html>

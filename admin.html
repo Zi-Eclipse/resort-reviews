@@ -1,55 +1,353 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin - Resort Reviews Maldives</title>
+    <title>Admin - ResortReviews</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .header { background: #1e293b; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .login-box { background: white; padding: 30px; border-radius: 10px; max-width: 400px; margin: 100px auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .tab { display: inline-block; padding: 10px 20px; background: #e5e7eb; border: none; cursor: pointer; margin-right: 5px; border-radius: 5px; }
-        .tab.active { background: #0070f3; color: white; }
-        .review-card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #f59e0b; }
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; font-weight: bold; }
-        .btn-approve { background: #10b981; color: white; }
-        .btn-reject { background: #ef4444; color: white; }
-        .btn-delete { background: #6b7280; color: white; }
-        .btn-danger { background: #dc2626; color: white; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-        .photo-grid { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
-        .photo-grid img { width: 100px; height: 100px; object-fit: cover; border-radius: 5px; cursor: pointer; }
-        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; }
-        .status-pending { background: #fef3c7; color: #92400e; }
-        .status-approved { background: #d1fae5; color: #065f46; }
-        .status-rejected { background: #fee2e2; color: #991b1b; }
+        .admin-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .admin-nav-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        
+        .admin-nav-item:hover {
+            background: var(--hover-bg);
+        }
+        
+        .admin-nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .report-badge {
+            background: #ef4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+        
+        .login-form {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            margin: 100px auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .login-form h2 {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-dark);
+        }
+        
+        .login-form button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .login-form button:hover {
+            background: var(--primary-hover);
+        }
+        
+        .login-form p {
+            margin-top: 15px;
+            color: var(--text-light);
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .login-screen {
+            display: none;
+            position: relative;
+        }
+        
+        .login-screen.active {
+            display: block;
+        }
+        
+        .dashboard-screen {
+            display: none;
+        }
+        
+        .dashboard-screen.active {
+            display: block;
+        }
+        
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        
+        .tab {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: var(--hover-bg);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .review-card {
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .review-rating {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .review-date {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .review-text {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .review-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            background: var(--white);
+            color: var(--text-dark);
+        }
+        
+        .action-btn.approve {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .action-btn.reject {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+        
+        .home-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .home-link i {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
 
-<div class="container" id="loginScreen">
-    <div class="login-box">
-        <h2>🔐 Admin Login</h2>
-        <input type="password" id="adminPassword" placeholder="Enter password" style="width: 100%; padding: 10px; margin: 10px 0;">
-        <button class="btn btn-approve" onclick="checkPassword()" style="width: 100%;">Login</button>
-        <p style="text-align: center; margin-top: 10px; color: #666;">Password: admin123</p>
+<!-- Login Screen - NO NAVIGATION -->
+<div class="login-screen active" id="loginScreen">
+    <div class="login-form">
+        <h2><i class="fas fa-shield-alt"></i> Admin Login</h2>
+        <input type="password" id="adminPassword" placeholder="Enter password">
+        <button onclick="checkPassword()">Login</button>
+        <p>Password: admin123</p>
     </div>
 </div>
 
-<div class="container" id="adminPanel" style="display: none;">
-    <div class="header">
-        <h1>🛡️ Moderation Dashboard</h1>
-        <button class="btn btn-delete" onclick="logout()">Logout</button>
+<!-- Dashboard Screen - WITH NAVIGATION -->
+<div class="dashboard-screen" id="dashboardScreen">
+    <!-- Top Navigation Bar with Home Button -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <a href="guest-feed.html" class="home-btn" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="guest-feed.html" class="logo">
+                <i class="fas fa-umbrella-beach"></i>
+                <span>ResortReviews Admin</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-icons">
+                <a href="index.html" class="icon-btn" title="Landing Page">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
     </div>
-    
-    <div style="margin-bottom: 20px;">
-        <button class="tab active" onclick="loadPending()" id="tabPending">⏳ Pending</button>
-        <button class="tab" onclick="loadApproved()" id="tabApproved">✅ Approved</button>
-        <button class="tab" onclick="loadRejected()" id="tabRejected">❌ Rejected</button>
+
+    <div class="admin-container">
+        <!-- Admin Navigation - Only one set -->
+        <div class="admin-nav">
+            <a href="#" class="admin-nav-item active" onclick="loadModerationDashboard()">
+                <i class="fas fa-shield-alt"></i> Dashboard
+            </a>
+            <a href="admin-reports.html" class="admin-nav-item">
+                <i class="fas fa-flag"></i> Reports
+                <span class="report-badge" id="reportBadge">0</span>
+            </a>
+            <a href="admin-verification.html" class="admin-nav-item">
+                <i class="fas fa-check-circle"></i> Verification
+                <span class="report-badge" id="verificationBadge">0</span>
+            </a>
+        </div>
+
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-shield-alt"></i> Moderation Dashboard</h1>
+                <p>Review and manage submissions</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <span class="stat-value" id="pendingCount">0</span>
+                <span class="stat-label">Pending</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="approvedCount">0</span>
+                <span class="stat-label">Approved</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="rejectedCount">0</span>
+                <span class="stat-label">Rejected</span>
+            </div>
+        </div>
+        
+        <div class="tab-nav">
+            <button class="tab active" onclick="loadPending()" id="tabPending">Pending</button>
+            <button class="tab" onclick="loadApproved()" id="tabApproved">Approved</button>
+            <button class="tab" onclick="loadRejected()" id="tabRejected">Rejected</button>
+        </div>
+        
+        <div id="reviewsList">
+            <div class="loading-spinner">Loading reviews...</div>
+        </div>
     </div>
-    
-    <div id="reviewsList"></div>
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -61,120 +359,163 @@
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
     let currentTab = 'pending';
-
-    // Login function
+    let isLoggedIn = false;
+    
+    // Check if already logged in from session
+    window.addEventListener('load', function() {
+        if (localStorage.getItem('admin_logged_in') === 'true') {
+            showDashboard();
+        }
+        loadReportCount();
+        loadVerificationCount();
+    });
+    
     function checkPassword() {
-        if (document.getElementById('adminPassword').value === 'admin123') {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            loadPending();
+        const password = document.getElementById('adminPassword').value;
+        if (password === 'admin123') {
+            localStorage.setItem('admin_logged_in', 'true');
+            showDashboard();
         } else {
             alert('Wrong password!');
         }
     }
-
+    
+    function showDashboard() {
+        document.getElementById('loginScreen').classList.remove('active');
+        document.getElementById('dashboardScreen').classList.add('active');
+        isLoggedIn = true;
+        loadStats();
+        loadPending();
+    }
+    
     function logout() {
-        document.getElementById('loginScreen').style.display = 'block';
-        document.getElementById('adminPanel').style.display = 'none';
+        localStorage.removeItem('admin_logged_in');
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('loginScreen').classList.add('active');
+        document.getElementById('adminPassword').value = '';
     }
-
-    function setActiveTab(tab) {
-        currentTab = tab;
-        document.getElementById('tabPending').className = 'tab';
-        document.getElementById('tabApproved').className = 'tab';
-        document.getElementById('tabRejected').className = 'tab';
-        document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = 'tab active';
+    
+    async function loadReportCount() {
+        const { data: reports } = await supabaseClient
+            .from('reports')
+            .select('id')
+            .eq('status', 'pending');
+        
+        const badge = document.getElementById('reportBadge');
+        if (badge && reports) {
+            badge.textContent = reports.length;
+            badge.style.display = reports.length > 0 ? 'inline-block' : 'none';
+        }
     }
-
-    // Load functions
+    
+    async function loadVerificationCount() {
+        const { data: requests } = await supabaseClient
+            .from('verification_requests')
+            .select('id')
+            .eq('status', 'pending');
+        
+        const badge = document.getElementById('verificationBadge');
+        if (badge && requests) {
+            badge.textContent = requests.length;
+            badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
+        }
+    }
+    
+    async function loadStats() {
+        const { data: reviews } = await supabaseClient
+            .from('reviews')
+            .select('status');
+        
+        if (!reviews) return;
+        
+        const pending = reviews.filter(r => r.status === 'pending').length;
+        const approved = reviews.filter(r => r.status === 'approved').length;
+        const rejected = reviews.filter(r => r.status === 'rejected').length;
+        
+        document.getElementById('pendingCount').textContent = pending;
+        document.getElementById('approvedCount').textContent = approved;
+        document.getElementById('rejectedCount').textContent = rejected;
+    }
+    
     async function loadPending() {
-        setActiveTab('pending');
-        const { data } = await supabaseClient
+        currentTab = 'pending';
+        updateTabs();
+        const { data: reviews } = await supabaseClient
             .from('reviews')
             .select('*')
             .eq('status', 'pending')
             .order('created_at', { ascending: false });
-        displayReviews(data);
+        displayReviews(reviews || []);
     }
-
+    
     async function loadApproved() {
-        setActiveTab('approved');
-        const { data } = await supabaseClient
+        currentTab = 'approved';
+        updateTabs();
+        const { data: reviews } = await supabaseClient
             .from('reviews')
             .select('*')
             .eq('status', 'approved')
             .order('created_at', { ascending: false });
-        displayReviews(data);
+        displayReviews(reviews || []);
     }
-
+    
     async function loadRejected() {
-        setActiveTab('rejected');
-        const { data } = await supabaseClient
+        currentTab = 'rejected';
+        updateTabs();
+        const { data: reviews } = await supabaseClient
             .from('reviews')
             .select('*')
             .eq('status', 'rejected')
             .order('created_at', { ascending: false });
-        displayReviews(data);
+        displayReviews(reviews || []);
     }
-
-    // Display reviews
+    
+    function updateTabs() {
+        document.getElementById('tabPending').className = 'tab';
+        document.getElementById('tabApproved').className = 'tab';
+        document.getElementById('tabRejected').className = 'tab';
+        
+        if (currentTab === 'pending') document.getElementById('tabPending').className = 'tab active';
+        if (currentTab === 'approved') document.getElementById('tabApproved').className = 'tab active';
+        if (currentTab === 'rejected') document.getElementById('tabRejected').className = 'tab active';
+    }
+    
     function displayReviews(reviews) {
         const container = document.getElementById('reviewsList');
         
-        if (!reviews || reviews.length === 0) {
-            container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">📭 No reviews found</p>';
+        if (reviews.length === 0) {
+            container.innerHTML = '<p style="text-align: center; padding: 40px;">No reviews found</p>';
             return;
         }
-
+        
         let html = '';
         reviews.forEach(review => {
-            let statusClass = '';
-            if (review.status === 'pending') statusClass = 'status-pending';
-            if (review.status === 'approved') statusClass = 'status-approved';
-            if (review.status === 'rejected') statusClass = 'status-rejected';
+            const date = new Date(review.created_at).toLocaleDateString();
             
-            html += `<div class="review-card" id="review-${review.id}">`;
-            html += `<div style="display: flex; justify-content: space-between; align-items: center;">`;
-            html += `<h3>${review.resort_name} <span class="status-badge ${statusClass}">${review.status || 'pending'}</span></h3>`;
-            html += `<span style="background: #f3f4f6; padding: 5px 10px; border-radius: 20px;">⭐ ${review.rating}/10</span>`;
-            html += `</div>`;
-            html += `<p style="font-style: italic;">"${review.review_text}"</p>`;
-            
-            // Show photos
-            if (review.photo_urls && review.photo_urls !== '[]') {
-                try {
-                    const urls = JSON.parse(review.photo_urls);
-                    if (urls.length > 0) {
-                        html += '<div class="photo-grid">';
-                        urls.forEach(url => {
-                            html += `<img src="${url}" onclick="window.open('${url}')">`;
-                        });
-                        html += '</div>';
-                    }
-                } catch (e) {}
-            }
-
-            // Action buttons
-            html += `<div style="margin-top: 15px;">`;
-            
-            if (currentTab === 'pending') {
-                html += `<button class="btn btn-approve" onclick="updateStatus(${review.id}, 'approved')">✅ Approve</button>`;
-                html += `<button class="btn btn-reject" onclick="updateStatus(${review.id}, 'rejected')">❌ Reject</button>`;
-            }
-            
-            // Delete button for ALL tabs - using the same working delete function
-            html += `<button class="btn btn-danger" onclick="deleteReview(${review.id})">🗑️ Delete Permanently</button>`;
-            
-            html += `</div>`;
-
-            html += `<small style="color: #999; display: block; margin-top: 10px;">📅 ${new Date(review.created_at).toLocaleString()}</small>`;
-            html += `</div>`;
+            html += `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-rating">${review.rating}/10</span>
+                        <span class="review-date">${date}</span>
+                    </div>
+                    <h3>${review.resort_name}</h3>
+                    <p class="review-text">${review.review_text}</p>
+                    ${review.photo_urls && review.photo_urls !== '[]' ? '<p><i class="fas fa-image"></i> Contains photos</p>' : ''}
+                    
+                    <div class="review-actions">
+                        ${currentTab === 'pending' ? `
+                            <button class="action-btn approve" onclick="updateStatus(${review.id}, 'approved')">Approve</button>
+                            <button class="action-btn reject" onclick="updateStatus(${review.id}, 'rejected')">Reject</button>
+                        ` : ''}
+                        <button class="action-btn" onclick="deleteReview(${review.id})">Delete</button>
+                    </div>
+                </div>
+            `;
         });
-
+        
         container.innerHTML = html;
     }
-
-    // Update status (approve/reject)
+    
     async function updateStatus(id, status) {
         const { error } = await supabaseClient
             .from('reviews')
@@ -184,43 +525,41 @@
         if (error) {
             alert('Error: ' + error.message);
         } else {
-            alert(`✅ Review ${status}!`);
             if (currentTab === 'pending') loadPending();
-            else if (currentTab === 'approved') loadApproved();
-            else loadRejected();
+            if (currentTab === 'approved') loadApproved();
+            if (currentTab === 'rejected') loadRejected();
+            loadStats();
         }
     }
-
-    // WORKING DELETE FUNCTION - same as main site
+    
     async function deleteReview(id) {
-        console.log("Deleting review ID:", id);
+        if (!confirm('Delete this review?')) return;
         
-        if (!confirm(`⚠️ Permanently delete this review?`)) return;
+        const { error } = await supabaseClient
+            .from('reviews')
+            .delete()
+            .eq('id', id);
         
-        try {
-            const { data, error } = await supabaseClient
-                .from('reviews')
-                .delete()
-                .eq('id', id)
-                .select();
-            
-            console.log("Delete result:", { data, error });
-            
-            if (error) {
-                alert('❌ Error: ' + error.message);
-            } else if (data.length === 0) {
-                alert('⚠️ No review found with that ID');
-            } else {
-                alert('✅ Review permanently deleted!');
-                // Reload current tab
-                if (currentTab === 'pending') loadPending();
-                else if (currentTab === 'approved') loadApproved();
-                else loadRejected();
-            }
-        } catch (err) {
-            alert('❌ Error: ' + err.message);
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            if (currentTab === 'pending') loadPending();
+            if (currentTab === 'approved') loadApproved();
+            if (currentTab === 'rejected') loadRejected();
+            loadStats();
         }
     }
+    
+    // Function to load moderation dashboard (for nav link)
+    window.loadModerationDashboard = function(e) {
+        e?.preventDefault();
+        loadPending();
+        // Update active nav
+        document.querySelectorAll('.admin-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelector('.admin-nav-item').classList.add('active');
+    };
 </script>
 
 </body>

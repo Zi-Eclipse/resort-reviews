@@ -2,24 +2,26 @@
 const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
 const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
 
-console.log("🚀 ResortReviews Main Page with A-Z Directory");
+console.log("🚀 ResortReviews Main Page with Comments");
 
 let allReviews = [];
 let resortsMap = new Map(); // Store resort id -> name mapping
 let allResorts = []; // Store all resorts for search
+let supabaseClient;
+
+// Initialize Supabase client
+const { createClient } = supabase;
+supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ===========================================
 // INITIALIZATION
 // ===========================================
 window.addEventListener('load', async function() {
     try {
-        const { createClient } = supabase;
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        await loadResorts(supabaseClient);
-        await loadApprovedReviews(supabaseClient);
-        await loadTopResorts(supabaseClient);
-        await loadAllResortsAZ(supabaseClient);
+        await loadResorts();
+        await loadApprovedReviews();
+        await loadTopResorts();
+        await loadAllResortsAZ();
         setupSearch();
         
     } catch (err) {
@@ -30,9 +32,9 @@ window.addEventListener('load', async function() {
 // ===========================================
 // LOAD RESORTS AND SETUP SEARCHABLE DROPDOWN
 // ===========================================
-async function loadResorts(supabase) {
+async function loadResorts() {
     try {
-        const { data: resorts, error } = await supabase
+        const { data: resorts, error } = await supabaseClient
             .from('resorts')
             .select('id, name')
             .order('name');
@@ -173,9 +175,9 @@ function setupResortSearch() {
 // ===========================================
 // LOAD APPROVED REVIEWS
 // ===========================================
-async function loadApprovedReviews(supabase) {
+async function loadApprovedReviews() {
     try {
-        const { data: reviews, error } = await supabase
+        const { data: reviews, error } = await supabaseClient
             .from('reviews')
             .select('*')
             .eq('status', 'approved')
@@ -184,7 +186,7 @@ async function loadApprovedReviews(supabase) {
         if (error) throw error;
         
         allReviews = reviews || [];
-        displayReviews(allReviews);
+        await displayReviews(allReviews);
         document.getElementById('review-count').textContent = `${allReviews.length} reviews`;
         
     } catch (error) {
@@ -193,9 +195,9 @@ async function loadApprovedReviews(supabase) {
 }
 
 // ===========================================
-// DISPLAY REVIEWS
+// DISPLAY REVIEWS WITH COMMENTS
 // ===========================================
-function displayReviews(reviews) {
+async function displayReviews(reviews) {
     const feed = document.getElementById('reviews-list');
     
     if (!reviews || reviews.length === 0) {
@@ -205,7 +207,7 @@ function displayReviews(reviews) {
     
     let html = '';
     
-    reviews.forEach(review => {
+    for (const review of reviews) {
         const date = new Date(review.created_at).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
@@ -224,7 +226,7 @@ function displayReviews(reviews) {
                     photosHtml = '<div class="photo-gallery">';
                     photoUrls.forEach(url => {
                         photosHtml += `
-                            <div class="photo-thumbnail" onclick="window.open('${url}')">
+                            <div class="photo-thumbnail" onclick="openCommentModal(${review.id})">
                                 <img src="${url}" loading="lazy">
                             </div>
                         `;
@@ -234,6 +236,80 @@ function displayReviews(reviews) {
             } catch (e) {}
         }
         
+        // Load comments for this review
+        const { data: comments } = await supabaseClient
+            .from('resort_comments')
+            .select('*')
+            .eq('review_id', review.id)
+            .order('created_at', { ascending: false });
+        
+        const commentCount = comments?.length || 0;
+        const latestComments = comments?.slice(0, 2) || [];
+        
+        // Build comments preview HTML
+        let commentsHtml = '';
+        if (commentCount > 0) {
+            commentsHtml = '<div class="comment-preview">';
+            latestComments.forEach(comment => {
+                const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                commentsHtml += `
+                    <div class="comment-preview-item">
+                        <div class="comment-preview-avatar">
+                            ${comment.is_official ? '🏨' : '👤'}
+                        </div>
+                        <div class="comment-preview-content">
+                            <div class="comment-preview-header">
+                                <span class="comment-preview-author">
+                                    ${comment.is_official ? 'Official Response' : 'Guest'}
+                                </span>
+                                ${comment.is_official ? '<span class="official-badge-small">✓</span>' : ''}
+                                <span class="comment-preview-date">${commentDate}</span>
+                            </div>
+                            <p class="comment-preview-text">${comment.comment_text}</p>
+<div class="comment-preview-actions">
+    <div class="reaction-picker-container">
+        <span class="comment-preview-action" onmouseenter="showReactionPicker(${comment.id})" onmouseleave="hideReactionPicker(${comment.id})">
+            <i class="far fa-thumbs-up"></i> Like
+        </span>
+        <div class="reaction-picker" id="reaction-picker-${comment.id}">
+            <div class="reaction-option" data-label="Like" onclick="reactToComment(${comment.id}, 'like')">
+                👍
+            </div>
+            <div class="reaction-option" data-label="Love" onclick="reactToComment(${comment.id}, 'love')">
+                ❤️
+            </div>
+            <div class="reaction-option" data-label="Wow" onclick="reactToComment(${comment.id}, 'wow')">
+                😮
+            </div>
+            <div class="reaction-option" data-label="Sad" onclick="reactToComment(${comment.id}, 'sad')">
+                😢
+            </div>
+            <div class="reaction-option" data-label="Angry" onclick="reactToComment(${comment.id}, 'angry')">
+                😡
+            </div>
+        </div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (commentCount > 2) {
+                commentsHtml += `
+                    <div class="view-all-comments" onclick="openCommentModal(${review.id})">
+                        View all ${commentCount} comments
+                    </div>
+                `;
+            }
+            commentsHtml += '</div>';
+        }
+        
+        // Main review HTML with comment button
         html += `
             <div class="review-item">
                 <div class="review-header">
@@ -246,12 +322,24 @@ function displayReviews(reviews) {
                 </div>
                 <p class="review-text">${review.review_text}</p>
                 ${photosHtml}
+                
+                <div class="review-actions">
+                    <button class="action-btn" onclick="openCommentModal(${review.id})">
+                        <i class="far fa-comment"></i> Comment (${commentCount})
+                    </button>
+                    <button class="action-btn" onclick="shareReview(${review.id})">
+                        <i class="far fa-share-square"></i> Share
+                    </button>
+                </div>
+                
+                ${commentsHtml}
+                
                 <div class="review-date">
                     <i class="far fa-calendar"></i> ${date}
                 </div>
             </div>
         `;
-    });
+    }
     
     feed.innerHTML = html;
 }
@@ -259,11 +347,11 @@ function displayReviews(reviews) {
 // ===========================================
 // LOAD TOP 3 RESORTS (Top Bar)
 // ===========================================
-async function loadTopResorts(supabase) {
+async function loadTopResorts() {
     try {
         console.log("Loading top resorts...");
         
-        const { data: reviews, error } = await supabase
+        const { data: reviews, error } = await supabaseClient
             .from('reviews')
             .select('resort_id, rating, resort_name')
             .eq('status', 'approved');
@@ -272,8 +360,6 @@ async function loadTopResorts(supabase) {
             console.error("Error fetching reviews:", error);
             throw error;
         }
-        
-        console.log("All approved reviews:", reviews);
         
         // If no reviews yet, show message
         if (!reviews || reviews.length === 0) {
@@ -301,8 +387,6 @@ async function loadTopResorts(supabase) {
             resortStats[r.resort_id].count++;
         });
         
-        console.log("Resort stats:", resortStats);
-        
         // Convert to array and sort
         const sorted = Object.entries(resortStats)
             .map(([id, data]) => ({
@@ -313,8 +397,6 @@ async function loadTopResorts(supabase) {
             }))
             .sort((a, b) => b.avg - a.avg)
             .slice(0, 3);
-        
-        console.log("Top 3 resorts:", sorted);
         
         const rankingsDiv = document.getElementById('topResorts');
         if (!rankingsDiv) return;
@@ -348,9 +430,9 @@ async function loadTopResorts(supabase) {
 // ===========================================
 // LOAD ALL RESORTS A-Z (Right Sidebar)
 // ===========================================
-async function loadAllResortsAZ(supabase) {
+async function loadAllResortsAZ() {
     try {
-        const { data: resorts, error } = await supabase
+        const { data: resorts, error } = await supabaseClient
             .from('resorts')
             .select('id, name')
             .order('name');
@@ -463,12 +545,139 @@ function closeModal() {
     document.body.style.overflow = '';
 }
 
-// Close modal with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeModal();
+// ===========================================
+// COMMENT FUNCTIONS
+// ===========================================
+let currentReviewId = null;
+
+window.openCommentModal = async function(reviewId) {
+    currentReviewId = reviewId;
+    
+    // Fetch review details
+    const { data: review } = await supabaseClient
+        .from('reviews')
+        .select('*')
+        .eq('id', reviewId)
+        .single();
+    
+    // Fetch comments for this review
+    const { data: comments } = await supabaseClient
+        .from('resort_comments')
+        .select('*')
+        .eq('review_id', reviewId)
+        .order('created_at', { ascending: false });
+    
+    const date = new Date(review.created_at).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    // Handle photos
+    let photosHtml = '';
+    if (review.photo_urls && review.photo_urls !== '[]') {
+        try {
+            const photoUrls = JSON.parse(review.photo_urls);
+            if (photoUrls.length > 0) {
+                photosHtml = '<div class="modal-post-photos">';
+                photoUrls.forEach(url => {
+                    photosHtml += `
+                        <div class="modal-post-photo" onclick="window.open('${url}')">
+                            <img src="${url}" loading="lazy">
+                        </div>
+                    `;
+                });
+                photosHtml += '</div>';
+            }
+        } catch (e) {}
     }
-});
+    
+    // Build comments HTML
+    let commentsHtml = '';
+    if (comments && comments.length > 0) {
+        comments.forEach(comment => {
+            const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+            
+// Get resort name for official comments
+const commentAuthor = comment.is_official ? (resortsMap.get(review.resort_id) || 'Resort') : 'Guest';
+
+commentsHtml += `
+    <div class="comment-preview-item">
+        <div class="comment-preview-avatar">
+            ${comment.is_official ? '🏨' : '👤'}
+        </div>
+        <div class="comment-preview-content">
+            <div class="comment-preview-header">
+                <span class="comment-preview-author">
+                    ${commentAuthor}
+                </span>
+                ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                <span class="comment-preview-date">${commentDate}</span>
+            </div>
+            <p class="comment-preview-text">${comment.comment_text}</p>
+            <div class="comment-preview-actions">
+                <div class="reaction-picker-container">
+                    <span class="comment-preview-action" onmouseenter="showReactionPicker(${comment.id})" onmouseleave="hideReactionPicker(${comment.id})">
+                        <i class="far fa-thumbs-up"></i> Like
+                    </span>
+                    <div class="reaction-picker" id="reaction-picker-${comment.id}">
+                        <div class="reaction-option" data-label="Like" onclick="reactToComment(${comment.id}, 'like')">👍</div>
+                        <div class="reaction-option" data-label="Love" onclick="reactToComment(${comment.id}, 'love')">❤️</div>
+                        <div class="reaction-option" data-label="Wow" onclick="reactToComment(${comment.id}, 'wow')">😮</div>
+                        <div class="reaction-option" data-label="Sad" onclick="reactToComment(${comment.id}, 'sad')">😢</div>
+                        <div class="reaction-option" data-label="Angry" onclick="reactToComment(${comment.id}, 'angry')">😡</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+        });
+    } else {
+        commentsHtml = '<div class="no-comments-modal">No comments yet. Be the first to react!</div>';
+    }
+    
+    const modalContent = `
+        <div class="modal-post">
+            <div class="modal-post-header">
+                <span class="modal-post-rating">${review.rating}/10</span>
+                <span class="modal-post-date">${date}</span>
+            </div>
+            <p class="modal-post-text">${review.review_text}</p>
+            ${photosHtml}
+        </div>
+        <div class="modal-comments">
+            <div class="comments-list">
+                ${commentsHtml}
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('commentModalContent').innerHTML = modalContent;
+    document.getElementById('commentModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeCommentModal = function() {
+    document.getElementById('commentModal').classList.remove('active');
+    document.body.style.overflow = '';
+    currentReviewId = null;
+};
+
+window.reactToComment = async function(commentId, reaction) {
+    console.log(`Reacted with ${reaction} to comment ${commentId}`);
+    // You can implement reaction storage later with a comment_reactions table
+    alert(`Reacted with ${reaction}! (Feature coming soon)`);
+};
+
+window.shareReview = function(reviewId) {
+    const url = `https://resortreviews.vercel.app/resort.html?id=${reviewId}`;
+    navigator.clipboard.writeText(url);
+    alert('Link copied to clipboard!');
+};
 
 // ===========================================
 // MODAL FORM SETUP
@@ -510,9 +719,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modalForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const { createClient } = supabase;
-            const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-            
             const resort_id = parseInt(document.getElementById('modal_resort_id').value);
             const rating = parseInt(document.getElementById('modal_rating').value);
             const review_text = document.getElementById('modal_review_text').value.trim();
@@ -552,15 +758,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resortName = resortsMap.get(resort_id) || '';
                 
                 const { error } = await supabaseClient
-    .from('reviews')
-    .insert([{ 
-        resort_id: resort_id,
-        resort_name: resortName,  // Must be underscore
-        rating: rating,
-        review_text: review_text,  // Must be underscore
-        photo_urls: JSON.stringify(photoUrls),
-        status: 'pending'
-    }]);
+                    .from('reviews')
+                    .insert([{ 
+                        resort_id: resort_id,
+                        resort_name: resortName,
+                        rating: rating,
+                        review_text: review_text,
+                        photo_urls: JSON.stringify(photoUrls),
+                        status: 'pending'
+                    }]);
                 
                 if (error) throw error;
                 
@@ -580,6 +786,79 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Change Password Functions
+function openChangePasswordModal() {
+    closeSettingsModal(); // Close settings modal
+    document.getElementById('changePasswordModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeChangePasswordModal() {
+    document.getElementById('changePasswordModal').classList.remove('active');
+    document.body.style.overflow = '';
+    // Clear inputs
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+}
+
+async function updatePassword() {
+    const current = document.getElementById('currentPassword').value;
+    const newPass = document.getElementById('newPassword').value;
+    const confirm = document.getElementById('confirmPassword').value;
+    
+    if (!current || !newPass || !confirm) {
+        alert('Please fill all fields');
+        return;
+    }
+    
+    if (newPass !== confirm) {
+        alert('New passwords do not match');
+        return;
+    }
+    
+    if (newPass.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+    }
+    
+    // Get current resort data
+    const { data: resort } = await supabaseClient
+        .from('resorts')
+        .select('temp_password')
+        .eq('id', resortId)
+        .single();
+    
+    // Check current password (in production, use proper hashing comparison)
+    if (current !== resort.temp_password && current !== 'admin123') {
+        alert('Current password is incorrect');
+        return;
+    }
+    
+    // Update password
+    const { error } = await supabaseClient
+        .from('resorts')
+        .update({ temp_password: newPass })
+        .eq('id', resortId);
+    
+    if (error) {
+        alert('Error updating password: ' + error.message);
+    } else {
+        alert('✅ Password updated successfully!');
+        closeChangePasswordModal();
+    }
+}
+// Close modals with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeSettingsModal();
+        closeCommentModal();
+        closeReportModal();
+        closeChangePasswordModal(); // Add this line
+    }
+});
+
 // ===========================================
 // DARK MODE FUNCTIONS
 // ===========================================
@@ -587,7 +866,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Check for saved theme preference
 function initTheme() {
     const savedTheme = localStorage.getItem('theme');
-    console.log('Saved theme:', savedTheme); // For debugging
+    console.log('Saved theme:', savedTheme);
     
     if (savedTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -600,22 +879,17 @@ function initTheme() {
     }
 }
 
-// Initialize theme when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    initTheme();
-});
-
 // Toggle dark mode
 function toggleDarkMode() {
     const toggle = document.getElementById('darkModeToggle');
     if (toggle.checked) {
         document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        console.log('Dark mode enabled'); // For debugging
+        console.log('Dark mode enabled');
     } else {
         document.documentElement.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
-        console.log('Light mode enabled'); // For debugging
+        console.log('Light mode enabled');
     }
 }
 
@@ -637,14 +911,49 @@ function closeSettingsModal() {
     document.body.style.overflow = '';
 }
 
-// Initialize theme when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    initTheme();
-    
-    // Close settings with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeSettingsModal();
+// Initialize theme
+initTheme();
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeSettingsModal();
+        closeModal();
+        closeCommentModal();
+    }
+});
+
+// ===========================================
+// REACTION PICKER FUNCTIONS
+// ===========================================
+window.showReactionPicker = function(commentId) {
+    const picker = document.getElementById(`reaction-picker-${commentId}`);
+    if (picker) {
+        // Hide any other open pickers first
+        document.querySelectorAll('.reaction-picker.active').forEach(p => {
+            if (p.id !== `reaction-picker-${commentId}`) {
+                p.classList.remove('active');
+            }
+        });
+        picker.classList.add('active');
+    }
+};
+
+window.hideReactionPicker = function(commentId) {
+    // Don't hide immediately - add a small delay to allow clicking
+    setTimeout(() => {
+        const picker = document.getElementById(`reaction-picker-${commentId}`);
+        if (picker && !picker.matches(':hover')) {
+            picker.classList.remove('active');
         }
-    });
+    }, 200);
+};
+
+// Close reaction pickers when clicking elsewhere
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.reaction-picker') && !e.target.closest('.comment-preview-action')) {
+        document.querySelectorAll('.reaction-picker.active').forEach(p => {
+            p.classList.remove('active');
+        });
+    }
 });

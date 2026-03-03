@@ -319,7 +319,7 @@
                         photosHtml = '<div class="photo-gallery">';
                         photoUrls.forEach(url => {
                             photosHtml += `
-                                <div class="photo-thumbnail" onclick="window.open('${url}')">
+                                <div class="photo-thumbnail" onclick="openCommentModal(${review.id})">
                                     <img src="${url}" loading="lazy">
                                 </div>
                             `;

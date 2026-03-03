@@ -6,190 +6,1325 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Dashboard Layout */
         .dashboard-container {
             max-width: 1200px;
-            margin: 100px auto 40px;
+            margin: 0 auto;
             padding: 0 20px;
         }
-        
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            color: white;
-            padding: 30px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        /* Cover Photo Section */
+        .profile-cover {
+            position: relative;
+            height: 350px;
+            background: linear-gradient(135deg, #1877f2, #0a4b8a);
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 80px;
+            overflow: hidden;
         }
-        
-        .resort-badge {
-            background: gold;
-            color: black;
+
+        /* Profile Picture */
+        .profile-picture {
+            position: absolute;
+            bottom: -50px;
+            left: 30px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background: #1877f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.02);
+        }
+
+        .profile-picture-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+
+        .profile-picture-upload:hover {
+            background: #f0f2f5;
+            transform: scale(1.1);
+        }
+
+        /* Profile Info */
+        .profile-info {
+            margin-left: 200px;
+            margin-bottom: 30px;
+        }
+
+        .profile-info h1 {
+            font-size: 32px;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .verified-badge-large {
+            background: #1877f2;
+            color: white;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 14px;
-            font-weight: bold;
-            display: inline-block;
-            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        
+
+        /* Profile Navigation */
+        .profile-nav {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .profile-nav-item {
+            padding: 15px 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .profile-nav-item:hover {
+            color: var(--primary);
+        }
+
+        .profile-nav-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Profile Dropdown Menu */
+        .profile-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 300px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            z-index: 1000;
+            display: none;
+        }
+
+        .profile-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-dark);
+        }
+
+        .dropdown-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            color: var(--primary);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 8px 0;
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .stat-card {
-            background: white;
+            background: var(--white);
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            text-align: center;
         }
-        
+
         .stat-value {
             font-size: 32px;
             font-weight: bold;
             color: var(--primary);
             display: block;
         }
-        
+
         .stat-label {
             color: var(--text-light);
             font-size: 14px;
         }
-        
-        .reviews-section {
-            background: white;
+
+        /* Overview Section */
+        .overview-section {
+            background: var(--white);
             border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--bg-color);
+        }
+
+        .info-item label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .info-item p {
+            color: var(--text-dark);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .info-item a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .info-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Reviews Feed */
+        .reviews-feed {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .review-card {
+            background: var(--bg-color);
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            position: relative;
         }
-        
-        .review-item {
-            border-bottom: 1px solid var(--border);
-            padding: 20px 0;
+
+        /* Three Dots Menu */
+        .review-menu-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
         }
-        
-        .review-item:last-child {
-            border-bottom: none;
+
+        .menu-trigger {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-light);
         }
-        
-        .review-meta {
+
+        .menu-trigger:hover {
+            background: var(--hover-bg);
+            color: var(--primary);
+        }
+
+        .review-menu {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            width: 200px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            z-index: 100;
+            display: none;
+        }
+
+        .review-menu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .menu-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .menu-item i {
+            width: 18px;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .menu-item.report {
+            color: #ef4444;
+        }
+
+        .menu-item.report i {
+            color: #ef4444;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 0;
+        }
+
+        .review-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            padding-right: 40px;
         }
-        
+
         .review-rating {
             background: var(--primary);
             color: white;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 14px;
+            font-weight: 600;
         }
-        
+
         .review-date {
             color: var(--text-light);
             font-size: 12px;
         }
-        
-        .comment-section {
+
+        .review-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        /* Photo Gallery */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .photo-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .photo-thumbnail:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+
+        .photo-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Review Actions */
+        .review-actions {
+            display: flex;
+            gap: 12px;
             margin-top: 15px;
-            padding-left: 20px;
-            border-left: 3px solid var(--primary);
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
         }
-        
-        .comment-box {
-            background: var(--bg-color);
-            padding: 15px;
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            margin-top: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
-        
-        .comment-box textarea {
+
+        .action-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Response Section */
+        .response-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--white);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .response-input-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: var(--bg-color);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .response-input-container textarea {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            resize: none;
+            font-size: 14px;
+            color: var(--text-dark);
+            max-height: 80px;
+            outline: none;
+        }
+
+        .response-input-container button {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .response-input-container button:hover {
+            background: rgba(24,119,242,0.1);
+        }
+
+        .existing-response {
+            padding: 12px;
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+
+        .existing-response p {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .response-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .response-actions button {
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .response-actions button:hover {
+            background: var(--hover-bg);
+            color: var(--primary);
+        }
+
+        /* Edit Mode */
+        .edit-comment-container {
+            margin-top: 10px;
+            padding: 15px;
+            background: var(--bg-color);
+            border-radius: 12px;
+        }
+
+        .edit-comment-container textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 10px;
+            background: var(--input-bg);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .cancel-btn:hover {
+            background: var(--hover-bg);
+        }
+
+        /* Photos Tab */
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .photo-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+
+        .photo-card img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+
+        .photo-card .review-preview {
+            padding: 10px;
+            font-size: 13px;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            max-width: 500px !important;
+        }
+
+        .settings-content {
+            padding: 20px;
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+
+        .settings-section h4 {
+            color: var(--text-light);
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .settings-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .settings-item .settings-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+        }
+
+        .settings-item .settings-info i {
+            width: 20px;
+            color: var(--primary);
+        }
+
+        /* Form Input Styles */
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-dark);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(24,119,242,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Report Modal */
+        .report-modal {
+            max-width: 500px !important;
+        }
+
+        .report-content {
+            padding: 20px;
+        }
+
+        .report-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .report-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .report-option:hover {
+            background: var(--hover-bg);
+        }
+
+        .report-option input[type="radio"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .report-option span {
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        #reportDescription {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+            background: var(--input-bg);
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* Dark Mode Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        /* Comment Modal */
+        .comment-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comment-modal-overlay.active {
+            display: flex;
+        }
+
+        .comment-modal {
+            background: var(--white);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .comment-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--white);
+        }
+
+        .comment-modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comment-modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        .comment-modal-close:hover {
+            background: var(--hover-bg);
+        }
+
+        .comment-modal-content {
+            display: flex;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 500px;
+            max-height: 70vh;
+        }
+
+        /* Left side - Post */
+        .modal-post {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+
+        .modal-post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-post-rating {
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-post-date {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .modal-post-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .modal-post-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-post-photo {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .modal-post-photo:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+
+        .modal-post-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Right side - Comments */
+        .modal-comments {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            background: var(--bg-color);
+        }
+
+        .modal-comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .modal-comment-content {
+            flex: 1;
+        }
+
+        .modal-comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .modal-comment-author {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .modal-comment-text {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .modal-comment-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .modal-comment-actions button {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .modal-comment-actions button:hover {
+            background: var(--hover-bg);
+            color: var(--primary);
+        }
+
+        .comment-date-small {
+            color: var(--text-light);
+            font-size: 11px;
+            margin-left: auto;
+        }
+
+        .no-comments-modal {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .modal-response-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--bg-color);
+            border-radius: 12px;
+        }
+
+        .modal-response-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .modal-response-input textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+            background: var(--input-bg);
+            color: var(--text-dark);
+        }
+
+        .modal-response-input button {
+            padding: 0 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .modal-edit-mode textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border);
             border-radius: 8px;
             margin-bottom: 10px;
-            resize: vertical;
+            background: var(--input-bg);
+            color: var(--text-dark);
         }
-        
-        .btn-comment {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .btn-comment:hover {
-            background: var(--primary-hover);
-        }
-        
-        .existing-comment {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 10px;
-            border-left: 3px solid gold;
-        }
-        
-        .official-badge {
-            background: gold;
-            color: black;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            margin-left: 8px;
-        }
-        
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
+
+        .modal-edit-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
         }
     </style>
 </head>
 <body>
 
+<!-- Top Navigation -->
 <div class="top-nav">
     <div class="nav-left">
-        <a href="index.html" class="home-btn" title="Home">
+        <a href="guest-feed.html" class="home-btn" title="Home">
             <i class="fas fa-home"></i>
         </a>
     </div>
     <div class="nav-center">
-        <a href="index.html" class="logo">
+        <a href="guest-feed.html" class="logo">
             <i class="fas fa-umbrella-beach"></i>
             <span>ResortReviews</span>
         </a>
     </div>
     <div class="nav-right">
         <div class="nav-icons">
-            <button class="icon-btn" onclick="logout()" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
+            <!-- Profile Dropdown Menu -->
+            <div class="profile-dropdown-container">
+                <div class="profile-avatar" onclick="toggleProfileDropdown()" id="profileAvatar">
+                    🏨
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <strong id="dropdownResortName">Resort Name</strong>
+                        <p style="color: var(--text-light); font-size: 12px;">Verified Resort</p>
+                    </div>
+                    
+                    <div class="dropdown-item" onclick="openSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings & privacy</span>
+                    </div>
+                    
+                    <div class="dropdown-item" onclick="openSettings()">
+                        <i class="fas fa-moon"></i>
+                        <span>Display & accessibility</span>
+                    </div>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <div class="dropdown-item" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Log out</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Main Dashboard Content -->
 <div class="dashboard-container" id="dashboard">
     <div class="loading-spinner">Loading dashboard...</div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal()">
+    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-cog"></i> Settings</h3>
+            <i class="fas fa-times modal-close" onclick="closeSettingsModal()"></i>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Profile Settings -->
+            <div class="settings-section">
+                <h4>Profile</h4>
+                <div class="settings-item" onclick="editCover()">
+                    <div class="settings-info">
+                        <i class="fas fa-camera"></i>
+                        <span>Change cover photo</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item" onclick="editProfilePicture()">
+                    <div class="settings-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Change profile picture</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <!-- Resort Information -->
+            <div class="settings-section">
+                <h4>Resort Information</h4>
+                <div class="settings-item" onclick="editInfo('address')">
+                    <div class="settings-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Edit location</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item" onclick="editInfo('phone')">
+                    <div class="settings-info">
+                        <i class="fas fa-phone"></i>
+                        <span>Edit contact number</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item" onclick="editInfo('hours')">
+                    <div class="settings-info">
+                        <i class="fas fa-clock"></i>
+                        <span>Edit hours</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item" onclick="editInfo('website')">
+                    <div class="settings-info">
+                        <i class="fas fa-globe"></i>
+                        <span>Edit website</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <!-- Security Section - Change Password -->
+            <div class="settings-section">
+                <h4>Security</h4>
+                <div class="settings-item" onclick="openChangePasswordModal()">
+                    <div class="settings-info">
+                        <i class="fas fa-key"></i>
+                        <span>Change password</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <!-- Appearance -->
+            <div class="settings-section">
+                <h4>Appearance</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- About -->
+            <div class="settings-section">
+                <h4>About</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Version 1.0.0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal-overlay" id="changePasswordModal" onclick="closeChangePasswordModal()">
+    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-key"></i> Change Password</h3>
+            <i class="fas fa-times modal-close" onclick="closeChangePasswordModal()"></i>
+        </div>
+        
+        <div class="settings-content">
+            <div class="settings-section">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-input">
+                </div>
+                
+                <button class="post-btn" onclick="updatePassword()" style="width: 100%;">
+                    <i class="fas fa-save"></i> Update Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div class="modal-overlay" id="reportModal" onclick="closeReportModal()">
+    <div class="modal-content report-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-flag"></i> Report Review</h3>
+            <i class="fas fa-times modal-close" onclick="closeReportModal()"></i>
+        </div>
+        
+        <div class="report-content">
+            <p style="margin-bottom: 15px; color: var(--text-dark);">Why are you reporting this review?</p>
+            
+            <div class="report-options">
+                <label class="report-option">
+                    <input type="radio" name="reason" value="inappropriate">
+                    <span>Inappropriate content</span>
+                </label>
+                <label class="report-option">
+                    <input type="radio" name="reason" value="false_info">
+                    <span>False information</span>
+                </label>
+                <label class="report-option">
+                    <input type="radio" name="reason" value="privacy">
+                    <span>Privacy violation (identifiable info)</span>
+                </label>
+                <label class="report-option">
+                    <input type="radio" name="reason" value="harassment">
+                    <span>Harassment or bullying</span>
+                </label>
+                <label class="report-option">
+                    <input type="radio" name="reason" value="other">
+                    <span>Other</span>
+                </label>
+            </div>
+            
+            <textarea id="reportDescription" placeholder="Provide more details..."></textarea>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="cancel-btn" onclick="closeReportModal()">Cancel</button>
+                <button class="save-btn" onclick="submitReport()">Submit Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comment Modal -->
+<div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal()">
+    <div class="comment-modal" onclick="event.stopPropagation()">
+        <div class="comment-modal-header">
+            <h3><i class="far fa-comments"></i> Review & Comments</h3>
+            <i class="fas fa-times comment-modal-close" onclick="closeCommentModal()"></i>
+        </div>
+        <div class="comment-modal-content" id="commentModalContent">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -207,68 +1342,29 @@
         window.location.href = 'resort-login.html';
     }
     
+    let currentResort = null;
+    let allReviews = [];
+    let currentReviewId = null;
+    let currentReportReviewId = null;
+    
     window.addEventListener('load', async function() {
+        await loadResortData();
         await loadDashboard();
-        await loadReviews();
+        initTheme();
     });
     
-    async function loadDashboard() {
+    async function loadResortData() {
         const { data: resort } = await supabaseClient
             .from('resorts')
             .select('*')
             .eq('id', resortId)
             .single();
         
-        // Get stats
-        const { data: reviews } = await supabaseClient
-            .from('reviews')
-            .select('*')
-            .eq('resort_id', resortId)
-            .eq('status', 'approved');
-        
-        const { data: comments } = await supabaseClient
-            .from('resort_comments')
-            .select('*')
-            .eq('resort_id', resortId);
-        
-        const avgRating = reviews.length > 0 
-            ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-            : '0.0';
-        
-        document.getElementById('dashboard').innerHTML = `
-            <div class="dashboard-header">
-                <div>
-                    <h1>${resort.name} <span class="resort-badge">✓ VERIFIED</span></h1>
-                    <p>Manage your resort's responses to staff reviews</p>
-                </div>
-                <button class="logout-btn" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-value">${avgRating}</span>
-                    <span class="stat-label">Average Rating</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-value">${reviews.length}</span>
-                    <span class="stat-label">Total Reviews</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-value">${comments.length}</span>
-                    <span class="stat-label">Your Responses</span>
-                </div>
-            </div>
-            
-            <div class="reviews-section">
-                <h2 style="margin-bottom: 20px;">📝 Staff Reviews</h2>
-                <div id="reviewsList"></div>
-            </div>
-        `;
+        currentResort = resort;
+        document.getElementById('dropdownResortName').textContent = resort.name;
     }
     
-    async function loadReviews() {
+    async function loadDashboard() {
         const { data: reviews } = await supabaseClient
             .from('reviews')
             .select('*')
@@ -276,79 +1372,717 @@
             .eq('status', 'approved')
             .order('created_at', { ascending: false });
         
+        allReviews = reviews || [];
+        
         const { data: comments } = await supabaseClient
             .from('resort_comments')
             .select('*')
             .eq('resort_id', resortId);
         
+        const avgRating = allReviews.length > 0 
+            ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1)
+            : '0.0';
+        
+        const allPhotos = [];
+        allReviews.forEach(review => {
+            if (review.photo_urls && review.photo_urls !== '[]') {
+                try {
+                    const urls = JSON.parse(review.photo_urls);
+                    urls.forEach(url => {
+                        allPhotos.push({
+                            url: url,
+                            reviewId: review.id,
+                            reviewText: review.review_text,
+                            rating: review.rating,
+                            date: review.created_at
+                        });
+                    });
+                } catch (e) {}
+            }
+        });
+        
+        document.getElementById('dashboard').innerHTML = `
+            <div class="profile-cover">
+                <div class="profile-picture" onclick="openSettings()">
+                    <span>🏨</span>
+                    <div class="profile-picture-upload" onclick="event.stopPropagation(); openSettings()">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-info">
+                <h1>${currentResort.name} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
+            </div>
+
+            <div class="profile-nav">
+                <div class="profile-nav-item active" onclick="switchTab('overview')">Overview</div>
+                <div class="profile-nav-item" onclick="switchTab('reviews')">Reviews</div>
+                <div class="profile-nav-item" onclick="switchTab('photos')">Photos (${allPhotos.length})</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value">${avgRating}</span>
+                    <span class="stat-label">Average Rating</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">${allReviews.length}</span>
+                    <span class="stat-label">Total Reviews</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">${comments.length}</span>
+                    <span class="stat-label">Your Responses</span>
+                </div>
+            </div>
+
+            <div id="overview-tab" class="overview-section">
+                <h2 style="margin-bottom: 20px;">Overview</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Location</label>
+                        <p id="display-address">${currentResort.address || 'Not set'}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Contact</label>
+                        <p id="display-phone">${currentResort.phone || 'Not set'}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Hours</label>
+                        <p id="display-hours">${currentResort.hours || 'Open 24 hours'}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Website</label>
+                        <p id="display-website">${currentResort.website ? `<a href="${currentResort.website}" target="_blank">${currentResort.website}</a>` : 'Not set'}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reviews-tab" style="display: none;">
+                <div class="reviews-feed">
+                    <h2 style="margin-bottom: 20px;">Staff Reviews</h2>
+                    <div id="reviews-list"></div>
+                </div>
+            </div>
+
+            <div id="photos-tab" style="display: none;">
+                <div class="reviews-feed">
+                    <h2 style="margin-bottom: 20px;">All Photos</h2>
+                    <div class="photos-grid" id="photos-grid">
+                        ${allPhotos.map(photo => `
+                            <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
+                                <img src="${photo.url}" loading="lazy">
+                                <div class="review-preview">
+                                    ⭐ ${photo.rating}/10 • ${photo.reviewText.substring(0, 50)}...
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${allPhotos.length === 0 ? '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">No photos yet</p>' : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        await loadReviewsList();
+    }
+    
+    async function loadReviewsList() {
+        const reviewsList = document.getElementById('reviews-list');
+        if (!reviewsList) return;
+        
+        const { data: allComments } = await supabaseClient
+            .from('resort_comments')
+            .select('*')
+            .eq('resort_id', resortId);
+        
         const commentMap = {};
-        comments.forEach(c => commentMap[c.review_id] = c);
-        
-        const reviewsList = document.getElementById('reviewsList');
-        
-        if (!reviews || reviews.length === 0) {
-            reviewsList.innerHTML = '<p>No reviews yet for your resort.</p>';
-            return;
-        }
+        allComments.forEach(c => commentMap[c.review_id] = c);
         
         let html = '';
-        reviews.forEach(review => {
-            const date = new Date(review.created_at).toLocaleDateString();
+        
+        for (const review of allReviews) {
+            const date = new Date(review.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
             const existingComment = commentMap[review.id];
             
+            let photosHtml = '';
+            if (review.photo_urls && review.photo_urls !== '[]') {
+                try {
+                    const photoUrls = JSON.parse(review.photo_urls);
+                    if (photoUrls.length > 0) {
+                        photosHtml = '<div class="photo-gallery">';
+                        photoUrls.forEach(url => {
+                            photosHtml += `
+                                <div class="photo-thumbnail" onclick="openCommentModal(${review.id})">
+                                    <img src="${url}" loading="lazy">
+                                </div>
+                            `;
+                        });
+                        photosHtml += '</div>';
+                    }
+                } catch (e) {}
+            }
+            
             html += `
-                <div class="review-item" id="review-${review.id}">
-                    <div class="review-meta">
+                <div class="review-card">
+                    <!-- Three Dots Menu -->
+                    <div class="review-menu-container">
+                        <div class="menu-trigger" onclick="toggleReviewMenu(${review.id})">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                        <div class="review-menu" id="menu-${review.id}">
+                            <div class="menu-item report" onclick="openReportModal(${review.id})">
+                                <i class="fas fa-flag"></i>
+                                <span>Report</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="review-header">
                         <span class="review-rating">${review.rating}/10</span>
                         <span class="review-date">${date}</span>
                     </div>
-                    <p>${review.review_text}</p>
+                    <p class="review-text">${review.review_text}</p>
+                    ${photosHtml}
                     
-                    <div class="comment-section">
-                        ${existingComment ? `
-                            <div class="existing-comment">
-                                <strong>Your Response <span class="official-badge">OFFICIAL</span></strong>
-                                <p style="margin-top: 8px;">${existingComment.comment_text}</p>
-                                <small>${new Date(existingComment.created_at).toLocaleDateString()}</small>
-                            </div>
-                        ` : `
-                            <div class="comment-box" id="comment-box-${review.id}">
-                                <textarea id="comment-${review.id}" placeholder="Write a professional response to this review..." rows="3"></textarea>
-                                <button class="btn-comment" onclick="submitComment(${review.id})">
-                                    Post Response
-                                </button>
-                            </div>
-                        `}
+                    <div class="review-actions">
+                        <button class="action-btn" onclick="openCommentModal(${review.id})">
+                            <i class="far fa-comment"></i> ${existingComment ? 'View/Edit Response' : 'Add Response'}
+                        </button>
+                        <button class="action-btn" onclick="shareReview(${review.id})">
+                            <i class="far fa-share-square"></i> Share
+                        </button>
+                    </div>
+                    
+                    <div id="response-container-${review.id}">
+                        ${existingComment ? renderExistingResponse(existingComment) : renderResponseInput(review.id)}
                     </div>
                 </div>
             `;
-        });
+        }
         
-        reviewsList.innerHTML = html;
+        reviewsList.innerHTML = html || '<p style="text-align: center; padding: 40px;">No reviews yet</p>';
     }
     
-    window.submitComment = async function(reviewId) {
-        const comment = document.getElementById(`comment-${reviewId}`).value.trim();
-        
-        if (!comment) {
-            alert('Please write a response');
-            return;
+    function toggleReviewMenu(reviewId) {
+        const menu = document.getElementById(`menu-${reviewId}`);
+        document.querySelectorAll('.review-menu.active').forEach(m => {
+            if (m.id !== `menu-${reviewId}`) {
+                m.classList.remove('active');
+            }
+        });
+        menu.classList.toggle('active');
+    }
+    
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.review-menu-container')) {
+            document.querySelectorAll('.review-menu.active').forEach(m => {
+                m.classList.remove('active');
+            });
         }
+    });
+    
+    function renderExistingResponse(comment) {
+        return `
+            <div class="response-section" id="response-${comment.id}">
+                <div class="existing-response">
+                    <p><strong>Your response:</strong> ${comment.comment_text}</p>
+                    <div class="response-actions">
+                        <button onclick="startEditResponse(${comment.id}, '${comment.comment_text.replace(/'/g, "\\'")}')">Edit</button>
+                        <button onclick="deleteResponse(${comment.id})">Delete</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function renderResponseInput(reviewId) {
+        return `
+            <div class="response-section">
+                <div class="response-input-container">
+                    <textarea id="response-${reviewId}" placeholder="Write your official response..." rows="1"></textarea>
+                    <button onclick="submitResponse(${reviewId})">Post</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    function renderEditResponse(commentId, currentText) {
+        return `
+            <div class="response-section edit-comment-container" id="edit-${commentId}">
+                <textarea id="edit-text-${commentId}">${currentText}</textarea>
+                <div class="edit-actions">
+                    <button class="cancel-btn" onclick="cancelEditResponse(${commentId})">Cancel</button>
+                    <button class="save-btn" onclick="saveEditResponse(${commentId})">Save</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    window.startEditResponse = function(commentId, currentText) {
+        const container = document.getElementById(`response-${commentId}`);
+        container.innerHTML = renderEditResponse(commentId, currentText);
+    };
+    
+    window.cancelEditResponse = function(commentId) {
+        supabaseClient
+            .from('resort_comments')
+            .select('*')
+            .eq('id', commentId)
+            .single()
+            .then(({ data }) => {
+                const container = document.getElementById(`edit-${commentId}`).parentNode;
+                container.innerHTML = renderExistingResponse(data);
+            });
+    };
+    
+    window.saveEditResponse = async function(commentId) {
+        const newText = document.getElementById(`edit-text-${commentId}`).value.trim();
+        if (!newText) return;
+        
+        const { error } = await supabaseClient
+            .from('resort_comments')
+            .update({ comment_text: newText })
+            .eq('id', commentId);
+        
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            const { data } = await supabaseClient
+                .from('resort_comments')
+                .select('*')
+                .eq('id', commentId)
+                .single();
+            
+            const container = document.getElementById(`edit-${commentId}`).parentNode;
+            container.innerHTML = renderExistingResponse(data);
+        }
+    };
+    
+    window.submitResponse = async function(reviewId) {
+        const response = document.getElementById(`response-${reviewId}`).value.trim();
+        if (!response) return;
         
         const { error } = await supabaseClient
             .from('resort_comments')
             .insert([{
                 review_id: reviewId,
                 resort_id: parseInt(resortId),
-                comment_text: comment,
+                comment_text: response,
                 is_official: true
             }]);
         
         if (error) {
-            alert('Error posting response: ' + error.message);
+            alert('Error: ' + error.message);
         } else {
-            alert('✅ Response posted!');
-            await loadReviews(); // Reload to show the response
+            const { data } = await supabaseClient
+                .from('resort_comments')
+                .select('*')
+                .eq('review_id', reviewId)
+                .eq('resort_id', resortId)
+                .single();
+            
+            const container = document.getElementById(`response-container-${reviewId}`);
+            container.innerHTML = renderExistingResponse(data);
+        }
+    };
+    
+    window.deleteResponse = async function(commentId) {
+        if (!confirm('Delete this response?')) return;
+        
+        const { error } = await supabaseClient
+            .from('resort_comments')
+            .delete()
+            .eq('id', commentId);
+        
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            const reviewId = commentId;
+            const container = document.getElementById(`response-container-${reviewId}`);
+            container.innerHTML = renderResponseInput(reviewId);
+        }
+    };
+    
+    window.openReportModal = function(reviewId) {
+        currentReportReviewId = reviewId;
+        document.getElementById('reportModal').classList.add('active');
+        document.getElementById(`menu-${reviewId}`).classList.remove('active');
+    };
+    
+    window.closeReportModal = function() {
+        document.getElementById('reportModal').classList.remove('active');
+        currentReportReviewId = null;
+        document.querySelectorAll('input[name="reason"]').forEach(r => r.checked = false);
+        document.getElementById('reportDescription').value = '';
+    };
+    
+    window.submitReport = async function() {
+        const reason = document.querySelector('input[name="reason"]:checked')?.value;
+        const description = document.getElementById('reportDescription').value.trim();
+        
+        if (!reason) {
+            alert('Please select a reason');
+            return;
+        }
+        
+        const { error } = await supabaseClient
+            .from('reports')
+            .insert([{
+                review_id: currentReportReviewId,
+                resort_id: parseInt(resortId),
+                reason: reason,
+                description: description,
+                status: 'pending'
+            }]);
+        
+        if (error) {
+            alert('Error submitting report: ' + error.message);
+        } else {
+            alert('Report submitted! We will review it shortly.');
+            closeReportModal();
+        }
+    };
+    
+    window.switchTab = function(tab) {
+        document.querySelectorAll('.profile-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        document.getElementById('overview-tab').style.display = tab === 'overview' ? 'block' : 'none';
+        document.getElementById('reviews-tab').style.display = tab === 'reviews' ? 'block' : 'none';
+        document.getElementById('photos-tab').style.display = tab === 'photos' ? 'block' : 'none';
+    };
+    
+    window.editInfo = function(field) {
+        const currentValue = currentResort[field] || '';
+        const newValue = prompt(`Edit ${field}:`, currentValue);
+        
+        if (newValue === null) return;
+        
+        const updates = {};
+        updates[field] = newValue;
+        
+        supabaseClient
+            .from('resorts')
+            .update(updates)
+            .eq('id', resortId)
+            .then(({ error }) => {
+                if (error) {
+                    alert('Error: ' + error.message);
+                } else {
+                    currentResort[field] = newValue;
+                    document.getElementById(`display-${field}`).innerHTML = field === 'website' && newValue ? 
+                        `<a href="${newValue}" target="_blank">${newValue}</a>` : newValue || 'Not set';
+                }
+            });
+    };
+    
+    window.openCommentModal = async function(reviewId) {
+        currentReviewId = reviewId;
+        
+        const { data: review } = await supabaseClient
+            .from('reviews')
+            .select('*')
+            .eq('id', reviewId)
+            .single();
+        
+        const { data: comments } = await supabaseClient
+            .from('resort_comments')
+            .select('*')
+            .eq('review_id', reviewId)
+            .order('created_at', { ascending: false });
+        
+        const date = new Date(review.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        let photosHtml = '';
+        if (review.photo_urls && review.photo_urls !== '[]') {
+            try {
+                const photoUrls = JSON.parse(review.photo_urls);
+                if (photoUrls.length > 0) {
+                    photosHtml = '<div class="modal-post-photos">';
+                    photoUrls.forEach(url => {
+                        photosHtml += `
+                            <div class="modal-post-photo" onclick="window.open('${url}')">
+                                <img src="${url}" loading="lazy">
+                            </div>
+                        `;
+                    });
+                    photosHtml += '</div>';
+                }
+            } catch (e) {}
+        }
+        
+        let commentsHtml = '<div class="comments-list">';
+        if (comments && comments.length > 0) {
+            comments.forEach(comment => {
+                const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                commentsHtml += `
+                    <div class="modal-comment-item" id="modal-comment-${comment.id}">
+                        <div class="modal-comment-avatar">
+                            ${comment.is_official ? '🏨' : '👤'}
+                        </div>
+                        <div class="modal-comment-content">
+                            <div class="modal-comment-header">
+                                <span class="modal-comment-author">
+                                    ${comment.is_official ? 'Your Response' : 'Guest'}
+                                </span>
+                                ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                                <span class="comment-date-small">${commentDate}</span>
+                            </div>
+                            <p class="modal-comment-text">${comment.comment_text}</p>
+                            ${comment.is_official ? `
+                                <div class="modal-comment-actions">
+                                    <button onclick="modalEditComment(${comment.id}, '${comment.comment_text.replace(/'/g, "\\'")}')">Edit</button>
+                                    <button onclick="modalDeleteComment(${comment.id})">Delete</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            commentsHtml += '<div class="no-comments-modal">No comments yet</div>';
+        }
+        commentsHtml += '</div>';
+        
+        const modalContent = `
+            <div class="modal-post">
+                <div class="modal-post-header">
+                    <span class="modal-post-rating">${review.rating}/10</span>
+                    <span class="modal-post-date">${date}</span>
+                </div>
+                <p class="modal-post-text">${review.review_text}</p>
+                ${photosHtml}
+            </div>
+            <div class="modal-comments">
+                ${commentsHtml}
+                <div class="modal-response-section" id="modal-response-${reviewId}">
+                    <div class="modal-response-input">
+                        <textarea id="modal-response-text" placeholder="Write your official response..."></textarea>
+                        <button onclick="submitModalResponse(${reviewId})">Post</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('commentModalContent').innerHTML = modalContent;
+        document.getElementById('commentModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+    
+    window.closeCommentModal = function() {
+        document.getElementById('commentModal').classList.remove('active');
+        document.body.style.overflow = '';
+    };
+    
+    window.modalEditComment = function(commentId, currentText) {
+        const commentDiv = document.getElementById(`modal-comment-${commentId}`);
+        commentDiv.innerHTML = `
+            <div class="modal-comment-avatar">🏨</div>
+            <div class="modal-comment-content">
+                <div class="modal-comment-header">
+                    <span class="modal-comment-author">Your Response</span>
+                    <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
+                </div>
+                <div class="modal-edit-mode">
+                    <textarea id="modal-edit-${commentId}">${currentText}</textarea>
+                    <div class="modal-edit-actions">
+                        <button class="cancel-btn" onclick="cancelModalEdit(${commentId})">Cancel</button>
+                        <button class="save-btn" onclick="saveModalEdit(${commentId})">Save</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+    
+    window.cancelModalEdit = function(commentId) {
+        openCommentModal(currentReviewId);
+    };
+    
+    window.saveModalEdit = async function(commentId) {
+        const newText = document.getElementById(`modal-edit-${commentId}`).value.trim();
+        if (!newText) return;
+        
+        const { error } = await supabaseClient
+            .from('resort_comments')
+            .update({ comment_text: newText })
+            .eq('id', commentId);
+        
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            openCommentModal(currentReviewId);
+        }
+    };
+    
+    window.modalDeleteComment = async function(commentId) {
+        if (!confirm('Delete this response?')) return;
+        
+        const { error } = await supabaseClient
+            .from('resort_comments')
+            .delete()
+            .eq('id', commentId);
+        
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            openCommentModal(currentReviewId);
+        }
+    };
+    
+    window.submitModalResponse = async function(reviewId) {
+        const response = document.getElementById('modal-response-text').value.trim();
+        if (!response) return;
+        
+        const { error } = await supabaseClient
+            .from('resort_comments')
+            .insert([{
+                review_id: reviewId,
+                resort_id: parseInt(resortId),
+                comment_text: response,
+                is_official: true
+            }]);
+        
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            openCommentModal(reviewId);
+        }
+    };
+    
+    window.shareReview = function(reviewId) {
+        const url = `https://resortreviews.vercel.app/resort.html?id=${reviewId}`;
+        navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+    };
+    
+    window.toggleProfileDropdown = function() {
+        document.getElementById('profileDropdown').classList.toggle('active');
+    };
+    
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('profileDropdown');
+        const avatar = document.getElementById('profileAvatar');
+        
+        if (!avatar.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+    
+    window.openSettings = function() {
+        document.getElementById('settingsModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle) {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            toggle.checked = currentTheme === 'dark';
+        }
+        toggleProfileDropdown();
+    };
+    
+    window.closeSettingsModal = function() {
+        document.getElementById('settingsModal').classList.remove('active');
+        document.body.style.overflow = '';
+    };
+    
+    // Change Password Functions
+    window.openChangePasswordModal = function() {
+        closeSettingsModal();
+        document.getElementById('changePasswordModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+    
+    window.closeChangePasswordModal = function() {
+        document.getElementById('changePasswordModal').classList.remove('active');
+        document.body.style.overflow = '';
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+    };
+    
+    window.updatePassword = async function() {
+        const current = document.getElementById('currentPassword').value;
+        const newPass = document.getElementById('newPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        
+        if (!current || !newPass || !confirm) {
+            alert('Please fill all fields');
+            return;
+        }
+        
+        if (newPass !== confirm) {
+            alert('New passwords do not match');
+            return;
+        }
+        
+        if (newPass.length < 6) {
+            alert('Password must be at least 6 characters');
+            return;
+        }
+        
+        const { data: resort } = await supabaseClient
+            .from('resorts')
+            .select('temp_password')
+            .eq('id', resortId)
+            .single();
+        
+        if (current !== resort.temp_password && current !== 'admin123') {
+            alert('Current password is incorrect');
+            return;
+        }
+        
+        const { error } = await supabaseClient
+            .from('resorts')
+            .update({ temp_password: newPass })
+            .eq('id', resortId);
+        
+        if (error) {
+            alert('Error updating password: ' + error.message);
+        } else {
+            alert('✅ Password updated successfully!');
+            closeChangePasswordModal();
+        }
+    };
+    
+    window.editCover = function() {
+        alert('Cover photo upload coming soon!');
+    };
+    
+    window.editProfilePicture = function() {
+        alert('Profile picture upload coming soon!');
+    };
+    
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = true;
+        }
+    }
+    
+    window.toggleDarkMode = function() {
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
         }
     };
     
@@ -357,6 +2091,15 @@
         localStorage.removeItem('resort_name');
         window.location.href = 'resort-login.html';
     }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSettingsModal();
+            closeCommentModal();
+            closeReportModal();
+            closeChangePasswordModal();
+        }
+    });
 </script>
 
 </body>
