@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Keep your existing styles here - they're fine */
         .admin-container {
             max-width: 1200px;
             margin: 100px auto 40px;
@@ -149,125 +150,6 @@
             font-size: 14px;
         }
         
-        .risk-indicator {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-        
-        .risk-low {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        
-        .risk-medium {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        
-        .risk-high {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-        
-        .verification-section {
-            background: var(--bg-color);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        
-        .verification-section h4 {
-            margin-bottom: 15px;
-            color: var(--text-dark);
-        }
-        
-        .verification-checklist {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .verification-checklist label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            color: var(--text-dark);
-        }
-        
-        .verification-checklist input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        
-        .verification-methods {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-        
-        .method-btn {
-            padding: 8px 16px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--white);
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        
-        .method-btn:hover {
-            background: var(--hover-bg);
-            border-color: var(--primary);
-        }
-        
-        .method-btn i {
-            color: var(--primary);
-        }
-        
-        .verification-log {
-            background: var(--white);
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 12px;
-            color: var(--text-light);
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        
-        .log-entry {
-            padding: 5px 0;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            gap: 10px;
-        }
-        
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-        
-        .log-time {
-            color: var(--text-light);
-            font-size: 10px;
-            min-width: 60px;
-        }
-        
-        .log-action {
-            color: var(--text-dark);
-        }
-        
         .request-actions {
             display: flex;
             gap: 10px;
@@ -283,11 +165,6 @@
             font-weight: 500;
         }
         
-        .btn-verify {
-            background: #3b82f6;
-            color: white;
-        }
-        
         .btn-approve {
             background: #10b981;
             color: white;
@@ -295,11 +172,6 @@
         
         .btn-reject {
             background: #ef4444;
-            color: white;
-        }
-        
-        .btn-delete {
-            background: #6b7280;
             color: white;
         }
         
@@ -390,10 +262,6 @@
             <span class="stat-label">Pending</span>
         </div>
         <div class="stat-card">
-            <span class="stat-value" id="verifyingCount">0</span>
-            <span class="stat-label">Verifying</span>
-        </div>
-        <div class="stat-card">
             <span class="stat-value" id="approvedCount">0</span>
             <span class="stat-label">Approved</span>
         </div>
@@ -405,7 +273,6 @@
     
     <div class="tab-nav">
         <button class="tab active" onclick="loadRequests('pending')" id="tabPending">Pending</button>
-        <button class="tab" onclick="loadRequests('verifying')" id="tabVerifying">Verifying</button>
         <button class="tab" onclick="loadRequests('approved')" id="tabApproved">Approved</button>
         <button class="tab" onclick="loadRequests('rejected')" id="tabRejected">Rejected</button>
     </div>
@@ -424,14 +291,6 @@
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
     let currentStatus = 'pending';
-    let currentRequestId = null;
-    
-    // Free email domains (high risk)
-    const FREE_EMAIL_DOMAINS = [
-        'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com',
-        'aol.com', 'icloud.com', 'mail.com', 'protonmail.com',
-        'yandex.com', 'gmx.com', 'live.com', 'msn.com'
-    ];
     
     window.addEventListener('load', async function() {
         await loadStats();
@@ -446,12 +305,10 @@
         if (!requests) return;
         
         const pending = requests.filter(r => r.status === 'pending').length;
-        const verifying = requests.filter(r => r.status === 'verifying').length;
         const approved = requests.filter(r => r.status === 'approved').length;
         const rejected = requests.filter(r => r.status === 'rejected').length;
         
         document.getElementById('pendingCount').textContent = pending;
-        document.getElementById('verifyingCount').textContent = verifying;
         document.getElementById('approvedCount').textContent = approved;
         document.getElementById('rejectedCount').textContent = rejected;
     }
@@ -473,33 +330,6 @@
         displayRequests(requests || []);
     }
     
-    function analyzeRisk(request) {
-        const emailDomain = request.contact_email.split('@')[1];
-        let riskLevel = 'low';
-        let reasons = [];
-        
-        // Check for free email domain
-        if (FREE_EMAIL_DOMAINS.includes(emailDomain)) {
-            riskLevel = 'high';
-            reasons.push('Free email domain');
-        }
-        
-        // Check for generic contact person
-        const genericNames = ['test', 'admin', 'info', 'contact', 'resort', 'manager'];
-        if (genericNames.some(name => request.contact_person.toLowerCase().includes(name))) {
-            riskLevel = 'medium';
-            reasons.push('Generic contact name');
-        }
-        
-        // Check phone number format (simple check)
-        if (request.phone && request.phone.length < 7) {
-            riskLevel = 'medium';
-            reasons.push('Suspicious phone number');
-        }
-        
-        return { level: riskLevel, reasons };
-    }
-    
     function displayRequests(requests) {
         const container = document.getElementById('requestsList');
         
@@ -512,15 +342,13 @@
         
         requests.forEach(request => {
             const date = new Date(request.created_at).toLocaleDateString();
-            const risk = analyzeRisk(request);
             
             html += `
-                <div class="request-card" id="request-${request.id}">
+                <div class="request-card">
                     <div class="request-header">
                         <div>
                             <span class="request-id">Request #${request.id}</span>
                             <span class="status-badge status-${request.status}">${request.status.toUpperCase()}</span>
-                            <span class="risk-indicator risk-${risk.level}">${risk.level.toUpperCase()} RISK</span>
                         </div>
                         <span>${date}</span>
                     </div>
@@ -551,68 +379,10 @@
                     </div>
                     
                     ${request.status === 'pending' ? `
-                        <div class="domain-check" id="domain-check-${request.id}">
+                        <div class="domain-check">
                             ${checkEmailDomain(request.contact_email)}
                         </div>
                         
-                        <div class="verification-section">
-                            <h4>🔍 Verification Checklist</h4>
-                            <div class="verification-checklist" id="checklist-${request.id}">
-                                <label>
-                                    <input type="checkbox" class="verify-check" data-id="${request.id}" data-item="domain">
-                                    Email domain matches resort website
-                                </label>
-                                <label>
-                                    <input type="checkbox" class="verify-check" data-id="${request.id}" data-item="phone">
-                                    Called and confirmed (${request.phone || 'No phone'})
-                                </label>
-                                <label>
-                                    <input type="checkbox" class="verify-check" data-id="${request.id}" data-item="exists">
-                                    Resort exists in database
-                                </label>
-                                <label>
-                                    <input type="checkbox" class="verify-check" data-id="${request.id}" data-item="linkedin">
-                                    Contact person verified (LinkedIn/Google)
-                                </label>
-                            </div>
-                            
-                            <div class="verification-methods">
-                                <button class="method-btn" onclick="verifyByEmail(${request.id})">
-                                    <i class="fas fa-envelope"></i> Send Code
-                                </button>
-                                <button class="method-btn" onclick="verifyByPhone(${request.id})">
-                                    <i class="fas fa-phone"></i> Call Resort
-                                </button>
-                                <button class="method-btn" onclick="verifyWebsite(${request.id})">
-                                    <i class="fas fa-globe"></i> Check Website
-                                </button>
-                            </div>
-                            
-                            <div class="verification-log" id="log-${request.id}">
-                                <div class="log-entry">
-                                    <span class="log-time">${new Date().toLocaleTimeString()}</span>
-                                    <span class="log-action">⚠️ Risk level: ${risk.level}</span>
-                                </div>
-                                ${risk.reasons.map(reason => `
-                                    <div class="log-entry">
-                                        <span class="log-time">-</span>
-                                        <span class="log-action">⚠️ ${reason}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="request-actions">
-                            <button class="action-btn btn-verify" onclick="startVerification(${request.id})">
-                                <i class="fas fa-clipboard-check"></i> Start Verification
-                            </button>
-                            <button class="action-btn btn-reject" onclick="rejectRequest(${request.id})">
-                                <i class="fas fa-times"></i> Reject
-                            </button>
-                        </div>
-                    ` : ''}
-                    
-                    ${request.status === 'verifying' ? `
                         <div class="request-actions">
                             <button class="action-btn btn-approve" onclick="approveRequest(${request.id})">
                                 <i class="fas fa-check"></i> Approve
@@ -631,6 +401,12 @@
     
     function checkEmailDomain(email) {
         const domain = email.split('@')[1];
+        const FREE_EMAIL_DOMAINS = [
+            'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com',
+            'aol.com', 'icloud.com', 'mail.com', 'protonmail.com',
+            'yandex.com', 'gmx.com', 'live.com', 'msn.com'
+        ];
+        
         if (FREE_EMAIL_DOMAINS.includes(domain)) {
             return `<div class="domain-warning">
                 <i class="fas fa-exclamation-triangle"></i> 
@@ -644,313 +420,150 @@
         }
     }
     
-    async function startVerification(requestId) {
-        currentRequestId = requestId;
-        
-        // Update status to 'verifying'
-        await supabaseClient
-            .from('verification_requests')
-            .update({ status: 'verifying' })
-            .eq('id', requestId);
-        
-        // Log the action
-        await logVerificationAction(requestId, 'Verification started');
-        
-        alert('✅ Verification process started. Use the methods below to verify.');
-        await loadRequests('verifying');
-    }
-    
-    async function verifyByEmail(requestId) {
-        const { data: request } = await supabaseClient
-            .from('verification_requests')
-            .select('*')
-            .eq('id', requestId)
-            .single();
-        
-        const verificationCode = Math.floor(100000 + Math.random() * 900000);
-        
-        // Store code in verification_logs or create a codes table
-        await logVerificationAction(requestId, `Verification code ${verificationCode} generated`);
-        
-        // In production, integrate with email service
-        console.log(`Demo: Verification code ${verificationCode} sent to ${request.contact_email}`);
-        
-        const enteredCode = prompt(`Verification code sent to ${request.contact_email}\nEnter the 6-digit code:`, '');
-        
-        if (enteredCode == verificationCode) {
-            await logVerificationAction(requestId, '✅ Email verified successfully');
-            alert('✅ Email verified!');
-            updateChecklistItem(requestId, 'domain', true);
-        } else {
-            alert('❌ Invalid code. Try again.');
-        }
-    }
-    
-    async function verifyByPhone(requestId) {
-        const { data: request } = await supabaseClient
-            .from('verification_requests')
-            .select('*')
-            .eq('id', requestId)
-            .single();
-        
-        alert(`📞 Call ${request.phone || 'the number provided'} and confirm they requested verification.`);
-        
-        const confirmed = confirm('Did they confirm they are the official resort representative?');
-        
-        if (confirmed) {
-            await logVerificationAction(requestId, '✅ Phone verification confirmed');
-            alert('✅ Phone verified!');
-            updateChecklistItem(requestId, 'phone', true);
-        } else {
-            alert('Verification cancelled.');
-        }
-    }
-    
-    async function verifyWebsite(requestId) {
-        const { data: request } = await supabaseClient
-            .from('verification_requests')
-            .select('*')
-            .eq('id', requestId)
-            .single();
-        
-        const website = prompt('Enter the resort\'s official website:', 'https://');
-        
-        if (!website) return;
+    async function sendEmailViaAPI(to, subject, html) {
+        console.log('📧 Attempting to send email via API...');
+        console.log('To:', to);
         
         try {
-            const websiteDomain = new URL(website).hostname.replace('www.', '');
-            const emailDomain = request.contact_email.split('@')[1];
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    to: to,
+                    subject: subject,
+                    html: html
+                })
+            });
             
-            if (emailDomain === websiteDomain) {
-                await logVerificationAction(requestId, `✅ Website domain matches email: ${websiteDomain}`);
-                alert('✅ Domain verified! Email matches resort website.');
-                updateChecklistItem(requestId, 'domain', true);
-            } else {
-                await logVerificationAction(requestId, `⚠️ Domain mismatch: Email(${emailDomain}) vs Website(${websiteDomain})`);
-                alert(`⚠️ Warning: Email domain (${emailDomain}) doesn't match website (${websiteDomain})`);
+            const data = await response.json();
+            console.log('✅ API Response:', data);
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to send email');
             }
-        } catch (e) {
-            alert('Invalid URL format');
+            
+            return data;
+        } catch (error) {
+            console.error('❌ Error sending email:', error);
+            throw error;
         }
-    }
-    
-    function updateChecklistItem(requestId, item, checked) {
-        const checkboxes = document.querySelectorAll(`#checklist-${requestId} input[data-item="${item}"]`);
-        checkboxes.forEach(cb => cb.checked = checked);
-    }
-    
-    async function logVerificationAction(requestId, action) {
-        const logDiv = document.getElementById(`log-${requestId}`);
-        if (logDiv) {
-            const time = new Date().toLocaleTimeString();
-            logDiv.innerHTML += `
-                <div class="log-entry">
-                    <span class="log-time">${time}</span>
-                    <span class="log-action">${action}</span>
-                </div>
-            `;
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }
-        
-        // In production, save to database
-        console.log(`[Request ${requestId}] ${action}`);
     }
     
     async function approveRequest(requestId) {
-        const { data: request } = await supabaseClient
-            .from('verification_requests')
-            .select('*')
-            .eq('id', requestId)
-            .single();
+        console.log('✅ Approve button clicked for request:', requestId);
         
-        // Generate temporary password
-        const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
-        
-        // Check if resort already exists
-        const { data: existingResort } = await supabaseClient
-            .from('resorts')
-            .select('id')
-            .eq('name', request.resort_name)
-            .single();
-        
-        if (existingResort) {
-            await supabaseClient
+        try {
+            const { data: request, error: fetchError } = await supabaseClient
+                .from('verification_requests')
+                .select('*')
+                .eq('id', requestId)
+                .single();
+            
+            if (fetchError) throw fetchError;
+            
+            // Generate temporary password
+            const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
+            
+            // Prepare resort data
+            const resortData = {
+                name: request.resort_name,
+                verified: true,
+                login_email: request.contact_email,
+                temp_password: tempPassword,
+                phone: request.phone || ''
+            };
+            
+            // Check if resort already exists
+            const { data: existingResort } = await supabaseClient
                 .from('resorts')
-                .update({
-                    verified: true,
-                    login_email: request.contact_email,
-                    temp_password: tempPassword,
-                    phone: request.phone
+                .select('id')
+                .eq('name', request.resort_name)
+                .maybeSingle();
+            
+            if (existingResort) {
+                await supabaseClient
+                    .from('resorts')
+                    .update(resortData)
+                    .eq('id', existingResort.id);
+            } else {
+                await supabaseClient
+                    .from('resorts')
+                    .insert([resortData]);
+            }
+            
+            // Update request status
+            await supabaseClient
+                .from('verification_requests')
+                .update({ 
+                    status: 'approved',
+                    reviewed_at: new Date()
                 })
-                .eq('id', existingResort.id);
-        } else {
-            await supabaseClient
-                .from('resorts')
-                .insert([{
-                    name: request.resort_name,
-                    verified: true,
-                    login_email: request.contact_email,
-                    temp_password: tempPassword,
-                    phone: request.phone,
-                    address: '',
-                    hours: 'Open 24 hours',
-                    website: ''
-                }]);
+                .eq('id', requestId);
+            
+            // Create email HTML
+            const emailHtml = `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h1 style="color: #1877f2;">🏝️ ResortReviews</h1>
+                    <h2>Welcome ${request.resort_name}!</h2>
+                    
+                    <div style="background: #f0f2f5; padding: 20px; border-radius: 12px;">
+                        <p><strong>Resort:</strong> ${request.resort_name}</p>
+                        <p><strong>Email:</strong> ${request.contact_email}</p>
+                        <p><strong>Temporary Password:</strong> <code style="background: #e4e6eb; padding: 4px 8px;">${tempPassword}</code></p>
+                        <p><a href="https://resort-reviews.vercel.app/resort-login.html" style="background: #1877f2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px;">Login to Dashboard</a></p>
+                    </div>
+                    
+                    <p style="color: #65676b; font-size: 12px; margin-top: 20px;">⚠️ Please change your password after logging in.</p>
+                </div>
+            `;
+            
+            // Send email
+            try {
+                await sendEmailViaAPI(
+                    request.contact_email,
+                    `🎉 Your ResortReviews Login Credentials - ${request.resort_name}`,
+                    emailHtml
+                );
+                alert(`✅ Resort approved! Login credentials sent to ${request.contact_email}`);
+            } catch (emailError) {
+                console.error('Email failed but resort approved:', emailError);
+                alert(`✅ Resort approved! But email failed to send. Password: ${tempPassword}`);
+            }
+            
+            await loadStats();
+            await loadRequests(currentStatus);
+            
+        } catch (error) {
+            console.error('❌ Error in approveRequest:', error);
+            alert('Error approving request: ' + error.message);
         }
-        
-        await supabaseClient
-            .from('verification_requests')
-            .update({ 
-                status: 'approved',
-                reviewed_at: new Date()
-            })
-            .eq('id', requestId);
-        
-        await logVerificationAction(requestId, '✅ Request approved');
-        
-        // Show credentials
-        alert(`✅ Resort approved!\n\nTemporary password: ${tempPassword}\nLogin: ${request.contact_email}\n\nIn production, this would be emailed.`);
-        
-        await loadStats();
-        await loadRequests(currentStatus);
     }
     
     async function rejectRequest(requestId) {
+        console.log('❌ Reject button clicked for request:', requestId);
+        
         const reason = prompt('Please provide a reason for rejection (optional):');
         
-        await supabaseClient
-            .from('verification_requests')
-            .update({ 
-                status: 'rejected',
-                admin_notes: reason,
-                reviewed_at: new Date()
-            })
-            .eq('id', requestId);
-        
-        await logVerificationAction(requestId, `❌ Request rejected${reason ? ': ' + reason : ''}`);
-        alert('Request rejected.');
-        
-        await loadStats();
-        await loadRequests(currentStatus);
-    }
-    // Add this function to send real emails
-async function sendEmailViaResend(to, subject, html) {
-    console.log('📧 Attempting to send email via proxy...');
-    console.log('To:', to);
-    
-    try {
-        const response = await fetch('/api/send-email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                to: to,
-                subject: subject,
-                html: html
-            })
-        });
-        
-        const data = await response.json();
-        console.log('✅ Proxy Response:', data);
-        
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to send email');
+        try {
+            await supabaseClient
+                .from('verification_requests')
+                .update({ 
+                    status: 'rejected',
+                    admin_notes: reason,
+                    reviewed_at: new Date()
+                })
+                .eq('id', requestId);
+            
+            alert('Request rejected.');
+            await loadStats();
+            await loadRequests(currentStatus);
+        } catch (error) {
+            console.error('Error rejecting request:', error);
+            alert('Error rejecting request: ' + error.message);
         }
-        
-        return data;
-    } catch (error) {
-        console.error('❌ Error sending email:', error);
-        throw error;
     }
-}
-
-// Replace the approveRequest function with this version
-async function approveRequest(requestId) {
-    const { data: request } = await supabaseClient
-        .from('verification_requests')
-        .select('*')
-        .eq('id', requestId)
-        .single();
-    
-    // Generate temporary password
-    const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
-    
-    // Resort data
-    const resortData = {
-        name: 'Noku Maldives',
-        verified: true,
-        login_email: 'YOUR_EMAIL@gmail.com', // Your actual email
-        temp_password: tempPassword,
-        phone: '+960 662 2949',
-        address: 'Noku Island, Dhaalu Atoll, Maldives',
-        hours: 'Open 24 hours',
-        website: 'https://www.nokumaldives.com/'
-    };
-    
-    // Check if Noku already exists
-    const { data: existingResort } = await supabaseClient
-        .from('resorts')
-        .select('id')
-        .eq('name', 'Noku Maldives')
-        .single();
-    
-    if (existingResort) {
-        await supabaseClient
-            .from('resorts')
-            .update(resortData)
-            .eq('id', existingResort.id);
-    } else {
-        await supabaseClient
-            .from('resorts')
-            .insert([resortData]);
-    }
-    
-    // Update request status
-    await supabaseClient
-        .from('verification_requests')
-        .update({ 
-            status: 'approved',
-            reviewed_at: new Date()
-        })
-        .eq('id', requestId);
-    
-    // Send email
-    const emailHtml = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h1 style="color: #1877f2;">🏝️ ResortReviews</h1>
-            <h2>Welcome Noku Maldives!</h2>
-            
-            <div style="background: #f0f2f5; padding: 20px; border-radius: 12px;">
-                <p><strong>Email:</strong> ${resortData.login_email}</p>
-                <p><strong>Temporary Password:</strong> <code style="background: #e4e6eb; padding: 4px 8px;">${tempPassword}</code></p>
-                <p><a href="https://resortreviews.vercel.app/resort-login.html" style="background: #1877f2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px;">Login to Dashboard</a></p>
-            </div>
-            
-            <p style="color: #65676b; font-size: 12px; margin-top: 20px;">⚠️ Change your password after logging in.</p>
-        </div>
-    `;
-    
-    console.log('📧 Sending email to:', resortData.login_email);
-    
-    const result = await sendEmailViaResend(
-        resortData.login_email,
-        '🎉 Your ResortReviews Login Credentials - Noku Maldives',
-        emailHtml
-    );
-    
-    console.log('📧 Email send result:', result);
-    
-    if (result && result.id) {
-        alert(`✅ Noku Maldives approved!\n\nLogin credentials sent to ${resortData.login_email}\n\nCheck your inbox!`);
-    } else {
-        alert(`✅ Resort approved but email may be delayed. Check console for details.`);
-    }
-    
-    await loadStats();
-    await loadRequests(currentStatus);
-}
-
 </script>
 
 </body>
