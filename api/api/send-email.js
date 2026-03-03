@@ -1,14 +1,12 @@
 export default async function handler(req, res) {
-    // Enable CORS for your domain
-    res.setHeader('Access-Control-Allow-Origin', 'https://resort-reviews.vercel.app');
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     
-    // Handle preflight requests
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
     
-    // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -35,14 +33,8 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        
-        if (!response.ok) {
-            return res.status(response.status).json(data);
-        }
-
-        return res.status(200).json(data);
+        return res.status(response.status).json(data);
     } catch (error) {
-        console.error('Email error:', error);
-        return res.status(500).json({ error: 'Failed to send email' });
+        return res.status(500).json({ error: error.message });
     }
 }
