@@ -479,57 +479,69 @@
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
-    // Login form submission
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+// Login form submission
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    console.log('🔐 Login attempt:');
+    console.log('Email:', email);
+    console.log('Password entered:', password);
+    
+    // Clear previous error
+    document.getElementById('errorMessage').style.display = 'none';
+    
+    try {
+        // First, check if it's the demo account
+        if (email === 'demo@resort.com' && password === 'resort123') {
+            console.log('✅ Demo login successful');
+            localStorage.setItem('resort_id', '1');
+            localStorage.setItem('resort_name', 'Demo Resort');
+            window.location.href = 'resort-dashboard.html';
+            return;
+        }
         
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        console.log('🔍 Searching for resort with email:', email);
         
-        // Clear previous error
-        document.getElementById('errorMessage').style.display = 'none';
+        // Check for real resort in database
+        const { data: resort, error } = await supabaseClient
+            .from('resorts')
+            .select('*')
+            .eq('login_email', email)
+            .eq('verified', true)
+            .maybeSingle();
         
-        try {
-            // First, check if it's the demo account
-            if (email === 'demo@resort.com' && password === 'resort123') {
-                localStorage.setItem('resort_id', '1');
-                localStorage.setItem('resort_name', 'Demo Resort');
-                window.location.href = 'resort-dashboard.html';
-                return;
-            }
-            
-            // Check for real resort in database
-            const { data: resort, error } = await supabaseClient
-                .from('resorts')
-                .select('*')
-                .eq('login_email', email)
-                .eq('verified', true)
-                .maybeSingle();
-            
-            if (error) {
-                console.error('Database error:', error);
-                throw error;
-            }
-            
-            // Log for debugging (remove in production)
-            console.log('Found resort:', resort);
-            
-            // Check if resort exists AND password matches temp_password
-            if (resort && password === resort.temp_password) {
-                // Login successful
-                localStorage.setItem('resort_id', resort.id);
-                localStorage.setItem('resort_name', resort.name);
-                window.location.href = 'resort-dashboard.html';
-            } else {
-                document.getElementById('errorMessage').textContent = 'Invalid email or password.';
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            document.getElementById('errorMessage').textContent = 'Login failed. Please try again.';
+        if (error) {
+            console.error('❌ Database error:', error);
+            throw error;
+        }
+        
+        console.log('📊 Resort found:', resort);
+        
+        if (resort) {
+            console.log('Stored password:', resort.temp_password);
+            console.log('Password match?', password === resort.temp_password);
+        }
+        
+        // Check if resort exists AND password matches temp_password
+        if (resort && password === resort.temp_password) {
+            console.log('✅ Login successful for:', resort.name);
+            localStorage.setItem('resort_id', resort.id);
+            localStorage.setItem('resort_name', resort.name);
+            window.location.href = 'resort-dashboard.html';
+        } else {
+            console.log('❌ Login failed - invalid credentials');
+            document.getElementById('errorMessage').textContent = 'Invalid email or password.';
             document.getElementById('errorMessage').style.display = 'block';
         }
-    });
+    } catch (error) {
+        console.error('❌ Login error:', error);
+        document.getElementById('errorMessage').textContent = 'Login failed. Please try again.';
+        document.getElementById('errorMessage').style.display = 'block';
+    }
+});
     
     function showRequestForm() {
         document.getElementById('requestModal').classList.add('active');
