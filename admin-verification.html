@@ -245,6 +245,7 @@
             <i class="fas fa-shield-alt"></i>
         </a>
     </div>
+    
     <div class="nav-center">
         <a href="admin.html" class="logo">
             <i class="fas fa-umbrella-beach"></i>
@@ -253,6 +254,9 @@
     </div>
     <div class="nav-right">
         <div class="nav-icons">
+            <button class="icon-btn" onclick="logout()" title="Logout">
+                 <i class="fas fa-sign-out-alt"></i>
+            </button>
             <a href="index.html" class="icon-btn" title="Home">
                 <i class="fas fa-home"></i>
             </a>
@@ -300,6 +304,31 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+
+    // ===========================================
+// SECURITY CHECK - MUST BE LOGGED IN
+// ===========================================
+(function() {
+    const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+    const loginTimestamp = localStorage.getItem('admin_login_timestamp');
+    
+    if (!isLoggedIn) {
+        window.location.href = 'admin.html';
+        return;
+    }
+    
+    // Check session expiry (4 hours)
+    if (loginTimestamp) {
+        const elapsedTime = new Date().getTime() - parseInt(loginTimestamp);
+        if (elapsedTime > 4 * 60 * 60 * 1000) {
+            localStorage.removeItem('admin_logged_in');
+            localStorage.removeItem('admin_login_timestamp');
+            window.location.href = 'admin.html';
+            return;
+        }
+    }
+})();
+
     const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
     const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
     
@@ -614,6 +643,69 @@
             alert('Error rejecting request: ' + error.message);
         }
     }
+// ===========================================
+// ADMIN SESSION SECURITY
+// ===========================================
+function checkAdminSession() {
+    const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+    const loginTimestamp = localStorage.getItem('admin_login_timestamp');
+    const currentTime = new Date().getTime();
+
+    // Check if logged in and session not expired (4 hours for admin)
+    if (!isLoggedIn) {
+        redirectToLogin();
+        return false;
+    }
+
+    if (loginTimestamp) {
+        const elapsedTime = currentTime - parseInt(loginTimestamp);
+        const fourHoursInMs = 4 * 60 * 60 * 1000;
+        if (elapsedTime > fourHoursInMs) {
+            // Session expired, logout
+            logout();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function redirectToLogin() {
+    // If we're already on admin.html, show login screen
+    if (window.location.pathname.includes('admin.html')) {
+        document.getElementById('loginScreen').classList.add('active');
+        document.getElementById('dashboardScreen').classList.remove('active');
+    } else {
+        // Redirect to main admin login
+        window.location.href = 'admin.html';
+    }
+}
+
+function logout() {
+    localStorage.removeItem('admin_logged_in');
+    localStorage.removeItem('admin_login_timestamp');
+    redirectToLogin();
+}
+
+// Run check on every page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Special handling for admin.html
+    if (window.location.pathname.includes('admin.html')) {
+        // If already logged in, show dashboard
+        if (localStorage.getItem('admin_logged_in') === 'true') {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('dashboardScreen').classList.add('active');
+            loadStats();
+            loadPending();
+        }
+    } else {
+        // For reports and verification pages, redirect if not logged in
+        if (!checkAdminSession()) {
+            return; // stop further execution
+        }
+    }
+});
+    
 </script>
 
 </body>

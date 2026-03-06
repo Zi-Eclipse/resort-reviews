@@ -261,11 +261,25 @@
         .home-link i {
             color: var(--primary);
         }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
 
-<!-- Login Screen - NO NAVIGATION -->
+<!-- Login Screen -->
 <div class="login-screen active" id="loginScreen">
     <div class="login-form">
         <h2><i class="fas fa-shield-alt"></i> Admin Login</h2>
@@ -275,9 +289,9 @@
     </div>
 </div>
 
-<!-- Dashboard Screen - WITH NAVIGATION -->
+<!-- Dashboard Screen -->
 <div class="dashboard-screen" id="dashboardScreen">
-    <!-- Top Navigation Bar with Home Button -->
+    <!-- Top Navigation Bar -->
     <div class="top-nav">
         <div class="nav-left">
             <a href="guest-feed.html" class="home-btn" title="Home">
@@ -285,22 +299,22 @@
             </a>
         </div>
         <div class="nav-center">
-            <a href="guest-feed.html" class="logo">
+            <a href="admin.html" class="logo">
                 <i class="fas fa-umbrella-beach"></i>
                 <span>ResortReviews Admin</span>
             </a>
         </div>
         <div class="nav-right">
             <div class="nav-icons">
-                <a href="index.html" class="icon-btn" title="Landing Page">
+                <button class="icon-btn" onclick="logout()" title="Logout">
                     <i class="fas fa-sign-out-alt"></i>
-                </a>
+                </button>
             </div>
         </div>
     </div>
 
     <div class="admin-container">
-        <!-- Admin Navigation - Only one set -->
+        <!-- Admin Navigation -->
         <div class="admin-nav">
             <a href="#" class="admin-nav-item active" onclick="loadModerationDashboard()">
                 <i class="fas fa-shield-alt"></i> Dashboard
@@ -320,7 +334,6 @@
                 <h1><i class="fas fa-shield-alt"></i> Moderation Dashboard</h1>
                 <p>Review and manage submissions</p>
             </div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
         
         <div class="stats-grid" id="statsGrid">
@@ -359,13 +372,27 @@
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
     let currentTab = 'pending';
-    let isLoggedIn = false;
     
-    // Check if already logged in from session
+    // Check if already logged in on page load
     window.addEventListener('load', function() {
-        if (localStorage.getItem('admin_logged_in') === 'true') {
-            showDashboard();
+        const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+        const loginTimestamp = localStorage.getItem('admin_login_timestamp');
+        
+        if (isLoggedIn && loginTimestamp) {
+            const elapsedTime = new Date().getTime() - parseInt(loginTimestamp);
+            const fourHoursInMs = 4 * 60 * 60 * 1000;
+            
+            if (elapsedTime < fourHoursInMs) {
+                // Session is still valid
+                showDashboard();
+            } else {
+                // Session expired
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_login_timestamp');
+            }
         }
+        
+        // Always load counts (they'll show 0 if not logged in)
         loadReportCount();
         loadVerificationCount();
     });
@@ -373,8 +400,12 @@
     function checkPassword() {
         const password = document.getElementById('adminPassword').value;
         if (password === 'admin123') {
+            // Set login session with timestamp
             localStorage.setItem('admin_logged_in', 'true');
+            localStorage.setItem('admin_login_timestamp', new Date().getTime().toString());
             showDashboard();
+            loadReportCount();
+            loadVerificationCount();
         } else {
             alert('Wrong password!');
         }
@@ -383,91 +414,118 @@
     function showDashboard() {
         document.getElementById('loginScreen').classList.remove('active');
         document.getElementById('dashboardScreen').classList.add('active');
-        isLoggedIn = true;
         loadStats();
         loadPending();
     }
     
     function logout() {
         localStorage.removeItem('admin_logged_in');
+        localStorage.removeItem('admin_login_timestamp');
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('loginScreen').classList.add('active');
         document.getElementById('adminPassword').value = '';
     }
     
     async function loadReportCount() {
-        const { data: reports } = await supabaseClient
-            .from('reports')
-            .select('id')
-            .eq('status', 'pending');
-        
-        const badge = document.getElementById('reportBadge');
-        if (badge && reports) {
-            badge.textContent = reports.length;
-            badge.style.display = reports.length > 0 ? 'inline-block' : 'none';
+        try {
+            const { data: reports } = await supabaseClient
+                .from('reports')
+                .select('id')
+                .eq('status', 'pending');
+            
+            const badge = document.getElementById('reportBadge');
+            if (badge && reports) {
+                badge.textContent = reports.length;
+                badge.style.display = reports.length > 0 ? 'inline-block' : 'none';
+            }
+        } catch (error) {
+            console.error('Error loading report count:', error);
         }
     }
     
     async function loadVerificationCount() {
-        const { data: requests } = await supabaseClient
-            .from('verification_requests')
-            .select('id')
-            .eq('status', 'pending');
-        
-        const badge = document.getElementById('verificationBadge');
-        if (badge && requests) {
-            badge.textContent = requests.length;
-            badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
+        try {
+            const { data: requests } = await supabaseClient
+                .from('verification_requests')
+                .select('id')
+                .eq('status', 'pending');
+            
+            const badge = document.getElementById('verificationBadge');
+            if (badge && requests) {
+                badge.textContent = requests.length;
+                badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
+            }
+        } catch (error) {
+            console.error('Error loading verification count:', error);
         }
     }
     
     async function loadStats() {
-        const { data: reviews } = await supabaseClient
-            .from('reviews')
-            .select('status');
-        
-        if (!reviews) return;
-        
-        const pending = reviews.filter(r => r.status === 'pending').length;
-        const approved = reviews.filter(r => r.status === 'approved').length;
-        const rejected = reviews.filter(r => r.status === 'rejected').length;
-        
-        document.getElementById('pendingCount').textContent = pending;
-        document.getElementById('approvedCount').textContent = approved;
-        document.getElementById('rejectedCount').textContent = rejected;
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('status');
+            
+            if (!reviews) return;
+            
+            const pending = reviews.filter(r => r.status === 'pending').length;
+            const approved = reviews.filter(r => r.status === 'approved').length;
+            const rejected = reviews.filter(r => r.status === 'rejected').length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
     }
     
     async function loadPending() {
         currentTab = 'pending';
         updateTabs();
-        const { data: reviews } = await supabaseClient
-            .from('reviews')
-            .select('*')
-            .eq('status', 'pending')
-            .order('created_at', { ascending: false });
-        displayReviews(reviews || []);
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false });
+            displayReviews(reviews || []);
+        } catch (error) {
+            console.error('Error loading pending reviews:', error);
+            document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; padding: 40px;">Error loading reviews</p>';
+        }
     }
     
     async function loadApproved() {
         currentTab = 'approved';
         updateTabs();
-        const { data: reviews } = await supabaseClient
-            .from('reviews')
-            .select('*')
-            .eq('status', 'approved')
-            .order('created_at', { ascending: false });
-        displayReviews(reviews || []);
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('status', 'approved')
+                .order('created_at', { ascending: false });
+            displayReviews(reviews || []);
+        } catch (error) {
+            console.error('Error loading approved reviews:', error);
+            document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; padding: 40px;">Error loading reviews</p>';
+        }
     }
     
     async function loadRejected() {
         currentTab = 'rejected';
         updateTabs();
-        const { data: reviews } = await supabaseClient
-            .from('reviews')
-            .select('*')
-            .eq('status', 'rejected')
-            .order('created_at', { ascending: false });
-        displayReviews(reviews || []);
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('status', 'rejected')
+                .order('created_at', { ascending: false });
+            displayReviews(reviews || []);
+        } catch (error) {
+            console.error('Error loading rejected reviews:', error);
+            document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; padding: 40px;">Error loading reviews</p>';
+        }
     }
     
     function updateTabs() {
@@ -517,36 +575,40 @@
     }
     
     async function updateStatus(id, status) {
-        const { error } = await supabaseClient
-            .from('reviews')
-            .update({ status })
-            .eq('id', id);
-        
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
+        try {
+            const { error } = await supabaseClient
+                .from('reviews')
+                .update({ status })
+                .eq('id', id);
+            
+            if (error) throw error;
+            
             if (currentTab === 'pending') loadPending();
             if (currentTab === 'approved') loadApproved();
             if (currentTab === 'rejected') loadRejected();
             loadStats();
+        } catch (error) {
+            alert('Error: ' + error.message);
         }
     }
     
     async function deleteReview(id) {
         if (!confirm('Delete this review?')) return;
         
-        const { error } = await supabaseClient
-            .from('reviews')
-            .delete()
-            .eq('id', id);
-        
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
+        try {
+            const { error } = await supabaseClient
+                .from('reviews')
+                .delete()
+                .eq('id', id);
+            
+            if (error) throw error;
+            
             if (currentTab === 'pending') loadPending();
             if (currentTab === 'approved') loadApproved();
             if (currentTab === 'rejected') loadRejected();
             loadStats();
+        } catch (error) {
+            alert('Error: ' + error.message);
         }
     }
     

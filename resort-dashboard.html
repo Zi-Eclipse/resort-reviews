@@ -1335,12 +1335,41 @@
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
+    // ===========================================
+// SECURE SESSION CHECK
+// ===========================================
+function checkSession() {
     const resortId = localStorage.getItem('resort_id');
-    const resortName = localStorage.getItem('resort_name');
-    
+    const loginTimestamp = localStorage.getItem('login_timestamp');
+    const currentTime = new Date().getTime();
+
+    // 1. Check if ID exists
     if (!resortId) {
         window.location.href = 'resort-login.html';
+        return null;
     }
+
+    // 2. Check if session has expired (e.g., after 8 hours)
+    if (loginTimestamp) {
+        const elapsedTime = currentTime - parseInt(loginTimestamp);
+        const eightHoursInMs = 8 * 60 * 60 * 1000;
+        if (elapsedTime > eightHoursInMs) {
+            // Session expired, clear storage and redirect
+            localStorage.clear();
+            window.location.href = 'resort-login.html';
+            return null;
+        }
+    }
+
+    return resortId;
+}
+
+// Use the function to get the resort ID
+const resortId = checkSession();
+if (!resortId) {
+    // Stop further execution if session check failed
+    throw new Error('Session check failed');
+}
     
     let currentResort = null;
     let allReviews = [];

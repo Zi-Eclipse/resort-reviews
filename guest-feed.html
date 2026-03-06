@@ -84,96 +84,6 @@
             line-height: 1.4;
         }
         
-        .comment-preview-actions {
-            margin-top: 6px;
-        }
-        
-        .comment-preview-action {
-            font-size: 14px;
-            padding: 6px 12px;
-            gap: 8px;
-            display: inline-flex;
-            align-items: center;
-            color: var(--text-light);
-            cursor: pointer;
-            border-radius: 20px;
-            transition: background 0.2s;
-            position: relative;
-            border: 1px solid transparent;
-        }
-        
-        .comment-preview-action i {
-            font-size: 16px;
-        }
-        
-        .comment-preview-action:hover {
-            background: var(--hover-bg);
-            border-color: var(--border);
-            color: var(--primary);
-        }
-        
-        .comment-preview-action.reacted {
-            color: var(--primary);
-        }
-        
-        .comment-preview-action.reacted i {
-            font-weight: 900;
-        }
-        
-        /* Reaction Picker - Facebook Style */
-        .reaction-picker-container {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .reaction-picker {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            margin-bottom: 8px;
-            background: var(--white);
-            border-radius: 40px;
-            padding: 8px 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            display: none;
-            gap: 8px;
-            border: 1px solid var(--border);
-            z-index: 9999;
-            white-space: nowrap;
-        }
-        
-        .reaction-picker.active {
-            display: flex;
-        }
-        
-        .reaction-option {
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            position: relative;
-            line-height: 1;
-        }
-        
-        .reaction-option:hover {
-            transform: scale(1.2);
-        }
-        
-        .reaction-option:hover::after {
-            content: attr(data-label);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-dark);
-            color: white;
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 20px;
-            white-space: nowrap;
-            margin-bottom: 5px;
-            z-index: 10000;
-        }
-        
         .view-all-comments {
             text-align: center;
             padding: 8px;
@@ -390,92 +300,6 @@
             line-height: 1.5;
         }
         
-        .modal-comment-actions {
-            margin-top: 10px;
-        }
-        
-        /* Modal Reaction Button */
-        .modal-reaction-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-dark);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-            font-family: inherit;
-            line-height: normal;
-        }
-        
-        .modal-reaction-btn i {
-            font-size: 16px;
-            color: var(--text-light);
-        }
-        
-        .modal-reaction-btn:hover {
-            background: var(--hover-bg);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        
-        .modal-reaction-btn:hover i {
-            color: var(--primary);
-        }
-        
-        .modal-reaction-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .modal-reaction-btn.active i {
-            color: white;
-        }
-        
-        /* Dark mode support */
-        [data-theme="dark"] .modal-reaction-btn {
-            color: #e5e7eb;
-            border-color: #404040;
-        }
-        
-        [data-theme="dark"] .modal-reaction-btn i {
-            color: #9ca3af;
-        }
-        
-        [data-theme="dark"] .modal-reaction-btn:hover {
-            background: #374151;
-            border-color: #3b82f6;
-            color: #3b82f6;
-        }
-        
-        [data-theme="dark"] .modal-reaction-btn:hover i {
-            color: #3b82f6;
-        }
-        
-        [data-theme="dark"] .modal-reaction-btn.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-        
-        [data-theme="dark"] .modal-reaction-btn.active i {
-            color: white;
-        }
-        
-        [data-theme="dark"] .reaction-picker {
-            background: #2d2d2d;
-            border-color: #404040;
-        }
-        
-        [data-theme="dark"] .reaction-option:hover::after {
-            background: #404040;
-            color: #e5e7eb;
-        }
-        
         .comment-date-small {
             color: var(--text-light);
             font-size: 11px;
@@ -560,8 +384,124 @@
 
 <!-- Main Layout -->
 <div class="main-layout">
-    <!-- LEFT SIDEBAR -->
-    <div class="left-sidebar"></div>
+<!-- LEFT SIDEBAR - Resort Comparison Tool -->
+<div class="left-sidebar">
+    <div class="sidebar-card">
+        <div class="sidebar-card-header">
+            <i class="fas fa-scale-balanced"></i>
+            <h3>Compare Resorts</h3>
+        </div>
+        
+        <!-- Resort Selector 1 -->
+        <div class="comparison-selector">
+            <label class="comparison-label">Resort A</label>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="compareSearch1" placeholder="Search resort..." autocomplete="off">
+                <div class="comparison-suggestions" id="compareSuggestions1"></div>
+            </div>
+            <div class="selected-resort" id="selectedResort1" style="display: none;">
+                <img src="https://via.placeholder.com/30" alt="" id="resortImage1" style="display: none;">
+                <span id="resortName1"></span>
+                <button class="remove-resort" onclick="clearResort(1)">✕</button>
+            </div>
+        </div>
+
+        <!-- VS Divider -->
+        <div class="vs-divider">
+            <span>VS</span>
+        </div>
+
+        <!-- Resort Selector 2 -->
+        <div class="comparison-selector">
+            <label class="comparison-label">Resort B</label>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="compareSearch2" placeholder="Search resort..." autocomplete="off">
+                <div class="comparison-suggestions" id="compareSuggestions2"></div>
+            </div>
+            <div class="selected-resort" id="selectedResort2" style="display: none;">
+                <img src="https://via.placeholder.com/30" alt="" id="resortImage2" style="display: none;">
+                <span id="resortName2"></span>
+                <button class="remove-resort" onclick="clearResort(2)">✕</button>
+            </div>
+        </div>
+
+        <!-- Compare Button -->
+        <button class="compare-btn" onclick="compareResorts()" id="compareBtn" disabled>
+            <i class="fas fa-chart-simple"></i> Compare Now
+        </button>
+
+        <!-- Comparison Results (Hidden by default) -->
+        <div id="comparisonResults" style="display: none;">
+            <div class="comparison-header">
+                <h4>Comparison Results</h4>
+                <button class="close-results" onclick="closeComparison()">✕</button>
+            </div>
+            
+            <div class="comparison-grid">
+                <!-- Left Column - Resort A -->
+                <div class="comparison-col" id="compareCol1">
+                    <div class="resort-badge" id="badge1"></div>
+                    
+                    <div class="comparison-row">
+                        <span class="metric">⭐ Rating</span>
+                        <span class="value" id="rating1">-</span>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <span class="metric">📝 Reviews</span>
+                        <span class="value" id="reviews1">-</span>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <span class="metric">📸 Photos</span>
+                        <span class="value" id="photos1">-</span>
+                    </div>
+                    
+                    <div class="comparison-row highlight">
+                        <span class="metric">🏆 Wins</span>
+                        <span class="value" id="wins1">0</span>
+                    </div>
+                </div>
+
+                <!-- Right Column - Resort B -->
+                <div class="comparison-col" id="compareCol2">
+                    <div class="resort-badge" id="badge2"></div>
+                    
+                    <div class="comparison-row">
+                        <span class="metric">⭐ Rating</span>
+                        <span class="value" id="rating2">-</span>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <span class="metric">📝 Reviews</span>
+                        <span class="value" id="reviews2">-</span>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <span class="metric">📸 Photos</span>
+                        <span class="value" id="photos2">-</span>
+                    </div>
+                    
+                    <div class="comparison-row highlight">
+                        <span class="metric">🏆 Wins</span>
+                        <span class="value" id="wins2">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Comparison -->
+            <div class="category-comparison">
+                <h4>Category Breakdown</h4>
+                <div id="categoryBreakdown"></div>
+            </div>
+
+            <!-- Winner Message -->
+            <div class="winner-message" id="winnerMessage"></div>
+        </div>
+    </div>
+</div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
@@ -696,7 +636,23 @@
                 <input type="hidden" id="modal_resort_id" required>
                 <div id="resort_suggestions" class="suggestions-box"></div>
             </div>
-
+            
+            <!-- Category Dropdown -->
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Category</label>
+                <select id="review_category" class="form-select" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text-dark);">
+                    <option value="">Select a category</option>
+                    <option value="1">🛏️ Accommodation</option>
+                    <option value="2">🍽️ Cafeteria</option>
+                    <option value="3">💪 Gym</option>
+                    <option value="4">🏋️ Staff Facilities</option>
+                    <option value="5">🎮 Recreation</option>
+                    <option value="6">🚌 Transport</option>
+                    <option value="7">👔 Management</option>
+                    <option value="8">📌 Other</option>
+                </select>
+            </div>
+            
             <div class="rating-selector">
                 <label>Rating: <span id="modalRatingValue">5</span>/10</label>
                 <input type="range" id="modal_rating" min="1" max="10" value="5">
@@ -826,7 +782,7 @@
             } catch (e) {}
         }
         
-        // Build comments HTML with reaction pickers
+        // Build comments HTML - WITHOUT REACTION BUTTONS
         let commentsHtml = '';
         if (comments && comments.length > 0) {
             comments.forEach(comment => {
@@ -852,29 +808,12 @@
                                 <span class="comment-date-small">${commentDate}</span>
                             </div>
                             <p class="modal-comment-text">${comment.comment_text}</p>
-                            <div class="modal-comment-actions">
-                                <div class="reaction-picker-container" style="position: relative; display: inline-block;">
-                                    <button class="modal-reaction-btn" 
-                                            onmouseenter="showModalReactionPicker(${comment.id})" 
-                                            onmouseleave="hideModalReactionPicker(${comment.id})"
-                                            id="modal-reaction-btn-${comment.id}">
-                                        <i class="far fa-thumbs-up"></i> Like
-                                    </button>
-                                    <div class="reaction-picker" id="modal-reaction-picker-${comment.id}">
-                                        <span class="reaction-option" data-label="Like" onclick="reactToComment(${comment.id}, 'like', true)">👍</span>
-                                        <span class="reaction-option" data-label="Love" onclick="reactToComment(${comment.id}, 'love', true)">❤️</span>
-                                        <span class="reaction-option" data-label="Wow" onclick="reactToComment(${comment.id}, 'wow', true)">😮</span>
-                                        <span class="reaction-option" data-label="Sad" onclick="reactToComment(${comment.id}, 'sad', true)">😢</span>
-                                        <span class="reaction-option" data-label="Angry" onclick="reactToComment(${comment.id}, 'angry', true)">😡</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 `;
             });
         } else {
-            commentsHtml = '<div class="no-comments-modal">No comments yet. Be the first to react!</div>';
+            commentsHtml = '<div class="no-comments-modal">No comments yet.</div>';
         }
         
         const modalContent = `
@@ -903,122 +842,12 @@
         document.body.style.overflow = '';
         currentReviewId = null;
     };
-    
-    // ===========================================
-    // REACTION FUNCTIONS
-    // ===========================================
-    window.reactToComment = async function(commentId, reaction, isModal = false) {
-        console.log(`Reacted with ${reaction} to comment ${commentId}`);
-        
-        // Hide the picker
-        const pickerId = isModal ? `modal-reaction-picker-${commentId}` : `reaction-picker-${commentId}`;
-        const picker = document.getElementById(pickerId);
-        if (picker) {
-            picker.style.display = 'none';
-        }
-        
-        // Update the button to show selected reaction
-        if (isModal) {
-            const actionBtn = document.getElementById(`modal-reaction-btn-${commentId}`);
-            if (actionBtn) {
-                const icons = {
-                    like: 'fa-thumbs-up',
-                    love: 'fa-heart',
-                    wow: 'fa-surprise',
-                    sad: 'fa-sad-tear',
-                    angry: 'fa-angry'
-                };
-                
-                actionBtn.innerHTML = `
-                    <i class="fas ${icons[reaction]}"></i> ${reaction.charAt(0).toUpperCase() + reaction.slice(1)}
-                `;
-                actionBtn.classList.add('active');
-            }
-        } else {
-            const actionBtn = document.querySelector(`.comment-preview-action[onclick*="reactToComment(${commentId}"]`);
-            if (actionBtn) {
-                const icons = {
-                    like: 'fa-thumbs-up',
-                    love: 'fa-heart',
-                    wow: 'fa-surprise',
-                    sad: 'fa-sad-tear',
-                    angry: 'fa-angry'
-                };
-                
-                actionBtn.innerHTML = `
-                    <i class="fas ${icons[reaction]}"></i> ${reaction.charAt(0).toUpperCase() + reaction.slice(1)}
-                `;
-                actionBtn.classList.add('reacted');
-            }
-        }
-        
-        alert(`Reacted with ${reaction}!`);
-    };
 
     window.shareReview = function(reviewId) {
         const url = `https://resortreviews.vercel.app/resort.html?id=${reviewId}`;
         navigator.clipboard.writeText(url);
         alert('Link copied to clipboard!');
     };
-
-    // Feed Reaction Picker Functions
-window.showReactionPicker = function(commentId) {
-    console.log('Feed hover detected on comment:', commentId);
-    
-    // Hide any other open pickers
-    document.querySelectorAll('.reaction-picker').forEach(p => {
-        p.style.display = 'none';
-        p.classList.remove('active');
-    });
-    
-    const picker = document.getElementById(`reaction-picker-${commentId}`);
-    if (picker) {
-        picker.style.display = 'flex';
-        picker.classList.add('active');
-        console.log('Feed picker activated for comment:', commentId);
-    }
-};
-
-window.hideReactionPicker = function(commentId) {
-    setTimeout(() => {
-        const picker = document.getElementById(`reaction-picker-${commentId}`);
-        const btn = document.querySelector(`.comment-preview-action[onclick*="reactToComment(${commentId}"]`);
-        
-        if (picker && !picker.matches(':hover') && btn && !btn.matches(':hover')) {
-            picker.style.display = 'none';
-            picker.classList.remove('active');
-        }
-    }, 200);
-};
-
-    window.showModalReactionPicker = function(commentId) {
-    console.log('Hover detected on comment:', commentId);
-    
-    // Hide any other open pickers
-    document.querySelectorAll('.reaction-picker').forEach(p => {
-        p.style.display = 'none';
-        p.classList.remove('active');
-    });
-    
-    const picker = document.getElementById(`modal-reaction-picker-${commentId}`);
-    if (picker) {
-        picker.style.display = 'flex';
-        picker.classList.add('active');
-        console.log('Picker activated for comment:', commentId);
-    }
-};
-
-window.hideModalReactionPicker = function(commentId) {
-    setTimeout(() => {
-        const picker = document.getElementById(`modal-reaction-picker-${commentId}`);
-        const btn = document.getElementById(`modal-reaction-btn-${commentId}`);
-        
-        if (picker && !picker.matches(':hover') && btn && !btn.matches(':hover')) {
-            picker.style.display = 'none';
-            picker.classList.remove('active');
-        }
-    }, 200);
-};
 
     // Initialize theme
     initTheme();
@@ -1031,71 +860,7 @@ window.hideModalReactionPicker = function(commentId) {
             closeCommentModal();
         }
     });
-
-    // Close reaction pickers when clicking elsewhere
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.reaction-picker') && !e.target.closest('.comment-preview-action') && !e.target.closest('.modal-reaction-btn')) {
-            document.querySelectorAll('.reaction-picker').forEach(p => {
-                p.style.display = 'none';
-            });
-        }
-    });
 </script>
 
-<style>
-    /* Fix reaction picker positioning */
-    .modal-comment-actions .reaction-picker-container {
-        position: relative !important;
-        display: inline-block !important;
-    }
-
-    .modal-comment-actions .reaction-picker {
-        position: absolute !important;
-        bottom: 100% !important;
-        left: 0 !important;
-        margin-bottom: 10px !important;
-        background: var(--white) !important;
-        border-radius: 40px !important;
-        padding: 8px 12px !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
-        display: none !important;
-        gap: 8px !important;
-        border: 1px solid var(--border) !important;
-        z-index: 999999 !important;
-        white-space: nowrap !important;
-        transform: translateY(0) !important;
-    }
-
-    .modal-comment-actions .reaction-picker.active,
-    .modal-comment-actions .reaction-picker[style*="display: flex"] {
-        display: flex !important;
-        bottom: 100% !important;
-        left: 0 !important;
-    }
-
-<style>
-    /* Force reaction picker to show */
-    .modal-comment-actions .reaction-picker.active {
-        display: flex !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        position: absolute !important;
-        bottom: 100% !important;
-        left: 0 !important;
-        margin-bottom: 10px !important;
-        background: white !important;
-        border-radius: 40px !important;
-        padding: 8px 12px !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
-        z-index: 999999 !important;
-    }
-
-    .modal-comment-actions .reaction-picker {
-        display: none !important;
-        position: absolute !important;
-        bottom: 100% !important;
-        left: 0 !important;
-    }
-</style>
 </body>
 </html>

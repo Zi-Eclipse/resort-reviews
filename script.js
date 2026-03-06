@@ -2,7 +2,7 @@
 const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
 const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
 
-console.log("🚀 ResortReviews Main Page with Comments");
+console.log("🚀 ResortReviews Main Page");
 
 let allReviews = [];
 let resortsMap = new Map(); // Store resort id -> name mapping
@@ -246,7 +246,7 @@ async function displayReviews(reviews) {
         const commentCount = comments?.length || 0;
         const latestComments = comments?.slice(0, 2) || [];
         
-        // Build comments preview HTML
+        // Build comments preview HTML - WITHOUT REACTIONS
         let commentsHtml = '';
         if (commentCount > 0) {
             commentsHtml = '<div class="comment-preview">';
@@ -270,30 +270,6 @@ async function displayReviews(reviews) {
                                 <span class="comment-preview-date">${commentDate}</span>
                             </div>
                             <p class="comment-preview-text">${comment.comment_text}</p>
-<div class="comment-preview-actions">
-    <div class="reaction-picker-container">
-        <span class="comment-preview-action" onmouseenter="showReactionPicker(${comment.id})" onmouseleave="hideReactionPicker(${comment.id})">
-            <i class="far fa-thumbs-up"></i> Like
-        </span>
-        <div class="reaction-picker" id="reaction-picker-${comment.id}">
-            <div class="reaction-option" data-label="Like" onclick="reactToComment(${comment.id}, 'like')">
-                👍
-            </div>
-            <div class="reaction-option" data-label="Love" onclick="reactToComment(${comment.id}, 'love')">
-                ❤️
-            </div>
-            <div class="reaction-option" data-label="Wow" onclick="reactToComment(${comment.id}, 'wow')">
-                😮
-            </div>
-            <div class="reaction-option" data-label="Sad" onclick="reactToComment(${comment.id}, 'sad')">
-                😢
-            </div>
-            <div class="reaction-option" data-label="Angry" onclick="reactToComment(${comment.id}, 'angry')">
-                😡
-            </div>
-        </div>
-    </div>
-</div>
                         </div>
                     </div>
                 `;
@@ -592,7 +568,7 @@ window.openCommentModal = async function(reviewId) {
         } catch (e) {}
     }
     
-    // Build comments HTML
+    // Build comments HTML - WITHOUT REACTIONS
     let commentsHtml = '';
     if (comments && comments.length > 0) {
         comments.forEach(comment => {
@@ -601,43 +577,29 @@ window.openCommentModal = async function(reviewId) {
                 day: 'numeric'
             });
             
-// Get resort name for official comments
-const commentAuthor = comment.is_official ? (resortsMap.get(review.resort_id) || 'Resort') : 'Guest';
-
-commentsHtml += `
-    <div class="comment-preview-item">
-        <div class="comment-preview-avatar">
-            ${comment.is_official ? '🏨' : '👤'}
-        </div>
-        <div class="comment-preview-content">
-            <div class="comment-preview-header">
-                <span class="comment-preview-author">
-                    ${commentAuthor}
-                </span>
-                ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
-                <span class="comment-preview-date">${commentDate}</span>
-            </div>
-            <p class="comment-preview-text">${comment.comment_text}</p>
-            <div class="comment-preview-actions">
-                <div class="reaction-picker-container">
-                    <span class="comment-preview-action" onmouseenter="showReactionPicker(${comment.id})" onmouseleave="hideReactionPicker(${comment.id})">
-                        <i class="far fa-thumbs-up"></i> Like
-                    </span>
-                    <div class="reaction-picker" id="reaction-picker-${comment.id}">
-                        <div class="reaction-option" data-label="Like" onclick="reactToComment(${comment.id}, 'like')">👍</div>
-                        <div class="reaction-option" data-label="Love" onclick="reactToComment(${comment.id}, 'love')">❤️</div>
-                        <div class="reaction-option" data-label="Wow" onclick="reactToComment(${comment.id}, 'wow')">😮</div>
-                        <div class="reaction-option" data-label="Sad" onclick="reactToComment(${comment.id}, 'sad')">😢</div>
-                        <div class="reaction-option" data-label="Angry" onclick="reactToComment(${comment.id}, 'angry')">😡</div>
+            // Get resort name for official comments
+            const commentAuthor = comment.is_official ? (resortsMap.get(review.resort_id) || 'Resort') : 'Guest';
+            
+            commentsHtml += `
+                <div class="modal-comment-item">
+                    <div class="modal-comment-avatar">
+                        ${comment.is_official ? '🏨' : '👤'}
+                    </div>
+                    <div class="modal-comment-content">
+                        <div class="modal-comment-header">
+                            <span class="modal-comment-author">
+                                ${commentAuthor}
+                            </span>
+                            ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                            <span class="comment-date-small">${commentDate}</span>
+                        </div>
+                        <p class="modal-comment-text">${comment.comment_text}</p>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-`;
+            `;
         });
     } else {
-        commentsHtml = '<div class="no-comments-modal">No comments yet. Be the first to react!</div>';
+        commentsHtml = '<div class="no-comments-modal">No comments yet.</div>';
     }
     
     const modalContent = `
@@ -665,12 +627,6 @@ window.closeCommentModal = function() {
     document.getElementById('commentModal').classList.remove('active');
     document.body.style.overflow = '';
     currentReviewId = null;
-};
-
-window.reactToComment = async function(commentId, reaction) {
-    console.log(`Reacted with ${reaction} to comment ${commentId}`);
-    // You can implement reaction storage later with a comment_reactions table
-    alert(`Reacted with ${reaction}! (Feature coming soon)`);
 };
 
 window.shareReview = function(reviewId) {
@@ -723,9 +679,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const rating = parseInt(document.getElementById('modal_rating').value);
             const review_text = document.getElementById('modal_review_text').value.trim();
             const photoFiles = document.getElementById('modal_photos').files;
+            const category_id = parseInt(document.getElementById('review_category').value);
             
             if (!resort_id) {
                 alert('Please select a valid resort from the suggestions');
+                return;
+            }
+            
+            if (!category_id) {
+                alert('Please select a category');
                 return;
             }
             
@@ -762,6 +724,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .insert([{ 
                         resort_id: resort_id,
                         resort_name: resortName,
+                        category_id: category_id,
                         rating: rating,
                         review_text: review_text,
                         photo_urls: JSON.stringify(photoUrls),
@@ -784,78 +747,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageDiv.className = "message error";
             }
         });
-    }
-});
-
-// Change Password Functions
-function openChangePasswordModal() {
-    closeSettingsModal(); // Close settings modal
-    document.getElementById('changePasswordModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeChangePasswordModal() {
-    document.getElementById('changePasswordModal').classList.remove('active');
-    document.body.style.overflow = '';
-    // Clear inputs
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmPassword').value = '';
-}
-
-async function updatePassword() {
-    const current = document.getElementById('currentPassword').value;
-    const newPass = document.getElementById('newPassword').value;
-    const confirm = document.getElementById('confirmPassword').value;
-    
-    if (!current || !newPass || !confirm) {
-        alert('Please fill all fields');
-        return;
-    }
-    
-    if (newPass !== confirm) {
-        alert('New passwords do not match');
-        return;
-    }
-    
-    if (newPass.length < 6) {
-        alert('Password must be at least 6 characters');
-        return;
-    }
-    
-    // Get current resort data
-    const { data: resort } = await supabaseClient
-        .from('resorts')
-        .select('temp_password')
-        .eq('id', resortId)
-        .single();
-    
-    // Check current password (in production, use proper hashing comparison)
-    if (current !== resort.temp_password && current !== 'admin123') {
-        alert('Current password is incorrect');
-        return;
-    }
-    
-    // Update password
-    const { error } = await supabaseClient
-        .from('resorts')
-        .update({ temp_password: newPass })
-        .eq('id', resortId);
-    
-    if (error) {
-        alert('Error updating password: ' + error.message);
-    } else {
-        alert('✅ Password updated successfully!');
-        closeChangePasswordModal();
-    }
-}
-// Close modals with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeSettingsModal();
-        closeCommentModal();
-        closeReportModal();
-        closeChangePasswordModal(); // Add this line
     }
 });
 
@@ -922,38 +813,293 @@ document.addEventListener('keydown', function(e) {
         closeCommentModal();
     }
 });
+// ===========================================
+// RESORT COMPARISON TOOL
+// ===========================================
 
-// ===========================================
-// REACTION PICKER FUNCTIONS
-// ===========================================
-window.showReactionPicker = function(commentId) {
-    const picker = document.getElementById(`reaction-picker-${commentId}`);
-    if (picker) {
-        // Hide any other open pickers first
-        document.querySelectorAll('.reaction-picker.active').forEach(p => {
-            if (p.id !== `reaction-picker-${commentId}`) {
-                p.classList.remove('active');
+let allResortsList = [];
+let selectedResort1 = null;
+let selectedResort2 = null;
+
+// Load all resorts for comparison
+async function loadResortsForComparison() {
+    try {
+        const { data: resorts } = await supabaseClient
+            .from('resorts')
+            .select('id, name')
+            .order('name');
+        
+        allResortsList = resorts || [];
+        console.log(`✅ Loaded ${allResortsList.length} resorts for comparison`);
+    } catch (error) {
+        console.error('Error loading resorts:', error);
+    }
+}
+
+// Setup search for resort selector
+function setupComparisonSearch(inputId, suggestionsId, resortNum) {
+    const input = document.getElementById(inputId);
+    const suggestions = document.getElementById(suggestionsId);
+
+    if (!input) return;
+
+    input.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        if (searchTerm.length < 2) {
+            suggestions.classList.remove('active');
+            return;
+        }
+
+        const matches = allResortsList.filter(resort => 
+            resort.name.toLowerCase().includes(searchTerm)
+        );
+
+        if (matches.length > 0) {
+            let html = '';
+            matches.slice(0, 8).forEach(resort => {
+                html += `<div class="suggestion-item" onclick="selectResort(${resortNum}, ${resort.id}, '${resort.name.replace(/'/g, "\\'")}')">${resort.name}</div>`;
+            });
+            suggestions.innerHTML = html;
+            suggestions.classList.add('active');
+        } else {
+            suggestions.innerHTML = '<div class="suggestion-item">No resorts found</div>';
+            suggestions.classList.add('active');
+        }
+    });
+
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.classList.remove('active');
+        }
+    });
+
+    // Handle keyboard navigation
+    input.addEventListener('keydown', function(e) {
+        const items = suggestions.querySelectorAll('.suggestion-item');
+        if (items.length === 0) return;
+
+        let selectedIndex = -1;
+        items.forEach((item, index) => {
+            if (item.classList.contains('selected')) {
+                selectedIndex = index;
             }
         });
-        picker.classList.add('active');
-    }
-};
 
-window.hideReactionPicker = function(commentId) {
-    // Don't hide immediately - add a small delay to allow clicking
-    setTimeout(() => {
-        const picker = document.getElementById(`reaction-picker-${commentId}`);
-        if (picker && !picker.matches(':hover')) {
-            picker.classList.remove('active');
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (selectedIndex < items.length - 1) {
+                items.forEach(item => item.classList.remove('selected'));
+                items[selectedIndex + 1].classList.add('selected');
+                items[selectedIndex + 1].scrollIntoView({ block: 'nearest' });
+            } else if (items.length > 0 && selectedIndex === -1) {
+                items.forEach(item => item.classList.remove('selected'));
+                items[0].classList.add('selected');
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (selectedIndex > 0) {
+                items.forEach(item => item.classList.remove('selected'));
+                items[selectedIndex - 1].classList.add('selected');
+                items[selectedIndex - 1].scrollIntoView({ block: 'nearest' });
+            }
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            let selectedItem = null;
+            if (selectedIndex >= 0) {
+                selectedItem = items[selectedIndex];
+            } else if (items.length > 0) {
+                selectedItem = items[0];
+            }
+            
+            if (selectedItem) {
+                selectedItem.click();
+            }
+        } else if (e.key === 'Escape') {
+            suggestions.classList.remove('active');
         }
-    }, 200);
+    });
+}
+
+// Select a resort
+window.selectResort = function(resortNum, resortId, resortName) {
+    if (resortNum === 1) {
+        selectedResort1 = { id: resortId, name: resortName };
+        document.getElementById('selectedResort1').style.display = 'flex';
+        document.getElementById('resortName1').textContent = resortName;
+        document.getElementById('compareSearch1').value = '';
+        document.getElementById('compareSuggestions1').classList.remove('active');
+    } else {
+        selectedResort2 = { id: resortId, name: resortName };
+        document.getElementById('selectedResort2').style.display = 'flex';
+        document.getElementById('resortName2').textContent = resortName;
+        document.getElementById('compareSearch2').value = '';
+        document.getElementById('compareSuggestions2').classList.remove('active');
+    }
+
+    // Enable compare button if both resorts selected
+    document.getElementById('compareBtn').disabled = !(selectedResort1 && selectedResort2);
+    
+    // Hide previous results when changing selection
+    document.getElementById('comparisonResults').style.display = 'none';
 };
 
-// Close reaction pickers when clicking elsewhere
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('.reaction-picker') && !e.target.closest('.comment-preview-action')) {
-        document.querySelectorAll('.reaction-picker.active').forEach(p => {
-            p.classList.remove('active');
-        });
+// Clear selected resort
+window.clearResort = function(resortNum) {
+    if (resortNum === 1) {
+        selectedResort1 = null;
+        document.getElementById('selectedResort1').style.display = 'none';
+        document.getElementById('resortName1').textContent = '';
+    } else {
+        selectedResort2 = null;
+        document.getElementById('selectedResort2').style.display = 'none';
+        document.getElementById('resortName2').textContent = '';
     }
+    document.getElementById('compareBtn').disabled = true;
+    document.getElementById('comparisonResults').style.display = 'none';
+};
+
+// Compare resorts
+window.compareResorts = async function() {
+    if (!selectedResort1 || !selectedResort2) return;
+
+    // Show loading state
+    document.getElementById('comparisonResults').style.display = 'block';
+    document.getElementById('categoryBreakdown').innerHTML = '<div style="text-align: center; padding: 20px;">Loading comparison...</div>';
+
+    try {
+        // Fetch data for both resorts
+        const [reviews1, reviews2] = await Promise.all([
+            supabaseClient
+                .from('reviews')
+                .select('rating, photo_urls')
+                .eq('resort_id', selectedResort1.id)
+                .eq('status', 'approved'),
+            supabaseClient
+                .from('reviews')
+                .select('rating, photo_urls')
+                .eq('resort_id', selectedResort2.id)
+                .eq('status', 'approved')
+        ]);
+
+        // Calculate averages
+        const avgRating1 = reviews1.data?.length ? 
+            (reviews1.data.reduce((sum, r) => sum + r.rating, 0) / reviews1.data.length).toFixed(1) : '0.0';
+        const avgRating2 = reviews2.data?.length ? 
+            (reviews2.data.reduce((sum, r) => sum + r.rating, 0) / reviews2.data.length).toFixed(1) : '0.0';
+
+        // Count photos
+        let photoCount1 = 0;
+        let photoCount2 = 0;
+        
+        if (reviews1.data) {
+            reviews1.data.forEach(r => {
+                if (r.photo_urls && r.photo_urls !== '[]') {
+                    try {
+                        photoCount1 += JSON.parse(r.photo_urls).length;
+                    } catch (e) {}
+                }
+            });
+        }
+        
+        if (reviews2.data) {
+            reviews2.data.forEach(r => {
+                if (r.photo_urls && r.photo_urls !== '[]') {
+                    try {
+                        photoCount2 += JSON.parse(r.photo_urls).length;
+                    } catch (e) {}
+                }
+            });
+        }
+
+        // Determine winner for each category
+        let wins1 = 0, wins2 = 0;
+        
+        // Rating winner
+        if (parseFloat(avgRating1) > parseFloat(avgRating2)) wins1++;
+        else if (parseFloat(avgRating2) > parseFloat(avgRating1)) wins2++;
+        
+        // Reviews count winner
+        if ((reviews1.data?.length || 0) > (reviews2.data?.length || 0)) wins1++;
+        else if ((reviews2.data?.length || 0) > (reviews1.data?.length || 0)) wins2++;
+        
+        // Photos count winner
+        if (photoCount1 > photoCount2) wins1++;
+        else if (photoCount2 > photoCount1) wins2++;
+
+        // Update UI
+        document.getElementById('badge1').innerHTML = `<i class="fas fa-hotel"></i> ${selectedResort1.name}`;
+        document.getElementById('badge2').innerHTML = `<i class="fas fa-hotel"></i> ${selectedResort2.name}`;
+        
+        document.getElementById('rating1').textContent = `⭐ ${avgRating1}`;
+        document.getElementById('rating2').textContent = `⭐ ${avgRating2}`;
+        
+        document.getElementById('reviews1').textContent = reviews1.data?.length || 0;
+        document.getElementById('reviews2').textContent = reviews2.data?.length || 0;
+        
+        document.getElementById('photos1').textContent = photoCount1;
+        document.getElementById('photos2').textContent = photoCount2;
+        
+        document.getElementById('wins1').textContent = wins1;
+        document.getElementById('wins2').textContent = wins2;
+
+        // Category breakdown
+        const categoryBreakdown = document.getElementById('categoryBreakdown');
+        categoryBreakdown.innerHTML = `
+            <div class="category-row">
+                <span class="category-name">⭐ Average Rating</span>
+                <div class="category-values">
+                    <span style="color: ${parseFloat(avgRating1) > parseFloat(avgRating2) ? '#10b981' : 'inherit'}">${avgRating1}</span>
+                    <span style="color: var(--text-light);">vs</span>
+                    <span style="color: ${parseFloat(avgRating2) > parseFloat(avgRating1) ? '#10b981' : 'inherit'}">${avgRating2}</span>
+                </div>
+            </div>
+            <div class="category-row">
+                <span class="category-name">📝 Total Reviews</span>
+                <div class="category-values">
+                    <span style="color: ${(reviews1.data?.length || 0) > (reviews2.data?.length || 0) ? '#10b981' : 'inherit'}">${reviews1.data?.length || 0}</span>
+                    <span style="color: var(--text-light);">vs</span>
+                    <span style="color: ${(reviews2.data?.length || 0) > (reviews1.data?.length || 0) ? '#10b981' : 'inherit'}">${reviews2.data?.length || 0}</span>
+                </div>
+            </div>
+            <div class="category-row">
+                <span class="category-name">📸 Total Photos</span>
+                <div class="category-values">
+                    <span style="color: ${photoCount1 > photoCount2 ? '#10b981' : 'inherit'}">${photoCount1}</span>
+                    <span style="color: var(--text-light);">vs</span>
+                    <span style="color: ${photoCount2 > photoCount1 ? '#10b981' : 'inherit'}">${photoCount2}</span>
+                </div>
+            </div>
+        `;
+
+        // Winner message
+        const winnerMsg = document.getElementById('winnerMessage');
+        if (wins1 > wins2) {
+            winnerMsg.className = 'winner-message winner-a';
+            winnerMsg.innerHTML = `<i class="fas fa-trophy"></i> ${selectedResort1.name} wins!`;
+        } else if (wins2 > wins1) {
+            winnerMsg.className = 'winner-message winner-b';
+            winnerMsg.innerHTML = `<i class="fas fa-trophy"></i> ${selectedResort2.name} wins!`;
+        } else {
+            winnerMsg.className = 'winner-message tie';
+            winnerMsg.innerHTML = `<i class="fas fa-handshake"></i> It's a tie!`;
+        }
+
+    } catch (error) {
+        console.error('Error comparing resorts:', error);
+        document.getElementById('categoryBreakdown').innerHTML = '<div style="text-align: center; padding: 20px; color: var(--danger);">Error loading comparison data</div>';
+    }
+};
+
+// Close comparison
+window.closeComparison = function() {
+    document.getElementById('comparisonResults').style.display = 'none';
+};
+
+// Initialize comparison tool
+document.addEventListener('DOMContentLoaded', function() {
+    loadResortsForComparison();
+    setupComparisonSearch('compareSearch1', 'compareSuggestions1', 1);
+    setupComparisonSearch('compareSearch2', 'compareSuggestions2', 2);
 });
