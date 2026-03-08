@@ -285,36 +285,51 @@ async function displayReviews(reviews) {
             commentsHtml += '</div>';
         }
         
-        // Main review HTML with comment button
-        html += `
-            <div class="review-item">
-                <div class="review-header">
-                    <h3>
-                        <a href="resort.html?id=${review.resort_id}" class="resort-link">
-                            ${resortName}
-                        </a>
-                    </h3>
-                    <span class="review-rating">${review.rating}/10</span>
-                </div>
-                <p class="review-text">${review.review_text}</p>
-                ${photosHtml}
+// Main review HTML with comment button
+html += `
+    <div class="review-item">
+        <div class="review-header">
+            <h3>
+                <a href="resort.html?id=${review.resort_id}" class="resort-link">
+                    ${resortName}
+                </a>
+            </h3>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="review-rating">${review.rating}/10</span>
                 
-                <div class="review-actions">
-                    <button class="action-btn" onclick="openCommentModal(${review.id})">
-                        <i class="far fa-comment"></i> Comment (${commentCount})
+                <!-- Three dots menu -->
+                <div class="post-menu-container">
+                    <button class="post-menu-btn" onclick="togglePostMenu(${review.id})">
+                        <i class="fas fa-ellipsis-h"></i>
                     </button>
-                    <button class="action-btn" onclick="shareReview(${review.id})">
-                        <i class="far fa-share-square"></i> Share
-                    </button>
-                </div>
-                
-                ${commentsHtml}
-                
-                <div class="review-date">
-                    <i class="far fa-calendar"></i> ${date}
+                    <div class="post-menu-dropdown" id="post-menu-${review.id}">
+                        <div class="post-menu-item" onclick="reportReview(${review.id})">
+                            <i class="fas fa-flag"></i> Report post
+                        </div>
+                        <!-- Add more menu items here if needed -->
+                    </div>
                 </div>
             </div>
-        `;
+        </div>
+        <p class="review-text">${review.review_text}</p>
+        ${photosHtml}
+        
+        <div class="review-actions">
+            <button class="action-btn" onclick="openCommentModal(${review.id})">
+                <i class="far fa-comment"></i> Comment (${commentCount})
+            </button>
+            <button class="action-btn" onclick="shareReview(${review.id})">
+                <i class="far fa-share-square"></i> Share
+            </button>
+        </div>
+        
+        ${commentsHtml}
+        
+        <div class="review-date">
+            <i class="far fa-calendar"></i> ${date}
+        </div>
+    </div>
+`;
     }
     
     feed.innerHTML = html;
@@ -1103,3 +1118,67 @@ document.addEventListener('DOMContentLoaded', function() {
     setupComparisonSearch('compareSearch1', 'compareSuggestions1', 1);
     setupComparisonSearch('compareSearch2', 'compareSuggestions2', 2);
 });
+// Toggle post menu dropdown
+window.togglePostMenu = function(reviewId) {
+    // Close all other open menus first
+    document.querySelectorAll('.post-menu-dropdown.active').forEach(menu => {
+        if (menu.id !== `post-menu-${reviewId}`) {
+            menu.classList.remove('active');
+        }
+    });
+    
+    // Toggle this menu
+    const menu = document.getElementById(`post-menu-${reviewId}`);
+    if (menu) {
+        menu.classList.toggle('active');
+    }
+};
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.post-menu-container')) {
+        document.querySelectorAll('.post-menu-dropdown.active').forEach(menu => {
+            menu.classList.remove('active');
+        });
+    }
+});
+// Report a review
+window.reportReview = async function(reviewId) {
+    // Close the menu first
+    document.getElementById(`post-menu-${reviewId}`)?.classList.remove('active');
+    
+    const reason = prompt('Why are you reporting this review? (Optional)');
+    
+    if (reason === null) return; // User cancelled
+    
+    try {
+        // First get the review details to know which resort it belongs to
+        const { data: review, error: reviewError } = await supabaseClient
+            .from('reviews')
+            .select('resort_id')
+            .eq('id', reviewId)
+            .single();
+        
+        if (reviewError) throw reviewError;
+        
+        // Insert the report
+        const { error } = await supabaseClient
+            .from('reports')
+            .insert([{
+                review_id: reviewId,
+                resort_id: review.resort_id,
+                reason: reason || 'No reason provided',
+                description: reason || 'No reason provided',
+                status: 'pending',
+                created_at: new Date()
+            }]);
+        
+        if (error) throw error;
+        
+        alert('✅ Review reported. Our moderation team will review it.');
+        
+    } catch (error) {
+        console.error('Error reporting review:', error);
+        alert('Error submitting report. Please try again.');
+    }
+};
