@@ -1037,12 +1037,20 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+// Modal rating slider
+const modalRating = document.getElementById('modal_rating');
+const modalRatingValue = document.getElementById('modalRatingValue');
+
+if (modalRating) {
+    modalRating.addEventListener('input', function() {
+        modalRatingValue.textContent = this.value;
+    });
+}
+
     // Supabase configuration
     const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
     
     const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
     // Global variables
     let resortsMap = new Map();
@@ -1109,21 +1117,33 @@
     // ===========================================
     // LOAD RESORTS
     // ===========================================
-    async function loadResorts() {
-        try {
-            const { data: resorts } = await supabaseClient
-                .from('resorts')
-                .select('id, name')
-                .order('name');
-            
-            resorts.forEach(r => resortsMap.set(r.id, r.name));
-            allResorts = resorts || [];
-            console.log(`Loaded ${resorts.length} resorts`);
-            
-        } catch (error) {
-            console.error("Error loading resorts:", error);
-        }
+// Debug: Check if resorts are loading
+async function debugResortSearch() {
+    console.log('🔍 Debugging resort search...');
+    
+    // Check if allResorts is populated
+    console.log('allResorts array:', allResorts);
+    console.log('allResorts length:', allResorts.length);
+    
+    // Check if the search input exists
+    const searchInput = document.getElementById('resort_search');
+    console.log('Search input element:', searchInput);
+    
+    if (searchInput) {
+        // Add a test event listener
+        searchInput.addEventListener('input', function(e) {
+            console.log('Search input value:', e.target.value);
+        });
     }
+    
+    // Check the suggestions box
+    const suggestionsBox = document.getElementById('resort_suggestions');
+    console.log('Suggestions box:', suggestionsBox);
+}
+
+// Call this after loadResorts
+setTimeout(debugResortSearch, 2000);
+
     
     // ===========================================
     // LOAD REVIEWS
