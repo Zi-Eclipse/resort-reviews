@@ -843,29 +843,33 @@
     }
        
 async function loadResortInfo() {
-    // First, get the UUID from the resorts table using the integer ID
-    const { data: resortData } = await supabaseClient
-        .from('resorts')
-        .select('auth_user_id, name')
-        .eq('id', resortId)
-        .single();
+    let resort = null;
+    let resortId = urlParams.get('id');
     
-    if (!resortData || !resortData.auth_user_id) {
-        console.error('No auth user found for resort ID:', resortId);
-        document.getElementById('mainContent').innerHTML = '<div style="text-align: center; padding: 60px;">Resort not found</div>';
-        return;
-    }
-    
-    // Now use the UUID to get the profile
-    const { data: resort } = await supabaseClient
+    // Try to find in resort_profiles first (using UUID)
+    const { data: profileData } = await supabaseClient
         .from('resort_profiles')
         .select('*')
-        .eq('id', resortData.auth_user_id)
-        .single();
+        .eq('id', resortId)
+        .maybeSingle();
+    
+    if (profileData) {
+        resort = profileData;
+    } else {
+        // If not found in profiles, try the original resorts table (using integer ID)
+        const { data: resortData } = await supabaseClient
+            .from('resorts')
+            .select('*')
+            .eq('id', resortId)
+            .single();
+        
+        if (resortData) {
+            resort = resortData;
+        }
+    }
     
     if (!resort) {
-        console.error('No profile found for UUID:', resortData.auth_user_id);
-        document.getElementById('mainContent').innerHTML = '<div style="text-align: center; padding: 60px;">Resort profile not found</div>';
+        document.getElementById('mainContent').innerHTML = '<div style="text-align: center; padding: 60px;">Resort not found</div>';
         return;
     }
     
@@ -879,7 +883,7 @@ async function loadResortInfo() {
 
         <!-- Profile Info -->
         <div class="profile-info">
-            <h1>${resort.name} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
+            <h1>${resort.name} ${resort.verified ? '<span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span>' : ''}</h1>
         </div>
 
         <!-- Profile Navigation -->
@@ -1031,85 +1035,78 @@ window.switchTab = function(tab, clickEvent = null) {
 };
 
 function loadOverview() {
-    // First get the UUID again
+    // Get the resort ID from URL
+    const resortId = urlParams.get('id');
+    
     supabaseClient
         .from('resorts')
-        .select('auth_user_id')
+        .select('*')
         .eq('id', resortId)
         .single()
-        .then(({ data: resortData }) => {
-            if (!resortData?.auth_user_id) return;
+        .then(({ data: resort }) => {
+            if (!resort) return;
             
-            // Then get the profile using UUID
-            supabaseClient
-                .from('resort_profiles')
-                .select('*')
-                .eq('id', resortData.auth_user_id)
-                .single()
-                .then(({ data: resort }) => {
-                    // Your existing display code here
-                    const clean = (text) => {
-                        if (!text) return 'Not available';
-                        return String(text).replace(/\s+/g, ' ').trim();
-                    };
+            const clean = (text) => {
+                if (!text) return 'Not available';
+                return String(text).replace(/\s+/g, ' ').trim();
+            };
 
-                    const html = `
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
-                            <!-- Left Column -->
-                            <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
-                                <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📍 Location & Contact</h3>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">ADDRESS</div>
-                                    <div style="color: var(--text-dark); font-size: 15px; line-height: 1.5;">${clean(resort.address)}</div>
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">PHONE</div>
-                                    <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.phone)}</div>
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">HOURS</div>
-                                    <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.hours)}</div>
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">WEBSITE</div>
-                                    <div style="color: var(--text-dark); font-size: 15px; word-break: break-all;">
-                                        ${resort.website ? `<a href="${clean(resort.website)}" target="_blank" style="color: var(--primary); text-decoration: none;">${clean(resort.website).replace(/^https?:\/\//, '')}</a>` : 'Not available'}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Right Column -->
-                            <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
-                                <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📊 Quick Stats</h3>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">GOOGLE RATING</div>
-                                    <div style="color: var(--text-dark); font-size: 15px;">⭐ ${resort.google_rating || 'N/A'}</div>
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">STAR RATING</div>
-                                    <div style="color: var(--text-dark); font-size: 15px;">${resort.star_rating || 'N/A'} stars</div>
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL PHOTOS</div>
-                                    <div style="color: var(--text-dark); font-size: 15px;">${allPhotos.length}</div>
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL REVIEWS</div>
-                                    <div style="color: var(--text-dark); font-size: 15px;">${allReviews.length}</div>
-                                </div>
+            const html = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
+                    <!-- Left Column -->
+                    <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📍 Location & Contact</h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">ADDRESS</div>
+                            <div style="color: var(--text-dark); font-size: 15px; line-height: 1.5;">${clean(resort.address)}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">PHONE</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.phone)}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">HOURS</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.hours)}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">WEBSITE</div>
+                            <div style="color: var(--text-dark); font-size: 15px; word-break: break-all;">
+                                ${resort.website ? `<a href="${clean(resort.website)}" target="_blank" style="color: var(--primary); text-decoration: none;">${clean(resort.website).replace(/^https?:\/\//, '')}</a>` : 'Not available'}
                             </div>
                         </div>
-                    `;
-                    document.getElementById('tabContent').innerHTML = html;
-                });
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📊 Quick Stats</h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">GOOGLE RATING</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">⭐ ${resort.google_rating || 'N/A'}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">STAR RATING</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${resort.star_rating || 'N/A'} stars</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL PHOTOS</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${allPhotos.length}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL REVIEWS</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${allReviews.length}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('tabContent').innerHTML = html;
         });
 }
 
