@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About - ResortReviews Maldives</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .about-page {
+            max-width: 800px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .about-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .about-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .about-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .about-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .about-section h2 i {
+            font-size: 1.8rem;
+        }
+
+        .about-section p {
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .about-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .about-section li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .about-section li i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-card .label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .contact-item i {
+            width: 24px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .faq-question i {
+            color: var(--primary);
+        }
+
+        .faq-answer {
+            color: var(--text-light);
+            line-height: 1.6;
+            padding-left: 28px;
+        }
+
+        .highlight-box {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            margin: 20px 0;
+        }
+
+        .highlight-box i {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<div class="top-nav">
+    <div class="nav-left">
+        <a href="guest-feed.html" class="home-btn" title="Home">
+            <i class="fas fa-home"></i>
+        </a>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search resorts...">
+        </div>
+    </div>
+    
+    <div class="nav-center">
+        <a href="guest-feed.html" class="logo">
+            <i class="fas fa-umbrella-beach"></i>
+            <span>ResortReviews</span>
+        </a>
+    </div>
+    
+    <div class="nav-right">
+        <div class="nav-icons">
+            <a href="about.html" class="icon-btn" title="About">
+                <i class="fas fa-info-circle"></i>
+            </a>
+            <a href="resort-login.html" class="icon-btn" title="Resort Login">
+                <i class="fas fa-building"></i>
+            </a>
+            <button class="icon-btn" onclick="openSettings()" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- About Content -->
+<div class="about-page">
+    <div class="about-header">
+        <h1>About ResortReviews</h1>
+        <p>The complete platform for resort staff - honest reviews, job opportunities, and transparent information</p>
+    </div>
+
+    <!-- STATS SECTION - 4 COLUMNS WITH JOBS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="number" id="resortCount">149</span>
+            <span class="label">Resorts Listed</span>
+        </div>
+        <div class="stat-card">
+            <span class="number" id="reviewCount">4</span>
+            <span class="label">Anonymous Reviews</span>
+        </div>
+        <div class="stat-card">
+            <span class="number" id="jobCount">2</span>
+            <span class="label">Job Openings</span>
+        </div>
+        <div class="stat-card">
+            <span class="number" id="verifiedCount">3</span>
+            <span class="label">Verified Resorts</span>
+        </div>
+    </div>
+
+    <!-- MISSION - UPDATED WITH CAREER OPPORTUNITIES -->
+    <div class="about-section">
+        <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+        <p>ResortReviews was created to bridge the information gap for resort staff in the Maldives. We believe that everyone deserves to know what they're getting into before accepting a job – from accommodation quality to food, facilities, management culture, and career opportunities.</p>
+        <p>Our platform provides a safe, anonymous space for current and former staff to share their experiences, browse job openings, and make informed career decisions.</p>
+    </div>
+
+    <!-- HOW IT WORKS - 6 FEATURES INCLUDING JOB BOARD -->
+    <div class="about-section">
+        <h2><i class="fas fa-gear"></i> How It Works</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fas fa-user-secret"></i>
+                <h3>Anonymous Reviews</h3>
+                <p>Share your experience without fear. No login required, full anonymity guaranteed.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-building"></i>
+                <h3>Verified Resorts</h3>
+                <p>Official resort representatives can respond to reviews with a verified badge.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-camera"></i>
+                <h3>Photo Sharing</h3>
+                <p>Upload photos of staff accommodation, facilities, and food – with privacy protection.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-briefcase"></i>
+                <h3>Job Board</h3>
+                <p>Browse and apply for resort jobs directly through the platform.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-scale-balanced"></i>
+                <h3>Compare Resorts</h3>
+                <p>Side-by-side comparison of ratings, reviews, and photos to make informed decisions.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-list"></i>
+                <h3>A-Z Directory</h3>
+                <p>Complete listing of all Maldives resorts with easy navigation.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOR STAFF - UPDATED WITH JOB BROWSING -->
+    <div class="about-section">
+        <h2><i class="fas fa-users"></i> For Resort Staff</h2>
+        <ul>
+            <li><i class="fas fa-check-circle"></i> Read honest reviews before accepting a job</li>
+            <li><i class="fas fa-check-circle"></i> See real photos of staff accommodation</li>
+            <li><i class="fas fa-check-circle"></i> <strong>Browse current job openings across all resorts</strong></li>
+            <li><i class="fas fa-check-circle"></i> Compare different resorts and facilities</li>
+            <li><i class="fas fa-check-circle"></i> Get insights into management and work culture</li>
+            <li><i class="fas fa-check-circle"></i> Share your experience anonymously</li>
+        </ul>
+    </div>
+
+    <!-- FOR RESORTS - UPDATED WITH JOB POSTING -->
+    <div class="about-section">
+        <h2><i class="fas fa-hotel"></i> For Resorts</h2>
+        <ul>
+            <li><i class="fas fa-check-circle"></i> Respond to reviews with verified official badge</li>
+            <li><i class="fas fa-check-circle"></i> <strong>Post job openings to reach qualified candidates</strong></li>
+            <li><i class="fas fa-check-circle"></i> Show commitment to staff welfare</li>
+            <li><i class="fas fa-check-circle"></i> Update your resort information and photos</li>
+            <li><i class="fas fa-check-circle"></i> Track what staff are saying about you</li>
+            <li><i class="fas fa-check-circle"></i> Build trust with potential employees</li>
+        </ul>
+        <div class="highlight-box">
+            <i class="fas fa-shield-alt"></i>
+            <strong>Verification Process:</strong> Resorts must verify their identity before responding to reviews or posting jobs. 
+            <a href="resort-login.html" style="color: var(--primary);">Request verification →</a>
+        </div>
+    </div>
+
+    <!-- OUR COMMITMENT -->
+    <div class="about-section">
+        <h2><i class="fas fa-handshake"></i> Our Commitment</h2>
+        <ul>
+            <li><i class="fas fa-lock"></i> <strong>Anonymity:</strong> Your identity is never revealed</li>
+            <li><i class="fas fa-shield"></i> <strong>Authenticity:</strong> All reviews are moderated before publishing</li>
+            <li><i class="fas fa-balance-scale"></i> <strong>Fairness:</strong> Both staff and resorts have a voice</li>
+            <li><i class="fas fa-heart"></i> <strong>Privacy:</strong> No personal data is collected or shared</li>
+        </ul>
+    </div>
+
+    <!-- FAQ SECTION - WITH JOB QUESTION -->
+    <div class="about-section">
+        <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-question-circle"></i> Is it really anonymous?
+            </div>
+            <div class="faq-answer">
+                Yes! You don't need to create an account or provide any personal information to post a review. Your identity is completely protected.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-question-circle"></i> <strong>How do I apply for jobs?</strong>
+            </div>
+            <div class="faq-answer">
+                Click on "Resort Jobs" in the left sidebar, browse openings, and click "View Details" on any job to see application instructions. Each job posting includes contact information or application links.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-question-circle"></i> How do resorts get verified?
+            </div>
+            <div class="faq-answer">
+                Resorts submit a verification request through our portal. We manually verify their credentials and send them login credentials to access their dashboard where they can respond to reviews and <strong>post job openings</strong>.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-question-circle"></i> Can resorts delete negative reviews?
+            </div>
+            <div class="faq-answer">
+                No. Resorts cannot delete or edit reviews. They can only respond to them. This ensures honest feedback remains visible.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-question-circle"></i> What if I see inappropriate content?
+            </div>
+            <div class="faq-answer">
+                Each review has a "Report" button (three dots menu). Our moderation team reviews reports and takes appropriate action.
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="about-section">
+        <h2><i class="fas fa-envelope"></i> Get in Touch</h2>
+        <p>Have questions, suggestions, or need support? We'd love to hear from you.</p>
+        <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>support@resortreviews.com</span>
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>+960 123 4567</span>
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Malé, Maldives</span>
+        </div>
+    </div>
+
+    <!-- FOOTER LINKS -->
+    <div class="footer-links">
+        <a href="guest-feed.html"><i class="fas fa-home"></i> Home</a>
+        <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+        <a href="#" onclick="openSettings()"><i class="fas fa-cog"></i> Settings</a>
+        <a href="index.html"><i class="fas fa-sign-out-alt"></i> Landing</a>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal()">
+    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-cog"></i> Settings</h3>
+            <i class="fas fa-times modal-close" onclick="closeSettingsModal()"></i>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Dark Mode Toggle -->
+            <div class="settings-section">
+                <h4>Appearance</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="settings-section">
+                <h4>Navigation</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Back to Login Page</span>
+                    </div>
+                    <a href="index.html" class="settings-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="settings-section">
+                <h4>About</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Version 1.0.0</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Anonymous & Verified</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
+    
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Dark mode functions
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = true;
+        }
+    }
+
+    function toggleDarkMode() {
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    function openSettings() {
+        document.getElementById('settingsModal').classList.add('active');
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle) {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            toggle.checked = currentTheme === 'dark';
+        }
+    }
+
+    function closeSettingsModal() {
+        document.getElementById('settingsModal').classList.remove('active');
+    }
+
+    // Load stats from database
+    async function loadStats() {
+        try {
+            // Get resort count
+            const { count: resortCount } = await supabaseClient
+                .from('resorts')
+                .select('*', { count: 'exact', head: true });
+
+            // Get review count (approved only)
+            const { count: reviewCount } = await supabaseClient
+                .from('reviews')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'approved');
+
+            // Get job count (active only)
+            const { count: jobCount } = await supabaseClient
+                .from('resort_jobs')
+                .select('*', { count: 'exact', head: true })
+                .eq('is_active', true)
+                .gt('expires_at', new Date().toISOString());
+
+            // Get verified resort count
+            const { count: verifiedCount } = await supabaseClient
+                .from('resorts')
+                .select('*', { count: 'exact', head: true })
+                .eq('verified', true);
+
+            document.getElementById('resortCount').textContent = resortCount || '149';
+            document.getElementById('reviewCount').textContent = reviewCount || '4';
+            document.getElementById('jobCount').textContent = jobCount || '2';
+            document.getElementById('verifiedCount').textContent = verifiedCount || '3';
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+
+    initTheme();
+    loadStats();
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSettingsModal();
+        }
+    });
+</script>
+
+</body>
+</html>

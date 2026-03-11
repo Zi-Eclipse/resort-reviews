@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resort Login - ResortReviews Maldives</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a2540;
+            --primary-light: #1e3a5f;
+            --secondary: #0070f3;
+            --secondary-light: #4d9eff;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg-color: #f3f4f6;
+            --white: #ffffff;
+            --hover-bg: #f0f2f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+
+        .back-link a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .back-link a:hover {
+            opacity: 1;
+        }
+
+        .login-container {
+            max-width: 420px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: rgba(255,255,255,0.2);
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .login-header h1 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: gold;
+            color: black;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .login-form input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .request-link {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .request-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .request-link a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(220, 38, 38, 0.2);
+            color: #fee2e2;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.2);
+            color: #d1fae5;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .demo-credentials {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .demo-credentials p {
+            margin-bottom: 5px;
+        }
+
+        .demo-credentials code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ffd700;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .modal-content form {
+            padding: 20px;
+        }
+
+        .modal-content .form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .modal-content textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .post-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .post-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .back-link {
+                top: 20px;
+                left: 20px;
+            }
+            
+            .login-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="back-link">
+    <a href="index.html">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+</div>
+
+<div class="login-container">
+    <div class="login-header">
+        <div class="icon">
+            <i class="fas fa-building"></i>
+        </div>
+        <h1>Resort Portal</h1>
+        <p>Verified resorts only • <span class="badge">VERIFIED</span></p>
+    </div>
+    
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+    
+    <form class="login-form" id="loginForm">
+        <div class="form-group">
+            <label><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="email" placeholder="resort@example.com" required autocomplete="username">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        
+        <div class="forgot-password">
+            <a href="#" onclick="showForgotPassword()">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+        </button>
+    </form>
+    
+    <div class="request-link">
+        <p>Not verified yet? <a href="#" onclick="showRequestForm()">Request resort verification</a></p>
+    </div>
+
+<!-- Forgot Password Modal -->
+<div class="modal-overlay" id="forgotPasswordModal" onclick="closeForgotPassword()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-key"></i> Reset Password</h3>
+            <i class="fas fa-times modal-close" onclick="closeForgotPassword()"></i>
+        </div>
+        
+        <div class="reset-content" style="padding: 20px;">
+            <p style="margin-bottom: 15px;">Enter your email address and we'll send you a link to reset your password.</p>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="resetEmail" placeholder="resort@example.com">
+            </div>
+            
+            <button class="post-btn" onclick="sendResetLink()">
+                <i class="fas fa-paper-plane"></i> Send Reset Link
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Verification Request Modal -->
+<div class="modal-overlay" id="requestModal" onclick="closeRequestModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-check-circle"></i> Request Verification</h3>
+            <i class="fas fa-times modal-close" onclick="closeRequestModal()"></i>
+        </div>
+        
+        <form id="requestForm">
+            <div class="form-group">
+                <label>Resort Name</label>
+                <input type="text" id="req_resort" placeholder="e.g., Baros Maldives" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Contact Person</label>
+                <input type="text" id="req_contact" placeholder="HR Manager / General Manager" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Official Email</label>
+                <input type="email" id="req_email" placeholder="gm@resort.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Phone (optional)</label>
+                <input type="tel" id="req_phone" placeholder="+960 123 4567">
+            </div>
+            
+            <div class="form-group">
+                <label>Message (optional)</label>
+                <textarea id="req_message" placeholder="Any additional information that might help us verify your resort..."></textarea>
+            </div>
+            
+            <button type="submit" class="post-btn">
+                <i class="fas fa-paper-plane"></i> Submit Verification Request
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
+    
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+// Login form submission
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+        // Use Supabase Auth to sign in
+        const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+        
+        if (authError) throw authError;
+        
+        // Now get the resort details linked to this auth user
+        const { data: resort, error: resortError } = await supabaseClient
+            .from('resorts')
+            .select('*')
+            .eq('auth_user_id', authData.user.id)
+            .single();
+        
+        if (resortError) throw resortError;
+        
+        // Store in localStorage
+        localStorage.setItem('resort_id', resort.id);
+        localStorage.setItem('resort_name', resort.name);
+        localStorage.setItem('login_email', email); // Store email for later
+        localStorage.setItem('login_timestamp', new Date().getTime().toString());
+        
+        // Also store the Supabase session (it handles this automatically)
+        
+        window.location.href = 'resort-dashboard.html';
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        document.getElementById('errorMessage').textContent = 'Invalid email or password.';
+        document.getElementById('errorMessage').style.display = 'block';
+    }
+});
+    
+    // Request verification form
+    function showRequestForm() {
+        document.getElementById('requestModal').classList.add('active');
+    }
+    
+    function closeRequestModal() {
+        document.getElementById('requestModal').classList.remove('active');
+    }
+    
+    document.getElementById('requestForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const resortName = document.getElementById('req_resort').value;
+        const contactPerson = document.getElementById('req_contact').value;
+        const contactEmail = document.getElementById('req_email').value;
+        const phone = document.getElementById('req_phone').value;
+        const message = document.getElementById('req_message').value;
+        
+        // First check if this resort exists in our database
+        const { data: existingResort } = await supabaseClient
+            .from('resorts')
+            .select('name')
+            .eq('name', resortName)
+            .maybeSingle();
+        
+        if (!existingResort) {
+            const confirmAdd = confirm(`⚠️ "${resortName}" is not in our database.\n\nWould you like to request it to be added? This will be reviewed by our team.`);
+            if (!confirmAdd) {
+                return;
+            }
+        }
+        
+        const request = {
+            resort_name: resortName,
+            contact_person: contactPerson,
+            contact_email: contactEmail,
+            phone: phone,
+            message: message,
+            status: 'pending'
+        };
+        
+        const { error } = await supabaseClient
+            .from('verification_requests')
+            .insert([request]);
+        
+        if (error) {
+            alert('Error submitting request: ' + error.message);
+        } else {
+            alert('✅ Request submitted! We\'ll contact you within 24-48 hours.');
+            closeRequestModal();
+            document.getElementById('requestForm').reset();
+            
+            document.getElementById('successMessage').textContent = 'Request submitted successfully!';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 5000);
+        }
+    });
+    
+    // Forgot password functions
+    function showForgotPassword() {
+        document.getElementById('forgotPasswordModal').classList.add('active');
+    }
+    
+    function closeForgotPassword() {
+        document.getElementById('forgotPasswordModal').classList.remove('active');
+    }
+    
+    async function sendResetLink() {
+        const email = document.getElementById('resetEmail').value;
+        if (!email) {
+            alert('Please enter your email');
+            return;
+        }
+        
+        const { data: resort } = await supabaseClient
+            .from('resorts')
+            .select('id, name')
+            .eq('login_email', email)
+            .maybeSingle();
+        
+        if (!resort) {
+            alert('No account found with this email');
+            return;
+        }
+        
+        // Generate reset token
+        const token = Math.random().toString(36).slice(-32);
+        const expires = new Date();
+        expires.setHours(expires.getHours() + 24);
+        
+        // In production, you'd have a password_resets table
+        // For now, we'll just show the link
+        const resetLink = `https://resort-reviews.vercel.app/reset-password.html?token=${token}`;
+        console.log(`Reset link: ${resetLink}`);
+        
+        alert(`Demo: Reset link sent to ${email}\n\nCheck console for the link.`);
+        closeForgotPassword();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - ResortReviews</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .admin-nav-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        
+        .admin-nav-item:hover {
+            background: var(--hover-bg);
+        }
+        
+        .admin-nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .report-badge {
+            background: #ef4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+        
+        .login-form {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            margin: 100px auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .login-form h2 {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-dark);
+        }
+        
+        .login-form button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .login-form button:hover {
+            background: var(--primary-hover);
+        }
+        
+        .login-form p {
+            margin-top: 15px;
+            color: var(--text-light);
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .login-screen {
+            display: none;
+            position: relative;
+        }
+        
+        .login-screen.active {
+            display: block;
+        }
+        
+        .dashboard-screen {
+            display: none;
+        }
+        
+        .dashboard-screen.active {
+            display: block;
+        }
+        
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        
+        .tab {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: var(--hover-bg);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .review-card {
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .review-rating {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .review-date {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .review-text {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .review-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            background: var(--white);
+            color: var(--text-dark);
+        }
+        
+        .action-btn.approve {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .action-btn.reject {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+        
+        .home-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .home-link i {
+            color: var(--primary);
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen active" id="loginScreen">
+    <div class="login-form">
+        <h2><i class="fas fa-shield-alt"></i> Admin Login</h2>
+        <input type="password" id="adminPassword" placeholder="Enter password">
+        <button onclick="checkPassword()">Login</button>
+        <p>Password: admin123</p>
+    </div>
+</div>
+
+<!-- Dashboard Screen -->
+<div class="dashboard-screen" id="dashboardScreen">
+    <!-- Top Navigation Bar -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <a href="guest-feed.html" class="home-btn" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="admin.html" class="logo">
+                <i class="fas fa-umbrella-beach"></i>
+                <span>ResortReviews Admin</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-icons">
+                <button class="icon-btn" onclick="logout()" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <!-- Admin Navigation -->
+        <div class="admin-nav">
+            <a href="#" class="admin-nav-item active" onclick="loadModerationDashboard()">
+                <i class="fas fa-shield-alt"></i> Dashboard
+            </a>
+            <a href="admin-reports.html" class="admin-nav-item">
+                <i class="fas fa-flag"></i> Reports
+                <span class="report-badge" id="reportBadge">0</span>
+            </a>
+            <a href="admin-verification.html" class="admin-nav-item">
+                <i class="fas fa-check-circle"></i> Verification
+                <span class="report-badge" id="verificationBadge">0</span>
+            </a>
+        </div>
+
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-shield-alt"></i> Moderation Dashboard</h1>
+                <p>Review and manage submissions</p>
+            </div>
+        </div>
+        
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <span class="stat-value" id="pendingCount">0</span>
+                <span class="stat-label">Pending</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="approvedCount">0</span>
+                <span class="stat-label">Approved</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="rejectedCount">0</span>
+                <span class="stat-label">Rejected</span>
+            </div>
+        </div>
+        
+        <div class="tab-nav">
+            <button class="tab active" onclick="loadPending()" id="tabPending">Pending</button>
+            <button class="tab" onclick="loadApproved()" id="tabApproved">Approved</button>
+            <button class="tab" onclick="loadRejected()" id="tabRejected">Rejected</button>
+        </div>
+        
+        <div id="reviewsList">
+            <div class="loading-spinner">Loading reviews...</div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
+    
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    let currentTab = 'pending';
+    
+    // Check if already logged in on page load
+    window.addEventListener('load', function() {
+        const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+        const loginTimestamp = localStorage.getItem('admin_login_timestamp');
+        
+        if (isLoggedIn && loginTimestamp) {
+            const elapsedTime = new Date().getTime() - parseInt(loginTimestamp);
+            const fourHoursInMs = 4 * 60 * 60 * 1000;
+            
+            if (elapsedTime < fourHoursInMs) {
+                // Session is still valid
+                showDashboard();
+            } else {
+                // Session expired
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_login_timestamp');
+            }
+        }
+        
+        // Always load counts (they'll show 0 if not logged in)
+        loadReportCount();
+        loadVerificationCount();
+    });
+    
+    function checkPassword() {
+        const password = document.getElementById('adminPassword').value;
+        if (password === 'admin123') {
+            // Set login session with timestamp
+            localStorage.setItem('admin_logged_in', 'true');
+            localStorage.setItem('admin_login_timestamp', new Date().getTime().toString());
+            showDashboard();
+            loadReportCount();
+            loadVerificationCount();
+        } else {
+            alert('Wrong password!');
+        }
+    }
+    
+    function showDashboard() {
+        document.getElementById('loginScreen').classList.remove('active');
+        document.getElementById('dashboardScreen').classList.add('active');
+        loadStats();
+        loadPending();
+    }
+    
+    function logout() {
+        localStorage.removeItem('admin_logged_in');
+        localStorage.removeItem('admin_login_timestamp');
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('loginScreen').classList.add('active');
+        document.getElementById('adminPassword').value = '';
+    }
+    
+    async function loadReportCount() {
+        try {
+            const { data: reports } = await supabaseClient
+                .from('reports')
+                .select('id')
+                .eq('status', 'pending');
+            
+            const badge = document.getElementById('reportBadge');
+            if (badge && reports) {
+                badge.textContent = reports.length;
+                badge.style.display = reports.length > 0 ? 'inline-block' : 'none';
+            }
+        } catch (error) {
+            console.error('Error loading report count:', error);
+        }
+    }
+    
+    async function loadVerificationCount() {
+        try {
+            const { data: requests } = await supabaseClient
+                .from('verification_requests')
+                .select('id')
+                .eq('status', 'pending');
+            
+            const badge = document.getElementById('verificationBadge');
+            if (badge && requests) {
+                badge.textContent = requests.length;
+                badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
+            }
+        } catch (error) {
+            console.error('Error loading verification count:', error);
+        }
+    }
+    
+    async function loadStats() {
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('status');
+            
+            if (!reviews) return;
+            
+            const pending = reviews.filter(r => r.status === 'pending').length;
+            const approved = reviews.filter(r => r.status === 'approved').length;
+            const rejected = reviews.filter(r => r.status === 'rejected').length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+    
+    async function loadPending() {
+        currentTab = 'pending';
+        updateTabs();
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false });
+            displayReviews(reviews || []);
+        } catch (error) {
+            console.error('Error loading pending reviews:', error);
+            document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; padding: 40px;">Error loading reviews</p>';
+        }
+    }
+    
+    async function loadApproved() {
+        currentTab = 'approved';
+        updateTabs();
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('status', 'approved')
+                .order('created_at', { ascending: false });
+            displayReviews(reviews || []);
+        } catch (error) {
+            console.error('Error loading approved reviews:', error);
+            document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; padding: 40px;">Error loading reviews</p>';
+        }
+    }
+    
+    async function loadRejected() {
+        currentTab = 'rejected';
+        updateTabs();
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('status', 'rejected')
+                .order('created_at', { ascending: false });
+            displayReviews(reviews || []);
+        } catch (error) {
+            console.error('Error loading rejected reviews:', error);
+            document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; padding: 40px;">Error loading reviews</p>';
+        }
+    }
+    
+    function updateTabs() {
+        document.getElementById('tabPending').className = 'tab';
+        document.getElementById('tabApproved').className = 'tab';
+        document.getElementById('tabRejected').className = 'tab';
+        
+        if (currentTab === 'pending') document.getElementById('tabPending').className = 'tab active';
+        if (currentTab === 'approved') document.getElementById('tabApproved').className = 'tab active';
+        if (currentTab === 'rejected') document.getElementById('tabRejected').className = 'tab active';
+    }
+    
+    function displayReviews(reviews) {
+        const container = document.getElementById('reviewsList');
+        
+        if (reviews.length === 0) {
+            container.innerHTML = '<p style="text-align: center; padding: 40px;">No reviews found</p>';
+            return;
+        }
+        
+        let html = '';
+        reviews.forEach(review => {
+            const date = new Date(review.created_at).toLocaleDateString();
+            
+            html += `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-rating">${review.rating}/10</span>
+                        <span class="review-date">${date}</span>
+                    </div>
+                    <h3>${review.resort_name}</h3>
+                    <p class="review-text">${review.review_text}</p>
+                    ${review.photo_urls && review.photo_urls !== '[]' ? '<p><i class="fas fa-image"></i> Contains photos</p>' : ''}
+                    
+                    <div class="review-actions">
+                        ${currentTab === 'pending' ? `
+                            <button class="action-btn approve" onclick="updateStatus(${review.id}, 'approved')">Approve</button>
+                            <button class="action-btn reject" onclick="updateStatus(${review.id}, 'rejected')">Reject</button>
+                        ` : ''}
+                        <button class="action-btn" onclick="deleteReview(${review.id})">Delete</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+    
+    async function updateStatus(id, status) {
+        try {
+            const { error } = await supabaseClient
+                .from('reviews')
+                .update({ status })
+                .eq('id', id);
+            
+            if (error) throw error;
+            
+            if (currentTab === 'pending') loadPending();
+            if (currentTab === 'approved') loadApproved();
+            if (currentTab === 'rejected') loadRejected();
+            loadStats();
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+    
+    async function deleteReview(id) {
+        if (!confirm('Delete this review?')) return;
+        
+        try {
+            const { error } = await supabaseClient
+                .from('reviews')
+                .delete()
+                .eq('id', id);
+            
+            if (error) throw error;
+            
+            if (currentTab === 'pending') loadPending();
+            if (currentTab === 'approved') loadApproved();
+            if (currentTab === 'rejected') loadRejected();
+            loadStats();
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+    
+    // Function to load moderation dashboard (for nav link)
+    window.loadModerationDashboard = function(e) {
+        e?.preventDefault();
+        loadPending();
+        // Update active nav
+        document.querySelectorAll('.admin-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelector('.admin-nav-item').classList.add('active');
+    };
+</script>
+
+</body>
+</html>

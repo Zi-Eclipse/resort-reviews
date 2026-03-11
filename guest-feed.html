@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resort Reviews Maldives</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Comment Section Styles */
+        .comment-preview {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .comment-preview-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            background: var(--bg-color);
+        }
+        
+        .comment-preview-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .comment-preview-content {
+            flex: 1;
+        }
+        
+        .comment-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .comment-preview-author {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+        
+        .verified-badge {
+            background: #1877f2;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: 6px;
+        }
+        
+        .verified-badge i {
+            font-size: 10px;
+        }
+        
+        .comment-preview-date {
+            color: var(--text-light);
+            font-size: 11px;
+            margin-left: auto;
+        }
+        
+        .comment-preview-text {
+            font-size: 13px;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .view-all-comments {
+            text-align: center;
+            padding: 8px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            background: var(--bg-color);
+            margin-top: 8px;
+        }
+        
+        .view-all-comments:hover {
+            background: var(--border);
+        }
+        
+        /* Comment Modal - Facebook Style */
+        .comment-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .comment-modal-overlay.active {
+            display: flex;
+        }
+        
+        .comment-modal {
+            background: var(--white);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .comment-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .comment-modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .comment-modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+        
+        .comment-modal-close:hover {
+            background: var(--hover-bg);
+        }
+        
+        .comment-modal-content {
+            display: flex;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 500px;
+            max-height: 70vh;
+        }
+        
+        /* Left side - Post */
+        .modal-post {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+        
+        .modal-post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-post-rating {
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .modal-post-date {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+        
+        .modal-post-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+        
+        .modal-post-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .modal-post-photo {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: transform 0.2s;
+        }
+        
+        .modal-post-photo:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+        
+        .modal-post-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Right side - Comments */
+        .modal-comments {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .modal-comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            background: var(--bg-color);
+        }
+        
+        .modal-comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .modal-comment-content {
+            flex: 1;
+        }
+        
+        .modal-comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .modal-comment-author {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        
+        .modal-comment-text {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .comment-date-small {
+            color: var(--text-light);
+            font-size: 11px;
+            margin-left: auto;
+        }
+        
+        .no-comments-modal {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        /* Review Actions */
+        .review-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .action-btn i {
+            font-size: 16px;
+        }
+        
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--hover-bg);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: rgba(24, 119, 242, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            width: 20px;
+            font-size: 18px;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 12px 0;
+        }
+
+        /* Stats Mini */
+        .stats-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-mini-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .stat-mini-label {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .stat-mini-value {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        /* Filters */
+        .filters-section {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            background: var(--white);
+            color: var(--text-dark);
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .filter-search {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            background: var(--white);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .filter-search:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Job specific styles */
+        .job-meta {
+            display: flex;
+            gap: 20px;
+            margin: 10px 0;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .job-meta i {
+            color: var(--primary);
+            margin-right: 5px;
+        }
+
+        .job-description {
+            color: var(--text-dark);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .job-requirements {
+            background: var(--bg-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .job-date {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .view-details-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .view-details-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .job-department {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Feed spacing */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px !important;
+        }
+
+        .review-item {
+            margin: 0 !important;
+            padding: 20px !important;
+            background: var(--white) !important;
+            border-radius: 12px !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: var(--shadow) !important;
+        }
+
+        .review-item + .review-item {
+            margin-top: 0 !important;
+        }
+
+        /* Three-dots menu */
+        .post-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .post-menu-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .post-menu-btn:hover {
+            background: var(--hover-bg);
+            color: var(--primary);
+        }
+
+        .post-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .post-menu-dropdown.active {
+            display: block;
+        }
+
+        .post-menu-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .post-menu-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .post-menu-item i {
+            width: 18px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .post-menu-item:last-child:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .post-menu-item:last-child:hover i {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Navigation Bar -->
+<div class="top-nav">
+    <div class="nav-left">
+        <a href="guest-feed.html" class="home-btn" title="Home">
+            <i class="fas fa-home"></i>
+        </a>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search resorts...">
+        </div>
+    </div>
+    
+    <div class="nav-center">
+        <a href="guest-feed.html" class="logo">
+            <i class="fas fa-umbrella-beach"></i>
+            <span>ResortReviews</span>
+        </a>
+    </div>
+    
+    <div class="nav-right">
+        <div class="nav-icons">
+            <a href="about.html" class="icon-btn" title="About">
+                <i class="fas fa-info-circle"></i>
+            </a>
+            <a href="resort-login.html" class="icon-btn" title="Resort Login">
+                <i class="fas fa-building"></i>
+            </a>
+            <button class="icon-btn" onclick="openSettings()" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main-layout">
+    <!-- LEFT SIDEBAR - Navigation -->
+    <div class="left-sidebar">
+        <!-- Navigation Menu -->
+        <div class="sidebar-card">
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="switchMainContent('home')" id="nav-home">
+                    <i class="fas fa-home"></i>
+                    <span>Home Feed</span>
+                </div>
+                
+                <div class="nav-item" onclick="switchMainContent('jobs')" id="nav-jobs">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Resort Jobs</span>
+                </div>
+                
+                <div class="nav-divider"></div>
+                
+                <div class="nav-item" onclick="switchMainContent('compare')" id="nav-compare">
+                    <i class="fas fa-scale-balanced"></i>
+                    <span>Compare Resorts</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="sidebar-card">
+            <div class="stats-mini">
+                <div class="stat-mini-item">
+                    <span class="stat-mini-label">Total Reviews</span>
+                    <span class="stat-mini-value" id="totalReviews">0</span>
+                </div>
+                <div class="stat-mini-item">
+                    <span class="stat-mini-label">Open Jobs</span>
+                    <span class="stat-mini-value" id="totalJobs">0</span>
+                </div>
+                <div class="stat-mini-item">
+                    <span class="stat-mini-label">Resorts</span>
+                    <span class="stat-mini-value" id="totalResorts">160+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        
+        <!-- Top Resorts Bar (Shows on Home only) -->
+        <div class="top-resorts-bar" id="topResortsBar">
+            <h3><i class="fas fa-trophy"></i> Top Rated Resorts</h3>
+            <div class="resort-rankings" id="topResorts">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Share Box (Shows on Home only) -->
+        <div class="share-box" id="shareBox" onclick="openModal()">
+            <div class="share-input">
+                <i class="fas fa-pen"></i>
+                <span>Share your experience...</span>
+            </div>
+            <div class="share-actions">
+                <div class="share-action">
+                    <i class="fas fa-camera" style="color: #4caf50;"></i>
+                    <span>Photo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Feed (Reviews) -->
+        <div id="home-content">
+            <div class="feed-header">
+                <h3><i class="fas fa-newspaper"></i> Recent Reviews</h3>
+                <span id="review-count">0 reviews</span>
+            </div>
+            <div class="feed" id="reviews-feed">
+                <div class="loading-spinner">Loading reviews...</div>
+            </div>
+        </div>
+
+        <!-- Jobs Feed (Hidden by default) -->
+        <div id="jobs-content" style="display: none;">
+            <div class="feed-header">
+                <h3><i class="fas fa-briefcase"></i> Resort Jobs</h3>
+                <span id="jobs-count">0 jobs</span>
+            </div>
+            
+            <!-- Job Filters -->
+            <div class="filters-section">
+                <select class="filter-select" id="job-type-filter">
+                    <option value="all">All Types</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Internship">Internship</option>
+                </select>
+                <select class="filter-select" id="department-filter">
+                    <option value="all">All Departments</option>
+                </select>
+                <input type="text" class="filter-search" id="job-search" placeholder="Search jobs...">
+            </div>
+            
+            <div class="feed" id="jobs-feed">
+                <div class="loading-spinner">Loading jobs...</div>
+            </div>
+        </div>
+
+        <!-- Compare Content (Hidden by default) -->
+        <div id="compare-content" style="display: none;">
+            <div class="feed-header">
+                <h3><i class="fas fa-scale-balanced"></i> Compare Resorts</h3>
+            </div>
+            
+            <!-- Comparison Tool -->
+            <div class="comparison-container" style="background: var(--white); border-radius: 16px; padding: 24px; box-shadow: var(--shadow);">
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center;">
+                    <!-- Resort A -->
+                    <div>
+                        <label class="comparison-label">Resort A</label>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="compareSearch1" placeholder="Search resort..." autocomplete="off">
+                            <div class="comparison-suggestions" id="compareSuggestions1"></div>
+                        </div>
+                        <div class="selected-resort" id="selectedResort1" style="display: none; margin-top: 10px;">
+                            <span id="resortName1"></span>
+                            <button class="remove-resort" onclick="clearResort(1)">✕</button>
+                        </div>
+                    </div>
+                    
+                    <!-- VS -->
+                    <div class="vs-divider" style="margin: 0;">
+                        <span>VS</span>
+                    </div>
+                    
+                    <!-- Resort B -->
+                    <div>
+                        <label class="comparison-label">Resort B</label>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="compareSearch2" placeholder="Search resort..." autocomplete="off">
+                            <div class="comparison-suggestions" id="compareSuggestions2"></div>
+                        </div>
+                        <div class="selected-resort" id="selectedResort2" style="display: none; margin-top: 10px;">
+                            <span id="resortName2"></span>
+                            <button class="remove-resort" onclick="clearResort(2)">✕</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="compare-btn" onclick="compareResorts()" id="compareBtn" disabled style="margin-top: 20px;">
+                    <i class="fas fa-chart-simple"></i> Compare Now
+                </button>
+                
+                <!-- Comparison Results -->
+                <div id="comparisonResults" style="display: none; margin-top: 30px;">
+                    <div class="comparison-header">
+                        <h4>Comparison Results</h4>
+                        <button class="close-results" onclick="closeComparison()">✕</button>
+                    </div>
+                    
+                    <div class="comparison-grid">
+                        <!-- Left Column - Resort A -->
+                        <div class="comparison-col" id="compareCol1">
+                            <div class="resort-badge" id="badge1"></div>
+                            
+                            <div class="comparison-row">
+                                <span class="metric">⭐ Rating</span>
+                                <span class="value" id="rating1">-</span>
+                            </div>
+                            
+                            <div class="comparison-row">
+                                <span class="metric">📝 Reviews</span>
+                                <span class="value" id="reviews1">-</span>
+                            </div>
+                            
+                            <div class="comparison-row">
+                                <span class="metric">📸 Photos</span>
+                                <span class="value" id="photos1">-</span>
+                            </div>
+                            
+                            <div class="comparison-row highlight">
+                                <span class="metric">🏆 Wins</span>
+                                <span class="value" id="wins1">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Right Column - Resort B -->
+                        <div class="comparison-col" id="compareCol2">
+                            <div class="resort-badge" id="badge2"></div>
+                            
+                            <div class="comparison-row">
+                                <span class="metric">⭐ Rating</span>
+                                <span class="value" id="rating2">-</span>
+                            </div>
+                            
+                            <div class="comparison-row">
+                                <span class="metric">📝 Reviews</span>
+                                <span class="value" id="reviews2">-</span>
+                            </div>
+                            
+                            <div class="comparison-row">
+                                <span class="metric">📸 Photos</span>
+                                <span class="value" id="photos2">-</span>
+                            </div>
+                            
+                            <div class="comparison-row highlight">
+                                <span class="metric">🏆 Wins</span>
+                                <span class="value" id="wins2">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Comparison -->
+                    <div class="category-comparison">
+                        <h4>Category Breakdown</h4>
+                        <div id="categoryBreakdown"></div>
+                    </div>
+
+                    <!-- Winner Message -->
+                    <div class="winner-message" id="winnerMessage"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-list"></i> All Resorts A-Z</h3>
+        </div>
+        <div class="resort-list" id="resortRankings">
+            <div class="loading-spinner">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Comment Modal -->
+<div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal()">
+    <div class="comment-modal" onclick="event.stopPropagation()">
+        <div class="comment-modal-header">
+            <h3><i class="far fa-comments"></i> Comments</h3>
+            <i class="fas fa-times comment-modal-close" onclick="closeCommentModal()"></i>
+        </div>
+        <div class="comment-modal-content" id="commentModalContent">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal()">
+    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-cog"></i> Settings</h3>
+            <i class="fas fa-times modal-close" onclick="closeSettingsModal()"></i>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Dark Mode Toggle -->
+            <div class="settings-section">
+                <h4>Appearance</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="settings-section">
+                <h4>Navigation</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Back to Login Page</span>
+                    </div>
+                    <a href="index.html" class="settings-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="settings-section">
+                <h4>About</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Version 1.0.0</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Anonymous & Verified</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Post Modal -->
+<div class="modal-overlay" id="shareModal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-pen-fancy"></i> Create Post</h3>
+            <i class="fas fa-times modal-close" onclick="closeModal()"></i>
+        </div>
+        
+        <form id="modalReviewForm">
+            <div class="searchable-dropdown">
+                <input type="text" id="resort_search" placeholder="Search for a resort..." autocomplete="off" required>
+                <input type="hidden" id="modal_resort_id" required>
+                <div id="resort_suggestions" class="suggestions-box"></div>
+            </div>
+            
+<!-- Category Dropdown - make it bigger -->
+<select id="review_category" 
+        style="width: 100%; 
+               padding: 12px 15px; 
+               border: 1px solid var(--border); 
+               border-radius: 8px; 
+               background: var(--input-bg); 
+               color: var(--text-dark); 
+               font-size: 15px;
+               margin-bottom: 15px;">
+    <option value="">Select a category</option>
+    <option value="1">🛏️ Accommodation</option>
+    <option value="2">🍽️ Cafeteria</option>
+    <option value="3">💪 Gym</option>
+    <option value="4">🏋️ Staff Facilities</option>
+    <option value="5">🎮 Recreation</option>
+    <option value="6">🚌 Transport</option>
+    <option value="7">👔 Management</option>
+    <option value="8">📌 Other</option>
+</select>
+            
+            <div class="rating-selector">
+                <label>Rating: <span id="modalRatingValue">5</span>/10</label>
+                <input type="range" id="modal_rating" min="1" max="10" value="5">
+            </div>
+
+            <textarea id="modal_review_text" 
+          placeholder="Describe staff accommodation, food, facilities, working conditions, management style, etc..." 
+          style="width: 100%; 
+                 padding: 15px; 
+                 border: 1px solid var(--border); 
+                 border-radius: 8px; 
+                 background: var(--input-bg); 
+                 color: var(--text-dark); 
+                 font-size: 15px;
+                 min-height: 150px;
+                 resize: vertical;
+                 font-family: inherit;"
+          required></textarea>
+
+            <div class="photo-upload">
+                <label for="modal_photos" class="photo-label">
+                    <i class="fas fa-camera"></i> Add Photos (max 3)
+                </label>
+                <input type="file" id="modal_photos" accept="image/*" multiple style="display: none;">
+                <div class="photo-preview" id="modalPhotoPreview"></div>
+            </div>
+
+            <button type="submit" class="post-btn">
+                <i class="fas fa-paper-plane"></i> Post Review
+            </button>
+        </form>
+        <div id="modalMessage" class="message"></div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    // Supabase configuration
+    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
+    
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    // Global variables
+    let resortsMap = new Map();
+    let allResorts = [];
+    let allResortsList = [];
+    let selectedResort1 = null;
+    let selectedResort2 = null;
+    
+    // ===========================================
+    // INITIALIZATION
+    // ===========================================
+    window.addEventListener('load', async function() {
+        try {
+            await loadResorts();
+            await loadReviews();
+            await loadTopResorts();
+            await loadAllResortsAZ();
+            await loadJobs(); // Preload jobs but keep hidden
+            setupComparisonTool();
+            initTheme();
+            
+            // Update stats
+            await updateStats();
+            
+        } catch (err) {
+            console.error("Error:", err);
+        }
+    });
+    
+    // ===========================================
+    // MAIN CONTENT NAVIGATION
+    // ===========================================
+    window.switchMainContent = function(section) {
+        // Update nav active states
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.getElementById(`nav-${section}`).classList.add('active');
+        
+        // Hide all content sections
+        document.getElementById('home-content').style.display = 'none';
+        document.getElementById('jobs-content').style.display = 'none';
+        document.getElementById('compare-content').style.display = 'none';
+        
+        // Hide home-specific elements
+        const topResortsBar = document.getElementById('topResortsBar');
+        const shareBox = document.getElementById('shareBox');
+        
+        if (section === 'home') {
+            document.getElementById('home-content').style.display = 'block';
+            topResortsBar.style.display = 'block';
+            shareBox.style.display = 'block';
+        } else if (section === 'jobs') {
+            document.getElementById('jobs-content').style.display = 'block';
+            topResortsBar.style.display = 'none';
+            shareBox.style.display = 'none';
+        } else if (section === 'compare') {
+            document.getElementById('compare-content').style.display = 'block';
+            topResortsBar.style.display = 'none';
+            shareBox.style.display = 'none';
+        }
+    };
+    
+    // ===========================================
+    // LOAD RESORTS
+    // ===========================================
+    async function loadResorts() {
+        try {
+            const { data: resorts } = await supabaseClient
+                .from('resorts')
+                .select('id, name')
+                .order('name');
+            
+            resorts.forEach(r => resortsMap.set(r.id, r.name));
+            allResorts = resorts || [];
+            console.log(`Loaded ${resorts.length} resorts`);
+            
+        } catch (error) {
+            console.error("Error loading resorts:", error);
+        }
+    }
+    
+    // ===========================================
+    // LOAD REVIEWS
+    // ===========================================
+    async function loadReviews() {
+        const reviewsFeed = document.getElementById('reviews-feed');
+        if (!reviewsFeed) return;
+        
+        reviewsFeed.innerHTML = '<div class="loading-spinner">Loading reviews...</div>';
+        
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('status', 'approved')
+                .order('created_at', { ascending: false });
+            
+            if (!reviews || reviews.length === 0) {
+                reviewsFeed.innerHTML = '<div class="no-reviews">No reviews yet. Be the first to share!</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            for (const review of reviews) {
+                const date = new Date(review.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                const resortName = resortsMap.get(review.resort_id) || review.resort_name || 'Unknown Resort';
+                
+                // Handle photos
+                let photosHtml = '';
+                if (review.photo_urls && review.photo_urls !== '[]') {
+                    try {
+                        const photoUrls = JSON.parse(review.photo_urls);
+                        if (photoUrls.length > 0) {
+                            photosHtml = '<div class="photo-gallery">';
+                            photoUrls.forEach(url => {
+                                photosHtml += `
+                                    <div class="photo-thumbnail" onclick="openCommentModal(${review.id})">
+                                        <img src="${url}" loading="lazy">
+                                    </div>
+                                `;
+                            });
+                            photosHtml += '</div>';
+                        }
+                    } catch (e) {}
+                }
+                
+                // Load comments
+                const { data: comments } = await supabaseClient
+                    .from('resort_comments')
+                    .select('*')
+                    .eq('review_id', review.id)
+                    .order('created_at', { ascending: false });
+                
+                const commentCount = comments?.length || 0;
+                const latestComments = comments?.slice(0, 2) || [];
+                
+                // Build comments preview
+                let commentsHtml = '';
+                if (commentCount > 0) {
+                    commentsHtml = '<div class="comment-preview">';
+                    latestComments.forEach(comment => {
+                        const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                        
+                        const commentAuthor = comment.is_official ? 'Official Response' : 'Guest';
+                        
+                        commentsHtml += `
+                            <div class="comment-preview-item">
+                                <div class="comment-preview-avatar">
+                                    ${comment.is_official ? '🏨' : '👤'}
+                                </div>
+                                <div class="comment-preview-content">
+                                    <div class="comment-preview-header">
+                                        <span class="comment-preview-author">${commentAuthor}</span>
+                                        ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                                        <span class="comment-preview-date">${commentDate}</span>
+                                    </div>
+                                    <p class="comment-preview-text">${comment.comment_text}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    if (commentCount > 2) {
+                        commentsHtml += `
+                            <div class="view-all-comments" onclick="openCommentModal(${review.id})">
+                                View all ${commentCount} comments
+                            </div>
+                        `;
+                    }
+                    commentsHtml += '</div>';
+                }
+                
+                html += `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <h3>
+                                <a href="resort.html?id=${review.resort_id}" class="resort-link">
+                                    ${resortName}
+                                </a>
+                            </h3>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="review-rating">${review.rating}/10</span>
+                                <div class="post-menu-container">
+                                    <button class="post-menu-btn" onclick="togglePostMenu(${review.id})">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="post-menu-dropdown" id="post-menu-${review.id}">
+                                        <div class="post-menu-item" onclick="reportReview(${review.id})">
+                                            <i class="fas fa-flag"></i> Report post
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="review-text">${review.review_text}</p>
+                        
+                        ${photosHtml}
+                        
+                        <div class="review-actions">
+                            <button class="action-btn" onclick="openCommentModal(${review.id})">
+                                <i class="far fa-comment"></i> Comment (${commentCount})
+                            </button>
+                            <button class="action-btn" onclick="shareReview(${review.id})">
+                                <i class="far fa-share-square"></i> Share
+                            </button>
+                        </div>
+                        
+                        ${commentsHtml}
+                        
+                        <div class="review-date">
+                            <i class="far fa-calendar"></i> ${date}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            reviewsFeed.innerHTML = html;
+            
+        } catch (error) {
+            console.error('Error loading reviews:', error);
+            reviewsFeed.innerHTML = '<div class="error">Error loading reviews</div>';
+        }
+    }
+    
+    // ===========================================
+    // LOAD JOBS
+    // ===========================================
+    async function loadJobs() {
+        const jobsFeed = document.getElementById('jobs-feed');
+        if (!jobsFeed) return;
+        
+        jobsFeed.innerHTML = '<div class="loading-spinner">Loading jobs...</div>';
+        
+        try {
+            const { data: jobs } = await supabaseClient
+                .from('resort_jobs')
+                .select(`
+                    *,
+                    resorts (
+                        name,
+                        id
+                    )
+                `)
+                .eq('is_active', true)
+                .gt('expires_at', new Date().toISOString())
+                .order('created_at', { ascending: false });
+            
+            if (!jobs || jobs.length === 0) {
+                jobsFeed.innerHTML = '<div class="no-jobs">No job openings at the moment</div>';
+                document.getElementById('jobs-count').textContent = '0 jobs';
+                return;
+            }
+            
+            document.getElementById('jobs-count').textContent = `${jobs.length} jobs`;
+            
+            // Populate department filter
+            const departments = [...new Set(jobs.map(job => job.department))];
+            const deptFilter = document.getElementById('department-filter');
+            deptFilter.innerHTML = '<option value="all">All Departments</option>' + 
+                departments.map(dept => `<option value="${dept}">${dept}</option>`).join('');
+            
+            let html = '';
+            jobs.forEach(job => {
+                const date = new Date(job.created_at).toLocaleDateString();
+                
+                let salaryText = 'Not specified';
+                if (job.salary_min && job.salary_max) {
+                    salaryText = `Rf ${job.salary_min.toLocaleString()} - ${job.salary_max.toLocaleString()}/${job.salary_period || 'month'}`;
+                } else if (job.salary_min) {
+                    salaryText = `From Rf ${job.salary_min.toLocaleString()}/${job.salary_period || 'month'}`;
+                }
+                
+                html += `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <h3>
+                                <a href="resort.html?id=${job.resort_id}" class="resort-link">
+                                    ${job.resorts?.name || 'Unknown Resort'}
+                                </a>
+                            </h3>
+                            <span class="job-department">${job.department}</span>
+                        </div>
+                        
+                        <h4 style="font-size: 18px; margin: 10px 0;">${job.title}</h4>
+                        
+                        <div class="job-meta">
+                            <span><i class="fas fa-clock"></i> ${job.job_type}</span>
+                            <span><i class="fas fa-money-bill-wave"></i> ${salaryText}</span>
+                        </div>
+                        
+                        <p class="job-description">${job.description.substring(0, 200)}${job.description.length > 200 ? '...' : ''}</p>
+                        
+                        ${job.requirements ? `
+                            <div class="job-requirements">
+                                <strong>Requirements:</strong> ${job.requirements.substring(0, 150)}${job.requirements.length > 150 ? '...' : ''}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="job-footer">
+                            <span class="job-date"><i class="far fa-calendar"></i> Posted: ${date}</span>
+                            <button class="view-details-btn" onclick="viewJobDetails(${job.id})">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            jobsFeed.innerHTML = html;
+            
+        } catch (error) {
+            console.error('Error loading jobs:', error);
+            jobsFeed.innerHTML = '<div class="no-jobs">Error loading jobs</div>';
+        }
+    }
+    
+    // ===========================================
+    // UPDATE STATS
+    // ===========================================
+    async function updateStats() {
+        try {
+            // Get total reviews
+            const { count: reviewCount } = await supabaseClient
+                .from('reviews')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'approved');
+            
+            document.getElementById('totalReviews').textContent = reviewCount || 0;
+            
+            // Get total jobs
+            const { count: jobCount } = await supabaseClient
+                .from('resort_jobs')
+                .select('*', { count: 'exact', head: true })
+                .eq('is_active', true)
+                .gt('expires_at', new Date().toISOString());
+            
+            document.getElementById('totalJobs').textContent = jobCount || 0;
+            
+            // Get total resorts
+            const { count: resortCount } = await supabaseClient
+                .from('resorts')
+                .select('*', { count: 'exact', head: true });
+            
+            document.getElementById('totalResorts').textContent = resortCount || '160+';
+            
+        } catch (error) {
+            console.error('Error updating stats:', error);
+        }
+    }
+    
+    // ===========================================
+    // LOAD TOP RESORTS
+    // ===========================================
+    async function loadTopResorts() {
+        try {
+            const { data: reviews } = await supabaseClient
+                .from('reviews')
+                .select('resort_id, rating, resort_name')
+                .eq('status', 'approved');
+            
+            if (!reviews || reviews.length === 0) {
+                document.getElementById('topResorts').innerHTML = '<div class="ranking-item">No reviews yet</div>';
+                return;
+            }
+            
+            const resortStats = {};
+            reviews.forEach(r => {
+                if (!r.resort_id) return;
+                
+                if (!resortStats[r.resort_id]) {
+                    resortStats[r.resort_id] = { 
+                        total: 0, 
+                        count: 0,
+                        name: r.resort_name || 'Unknown'
+                    };
+                }
+                resortStats[r.resort_id].total += r.rating;
+                resortStats[r.resort_id].count++;
+            });
+            
+            const sorted = Object.entries(resortStats)
+                .map(([id, data]) => ({
+                    id: parseInt(id),
+                    name: data.name,
+                    avg: (data.total / data.count).toFixed(1)
+                }))
+                .sort((a, b) => b.avg - a.avg)
+                .slice(0, 3);
+            
+            const rankingsDiv = document.getElementById('topResorts');
+            
+            if (sorted.length === 0) {
+                rankingsDiv.innerHTML = '<div class="ranking-item">No resorts with reviews</div>';
+                return;
+            }
+            
+            let html = '';
+            sorted.forEach((resort, index) => {
+                const displayName = resort.name.split(' ')[0];
+                html += `
+                    <div class="ranking-item" onclick="window.location.href='resort.html?id=${resort.id}'">
+                        <div class="rank">#${index + 1}</div>
+                        <div class="name">${displayName}</div>
+                        <div class="rating">⭐ ${resort.avg}</div>
+                    </div>
+                `;
+            });
+            
+            rankingsDiv.innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error in loadTopResorts:", error);
+            document.getElementById('topResorts').innerHTML = '<div class="ranking-item">No reviews yet</div>';
+        }
+    }
+    
+    // ===========================================
+    // LOAD ALL RESORTS A-Z
+    // ===========================================
+    async function loadAllResortsAZ() {
+        try {
+            const { data: resorts } = await supabaseClient
+                .from('resorts')
+                .select('id, name')
+                .order('name');
+            
+            const resortList = document.getElementById('resortRankings');
+            
+            const grouped = {};
+            resorts.forEach(resort => {
+                const firstLetter = resort.name.charAt(0).toUpperCase();
+                if (!grouped[firstLetter]) {
+                    grouped[firstLetter] = [];
+                }
+                grouped[firstLetter].push(resort);
+            });
+            
+            let html = `
+                <div class="az-nav">
+                    ${Object.keys(grouped).sort().map(letter => 
+                        `<span class="az-letter" onclick="scrollToLetter('${letter}')">${letter}</span>`
+                    ).join('')}
+                </div>
+                <div class="az-resort-list">
+            `;
+            
+            Object.keys(grouped).sort().forEach(letter => {
+                html += `<div class="az-section" id="letter-${letter}">`;
+                html += `<h4 class="az-section-title">${letter}</h4>`;
+                
+                grouped[letter].forEach(resort => {
+                    html += `
+                        <div class="az-resort-item" onclick="window.location.href='resort.html?id=${resort.id}'">
+                            <span class="resort-name">${resort.name}</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            });
+            
+            html += `</div>`;
+            resortList.innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error loading resorts A-Z:", error);
+        }
+    }
+    
+    window.scrollToLetter = function(letter) {
+        const element = document.getElementById(`letter-${letter}`);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+    
+// ===========================================
+// JOB DETAILS MODAL - FIXED VERSION (NO COMMENTS)
+// ===========================================
+window.viewJobDetails = async function(jobId) {
+    console.log('Viewing job details for ID:', jobId);
+    
+    try {
+        // Remove the comment - just select existing columns
+        const { data: job, error } = await supabaseClient
+            .from('resort_jobs')
+            .select(`
+                *,
+                resorts (
+                    name,
+                    id,
+                    phone
+                )
+            `)
+            .eq('id', jobId)
+            .single();
+        
+        if (error) {
+            console.error('Error fetching job:', error);
+            alert('Error loading job details: ' + error.message);
+            return;
+        }
+        
+        if (!job) {
+            console.error('Job not found');
+            alert('Job not found');
+            return;
+        }
+        
+        console.log('Job data:', job);
+        
+        // Format salary
+        let salaryText = 'Not specified';
+        if (job.salary_min && job.salary_max) {
+            salaryText = `Rf ${job.salary_min.toLocaleString()} - ${job.salary_max.toLocaleString()}/${job.salary_period || 'month'}`;
+        } else if (job.salary_min) {
+            salaryText = `From Rf ${job.salary_min.toLocaleString()}/${job.salary_period || 'month'}`;
+        }
+        
+        // Format expiry date
+        const expiryDate = job.expires_at ? new Date(job.expires_at).toLocaleDateString() : 'Not specified';
+        
+        // Create modal HTML
+        const modalHtml = `
+            <div class="modal-overlay active" id="jobDetailModal" onclick="closeJobDetailModal()">
+                <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-briefcase"></i> ${job.title || 'Job Details'}</h3>
+                        <i class="fas fa-times modal-close" onclick="closeJobDetailModal()"></i>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="margin:0; color: var(--primary);">
+                                <a href="resort.html?id=${job.resort_id}" style="color: var(--primary); text-decoration: none;">
+                                    ${job.resorts?.name || 'Unknown Resort'}
+                                </a>
+                            </h4>
+                            <span style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">
+                                ${job.department || 'General'}
+                            </span>
+                        </div>
+                        
+                        <div style="display: flex; gap: 20px; margin-bottom: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px; flex-wrap: wrap;">
+                            <span><i class="fas fa-clock" style="color: var(--primary);"></i> ${job.job_type || 'Not specified'}</span>
+                            <span><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> Expires: ${expiryDate}</span>
+                        </div>
+                        
+                        ${job.salary_min ? `
+                            <div style="background: rgba(24, 119, 242, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                                <i class="fas fa-money-bill-wave" style="color: var(--primary); margin-right: 8px;"></i>
+                                <strong style="color: var(--primary);">💰 ${salaryText}</strong>
+                            </div>
+                        ` : ''}
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 10px; color: var(--text-dark);">📝 Description</h4>
+                            <p style="line-height: 1.6; color: var(--text-dark);">${job.description || 'No description provided'}</p>
+                        </div>
+                        
+                        ${job.requirements ? `
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 10px; color: var(--text-dark);">📋 Requirements</h4>
+                                <p style="line-height: 1.6; color: var(--text-dark);">${job.requirements}</p>
+                            </div>
+                        ` : ''}
+                        
+                        <div style="background: var(--bg-color); padding: 20px; border-radius: 12px;">
+                            <h4 style="margin-bottom: 15px; color: var(--text-dark);">📧 How to Apply</h4>
+                            
+                            ${job.application_email ? `
+                                <p style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-envelope" style="color: var(--primary); width: 20px;"></i>
+                                    <span>Send CV to: </span>
+                                    <a href="mailto:${job.application_email}" style="color: var(--primary); font-weight: 500;">${job.application_email}</a>
+                                </p>
+                            ` : ''}
+                            
+                            ${job.contact_person ? `
+                                <p style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-user" style="color: var(--primary); width: 20px;"></i>
+                                    <span>Contact: </span>
+                                    <span style="font-weight: 500;">${job.contact_person}</span>
+                                </p>
+                            ` : ''}
+                            
+                            ${job.contact_phone ? `
+                                <p style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-phone" style="color: var(--primary); width: 20px;"></i>
+                                    <span>Call: </span>
+                                    <a href="tel:${job.contact_phone}" style="color: var(--primary); font-weight: 500;">${job.contact_phone}</a>
+                                </p>
+                            ` : ''}
+                            
+                            ${job.resorts?.phone && !job.contact_phone ? `
+                                <p style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-phone" style="color: var(--primary); width: 20px;"></i>
+                                    <span>Resort Phone: </span>
+                                    <a href="tel:${job.resorts.phone}" style="color: var(--primary); font-weight: 500;">${job.resorts.phone}</a>
+                                </p>
+                            ` : ''}
+                            
+                            ${!job.application_email && !job.contact_person && !job.contact_phone ? `
+                                <p style="color: var(--text-light); font-style: italic;">Contact information not provided. Please check the resort profile for details.</p>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Remove any existing modal
+        const existingModal = document.getElementById('jobDetailModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Add new modal to page
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+    } catch (error) {
+        console.error('Exception in viewJobDetails:', error);
+        alert('Error loading job details. Please try again.');
+    }
+};
+
+// Make sure close function exists
+window.closeJobDetailModal = function() {
+    const modal = document.getElementById('jobDetailModal');
+    if (modal) {
+        modal.remove();
+    }
+};
+    
+    // ===========================================
+    // COMMENT MODAL FUNCTIONS
+    // ===========================================
+    window.openCommentModal = async function(reviewId) {
+        const { data: review } = await supabaseClient
+            .from('reviews')
+            .select('*')
+            .eq('id', reviewId)
+            .single();
+        
+        const { data: comments } = await supabaseClient
+            .from('resort_comments')
+            .select('*')
+            .eq('review_id', reviewId)
+            .order('created_at', { ascending: false });
+        
+        const date = new Date(review.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        let photosHtml = '';
+        if (review.photo_urls && review.photo_urls !== '[]') {
+            try {
+                const photoUrls = JSON.parse(review.photo_urls);
+                if (photoUrls.length > 0) {
+                    photosHtml = '<div class="modal-post-photos">';
+                    photoUrls.forEach(url => {
+                        photosHtml += `
+                            <div class="modal-post-photo" onclick="window.open('${url}')">
+                                <img src="${url}" loading="lazy">
+                            </div>
+                        `;
+                    });
+                    photosHtml += '</div>';
+                }
+            } catch (e) {}
+        }
+        
+        let commentsHtml = '';
+        if (comments && comments.length > 0) {
+            comments.forEach(comment => {
+                const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                commentsHtml += `
+                    <div class="modal-comment-item">
+                        <div class="modal-comment-avatar">${comment.is_official ? '🏨' : '👤'}</div>
+                        <div class="modal-comment-content">
+                            <div class="modal-comment-header">
+                                <span class="modal-comment-author">${comment.is_official ? 'Official Response' : 'Guest'}</span>
+                                ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                                <span class="comment-date-small">${commentDate}</span>
+                            </div>
+                            <p class="modal-comment-text">${comment.comment_text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            commentsHtml = '<div class="no-comments-modal">No comments yet.</div>';
+        }
+        
+        const modalContent = `
+            <div class="modal-post">
+                <div class="modal-post-header">
+                    <span class="modal-post-rating">${review.rating}/10</span>
+                    <span class="modal-post-date">${date}</span>
+                </div>
+                <p class="modal-post-text">${review.review_text}</p>
+                ${photosHtml}
+            </div>
+            <div class="modal-comments">
+                <div class="comments-list">${commentsHtml}</div>
+            </div>
+        `;
+        
+        document.getElementById('commentModalContent').innerHTML = modalContent;
+        document.getElementById('commentModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+    
+    window.closeCommentModal = function() {
+        document.getElementById('commentModal').classList.remove('active');
+        document.body.style.overflow = '';
+    };
+    
+    window.shareReview = function(reviewId) {
+        const url = `https://resortreviews.vercel.app/resort.html?id=${reviewId}`;
+        navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+    };
+    
+    // ===========================================
+    // REPORT FUNCTIONS
+    // ===========================================
+    window.togglePostMenu = function(reviewId) {
+        document.querySelectorAll('.post-menu-dropdown.active').forEach(menu => {
+            if (menu.id !== `post-menu-${reviewId}`) {
+                menu.classList.remove('active');
+            }
+        });
+        
+        const menu = document.getElementById(`post-menu-${reviewId}`);
+        if (menu) {
+            menu.classList.toggle('active');
+        }
+    };
+    
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.post-menu-container')) {
+            document.querySelectorAll('.post-menu-dropdown.active').forEach(menu => {
+                menu.classList.remove('active');
+            });
+        }
+    });
+    
+    window.reportReview = async function(reviewId) {
+        document.getElementById(`post-menu-${reviewId}`)?.classList.remove('active');
+        
+        const reason = prompt('Why are you reporting this review? (Optional)');
+        if (reason === null) return;
+        
+        try {
+            const { data: review } = await supabaseClient
+                .from('reviews')
+                .select('resort_id')
+                .eq('id', reviewId)
+                .single();
+            
+            const { error } = await supabaseClient
+                .from('reports')
+                .insert([{
+                    review_id: reviewId,
+                    resort_id: review.resort_id,
+                    reason: reason || 'No reason provided',
+                    description: reason || 'No reason provided',
+                    status: 'pending',
+                    created_at: new Date()
+                }]);
+            
+            if (error) throw error;
+            
+            alert('✅ Review reported. Our moderation team will review it.');
+            
+        } catch (error) {
+            console.error('Error reporting review:', error);
+            alert('Error submitting report. Please try again.');
+        }
+    };
+    
+    // ===========================================
+    // MODAL FUNCTIONS
+    // ===========================================
+    function openModal() {
+        document.getElementById('shareModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+        document.getElementById('shareModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // ===========================================
+    // COMPARISON TOOL
+    // ===========================================
+    async function loadResortsForComparison() {
+        const { data: resorts } = await supabaseClient
+            .from('resorts')
+            .select('id, name')
+            .order('name');
+        
+        allResortsList = resorts || [];
+    }
+    
+    function setupComparisonSearch(inputId, suggestionsId, resortNum) {
+        const input = document.getElementById(inputId);
+        const suggestions = document.getElementById(suggestionsId);
+        
+        if (!input) return;
+        
+        input.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            if (searchTerm.length < 2) {
+                suggestions.classList.remove('active');
+                return;
+            }
+            
+            const matches = allResortsList.filter(resort => 
+                resort.name.toLowerCase().includes(searchTerm)
+            );
+            
+            if (matches.length > 0) {
+                let html = '';
+                matches.slice(0, 8).forEach(resort => {
+                    html += `<div class="suggestion-item" onclick="selectResort(${resortNum}, ${resort.id}, '${resort.name.replace(/'/g, "\\'")}')">${resort.name}</div>`;
+                });
+                suggestions.innerHTML = html;
+                suggestions.classList.add('active');
+            } else {
+                suggestions.innerHTML = '<div class="suggestion-item">No resorts found</div>';
+                suggestions.classList.add('active');
+            }
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.classList.remove('active');
+            }
+        });
+    }
+    
+    window.selectResort = function(resortNum, resortId, resortName) {
+        if (resortNum === 1) {
+            selectedResort1 = { id: resortId, name: resortName };
+            document.getElementById('selectedResort1').style.display = 'flex';
+            document.getElementById('resortName1').textContent = resortName;
+            document.getElementById('compareSearch1').value = '';
+            document.getElementById('compareSuggestions1').classList.remove('active');
+        } else {
+            selectedResort2 = { id: resortId, name: resortName };
+            document.getElementById('selectedResort2').style.display = 'flex';
+            document.getElementById('resortName2').textContent = resortName;
+            document.getElementById('compareSearch2').value = '';
+            document.getElementById('compareSuggestions2').classList.remove('active');
+        }
+        
+        document.getElementById('compareBtn').disabled = !(selectedResort1 && selectedResort2);
+        document.getElementById('comparisonResults').style.display = 'none';
+    };
+    
+    window.clearResort = function(resortNum) {
+        if (resortNum === 1) {
+            selectedResort1 = null;
+            document.getElementById('selectedResort1').style.display = 'none';
+        } else {
+            selectedResort2 = null;
+            document.getElementById('selectedResort2').style.display = 'none';
+        }
+        document.getElementById('compareBtn').disabled = true;
+        document.getElementById('comparisonResults').style.display = 'none';
+    };
+    
+    window.compareResorts = async function() {
+        if (!selectedResort1 || !selectedResort2) return;
+        
+        document.getElementById('comparisonResults').style.display = 'block';
+        document.getElementById('categoryBreakdown').innerHTML = '<div style="text-align: center; padding: 20px;">Loading comparison...</div>';
+        
+        try {
+            const [reviews1, reviews2] = await Promise.all([
+                supabaseClient.from('reviews').select('rating, photo_urls').eq('resort_id', selectedResort1.id).eq('status', 'approved'),
+                supabaseClient.from('reviews').select('rating, photo_urls').eq('resort_id', selectedResort2.id).eq('status', 'approved')
+            ]);
+            
+            const avgRating1 = reviews1.data?.length ? (reviews1.data.reduce((sum, r) => sum + r.rating, 0) / reviews1.data.length).toFixed(1) : '0.0';
+            const avgRating2 = reviews2.data?.length ? (reviews2.data.reduce((sum, r) => sum + r.rating, 0) / reviews2.data.length).toFixed(1) : '0.0';
+            
+            let photoCount1 = 0, photoCount2 = 0;
+            
+            reviews1.data?.forEach(r => {
+                if (r.photo_urls && r.photo_urls !== '[]') {
+                    try { photoCount1 += JSON.parse(r.photo_urls).length; } catch (e) {}
+                }
+            });
+            
+            reviews2.data?.forEach(r => {
+                if (r.photo_urls && r.photo_urls !== '[]') {
+                    try { photoCount2 += JSON.parse(r.photo_urls).length; } catch (e) {}
+                }
+            });
+            
+            let wins1 = 0, wins2 = 0;
+            if (parseFloat(avgRating1) > parseFloat(avgRating2)) wins1++; else if (parseFloat(avgRating2) > parseFloat(avgRating1)) wins2++;
+            if ((reviews1.data?.length || 0) > (reviews2.data?.length || 0)) wins1++; else if ((reviews2.data?.length || 0) > (reviews1.data?.length || 0)) wins2++;
+            if (photoCount1 > photoCount2) wins1++; else if (photoCount2 > photoCount1) wins2++;
+            
+            document.getElementById('badge1').innerHTML = `<i class="fas fa-hotel"></i> ${selectedResort1.name}`;
+            document.getElementById('badge2').innerHTML = `<i class="fas fa-hotel"></i> ${selectedResort2.name}`;
+            document.getElementById('rating1').textContent = `⭐ ${avgRating1}`;
+            document.getElementById('rating2').textContent = `⭐ ${avgRating2}`;
+            document.getElementById('reviews1').textContent = reviews1.data?.length || 0;
+            document.getElementById('reviews2').textContent = reviews2.data?.length || 0;
+            document.getElementById('photos1').textContent = photoCount1;
+            document.getElementById('photos2').textContent = photoCount2;
+            document.getElementById('wins1').textContent = wins1;
+            document.getElementById('wins2').textContent = wins2;
+            
+            document.getElementById('categoryBreakdown').innerHTML = `
+                <div class="category-row">
+                    <span class="category-name">⭐ Average Rating</span>
+                    <div class="category-values">
+                        <span style="color: ${parseFloat(avgRating1) > parseFloat(avgRating2) ? '#10b981' : 'inherit'}">${avgRating1}</span>
+                        <span style="color: var(--text-light);">vs</span>
+                        <span style="color: ${parseFloat(avgRating2) > parseFloat(avgRating1) ? '#10b981' : 'inherit'}">${avgRating2}</span>
+                    </div>
+                </div>
+                <div class="category-row">
+                    <span class="category-name">📝 Total Reviews</span>
+                    <div class="category-values">
+                        <span style="color: ${(reviews1.data?.length || 0) > (reviews2.data?.length || 0) ? '#10b981' : 'inherit'}">${reviews1.data?.length || 0}</span>
+                        <span style="color: var(--text-light);">vs</span>
+                        <span style="color: ${(reviews2.data?.length || 0) > (reviews1.data?.length || 0) ? '#10b981' : 'inherit'}">${reviews2.data?.length || 0}</span>
+                    </div>
+                </div>
+                <div class="category-row">
+                    <span class="category-name">📸 Total Photos</span>
+                    <div class="category-values">
+                        <span style="color: ${photoCount1 > photoCount2 ? '#10b981' : 'inherit'}">${photoCount1}</span>
+                        <span style="color: var(--text-light);">vs</span>
+                        <span style="color: ${photoCount2 > photoCount1 ? '#10b981' : 'inherit'}">${photoCount2}</span>
+                    </div>
+                </div>
+            `;
+            
+            const winnerMsg = document.getElementById('winnerMessage');
+            if (wins1 > wins2) {
+                winnerMsg.className = 'winner-message winner-a';
+                winnerMsg.innerHTML = `<i class="fas fa-trophy"></i> ${selectedResort1.name} wins!`;
+            } else if (wins2 > wins1) {
+                winnerMsg.className = 'winner-message winner-b';
+                winnerMsg.innerHTML = `<i class="fas fa-trophy"></i> ${selectedResort2.name} wins!`;
+            } else {
+                winnerMsg.className = 'winner-message tie';
+                winnerMsg.innerHTML = `<i class="fas fa-handshake"></i> It's a tie!`;
+            }
+            
+        } catch (error) {
+            console.error('Error comparing resorts:', error);
+        }
+    };
+    
+    window.closeComparison = function() {
+        document.getElementById('comparisonResults').style.display = 'none';
+    };
+    
+    function setupComparisonTool() {
+        loadResortsForComparison();
+        setupComparisonSearch('compareSearch1', 'compareSuggestions1', 1);
+        setupComparisonSearch('compareSearch2', 'compareSuggestions2', 2);
+    }
+    
+    // ===========================================
+    // DARK MODE FUNCTIONS
+    // ===========================================
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = true;
+        }
+    }
+    
+    window.toggleDarkMode = function() {
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+    };
+    
+    function openSettings() {
+        document.getElementById('settingsModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle) {
+            toggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+        }
+    }
+    
+    function closeSettingsModal() {
+        document.getElementById('settingsModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    window.openSettings = openSettings;
+    window.closeSettingsModal = closeSettingsModal;
+    
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSettingsModal();
+            closeModal();
+            closeCommentModal();
+            closeJobDetailModal();
+        }
+    });
+</script>
+
+</body>
+</html>

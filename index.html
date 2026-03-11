@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ResortReviews Maldives</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a2540;
+            --primary-light: #1e3a5f;
+            --secondary: #0070f3;
+            --secondary-light: #4d9eff;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .landing-container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .logo-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            width: 120px;
+            height: 120px;
+            line-height: 120px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 350px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.2);
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 16px;
+        }
+
+        .card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .card-features {
+            list-style: none;
+            padding: 0;
+            margin-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 1.5rem;
+        }
+
+        .card-features li {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-features i {
+            color: #4caf50;
+            font-size: 0.9rem;
+        }
+
+        .guest-card .card-icon i {
+            color: #ffd700;
+        }
+
+        .resort-card .card-icon i {
+            color: #00bcd4;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(255,255,255,0.3);
+        }
+
+        .footer a:hover {
+            border-bottom-color: white;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-umbrella-beach"></i>
+            </div>
+            <h1>ResortReviews Maldives</h1>
+            <p class="tagline">
+                Honest reviews from resort staff. Real experiences. 
+                Official responses from verified resorts.
+            </p>
+        </div>
+
+        <div class="cards-container">
+            <!-- Option A: Review as Guest -->
+            <a href="guest-feed.html" class="card guest-card">
+                <div class="card-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2>Review as Guest</h2>
+                <p>Share your experience anonymously. Read honest reviews from fellow staff members.</p>
+                <ul class="card-features">
+                    <li><i class="fas fa-check-circle"></i> Post anonymous reviews</li>
+                    <li><i class="fas fa-check-circle"></i> Browse all resort reviews</li>
+                    <li><i class="fas fa-check-circle"></i> Search and filter resorts</li>
+                    <li><i class="fas fa-check-circle"></i> View staff photos</li>
+                    <li><i class="fas fa-check-circle"></i> 100% anonymous</li>
+                </ul>
+                <div style="margin-top: 1.5rem; color: #ffd700;">
+                    <i class="fas fa-arrow-right"></i> Continue as Guest
+                </div>
+            </a>
+
+            <!-- Option B: Access as Resort -->
+            <a href="resort-login.html" class="card resort-card">
+                <div class="card-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h2>Resort Portal</h2>
+                <p>Official resort representatives. Respond to reviews and manage your resort's profile.</p>
+                <ul class="card-features">
+                    <li><i class="fas fa-check-circle"></i> Respond to staff reviews</li>
+                    <li><i class="fas fa-check-circle"></i> Official verified badge ✓</li>
+                    <li><i class="fas fa-check-circle"></i> Update resort information</li>
+                    <li><i class="fas fa-check-circle"></i> Track review trends</li>
+                    <li><i class="fas fa-check-circle"></i> Professional dashboard</li>
+                </ul>
+                <div style="margin-top: 1.5rem; color: #00bcd4;">
+                    <i class="fas fa-arrow-right"></i> Resort Login
+                </div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>
+                <i class="fas fa-shield-alt"></i> Anonymous reviews are moderated • 
+                <a href="about.html">About Us</a> • 
+                <a href="#">Learn more about verification</a> • 
+                <i class="fas fa-heart" style="color: #ff6b6b;"></i> Built for resort staff
+            </p>
+        </div>
+    </div>
+</body>
+</html>

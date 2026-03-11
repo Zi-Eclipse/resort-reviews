@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resort Profile - ResortReviews</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Override the main layout for profile pages */
+        .profile-page {
+            max-width: 1000px;
+            margin: 80px auto 40px;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Profile Cover - Facebook Style */
+        .profile-cover {
+            position: relative;
+            height: 300px;
+            background: linear-gradient(135deg, #1877f2, #0a4b8a);
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 70px;
+            overflow: hidden;
+        }
+
+        .profile-picture {
+            position: absolute;
+            bottom: -40px;
+            left: 30px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background: #1877f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .profile-info {
+            margin-left: 170px;
+            margin-bottom: 20px;
+        }
+
+        .profile-info h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .verified-badge-large {
+            background: #1877f2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Profile Navigation */
+        .profile-nav {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .profile-nav-item {
+            padding: 15px 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .profile-nav-item:hover {
+            color: var(--primary);
+        }
+
+        .profile-nav-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            justify-content: space-around;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        /* Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .info-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .info-card h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        /* Info Rows for Overview Tab */
+        .info-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-icon {
+            width: 24px;
+            color: var(--primary);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            color: var(--text-light);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--text-dark);
+            font-size: 15px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .info-value a {
+            color: var(--primary);
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* Reviews Tab */
+        .reviews-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .review-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .review-category {
+            background: var(--bg-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .review-rating {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .review-date {
+            color: var(--text-light);
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .review-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin: 10px 0;
+        }
+
+        /* Photos Tab */
+        .photos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .photos-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .photo-tab {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .photo-tab:hover {
+            background: var(--hover-bg);
+        }
+
+        .photo-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .category-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .photo-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+
+        .photo-card img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+
+        .photo-card .photo-info {
+            padding: 10px;
+        }
+
+        .photo-card .photo-category {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .photo-card .photo-review {
+            font-size: 13px;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Jobs Tab */
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .jobs-header h2 {
+            font-size: 20px;
+            color: var(--text-dark);
+        }
+
+        .job-filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .job-filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--white);
+            color: var(--text-dark);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .job-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .job-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .job-meta i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .job-description {
+            color: var(--text-dark);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .job-requirements {
+            background: var(--bg-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .job-requirements strong {
+            color: var(--primary);
+        }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .job-date {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .job-apply-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .job-apply-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .no-jobs {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-style: italic;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Category Modal */
+        .category-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-modal-overlay.active {
+            display: flex;
+        }
+
+        .category-modal {
+            background: var(--white);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .category-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-modal-header h2 {
+            font-size: 24px;
+            color: var(--text-dark);
+        }
+
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
+        }
+
+        .category-photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .category-photo-card {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .category-photo-card img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+
+        .category-photo-card .photo-review-preview {
+            padding: 8px;
+            font-size: 12px;
+            color: var(--text-light);
+            background: var(--white);
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            max-width: 450px;
+        }
+
+        .settings-content {
+            padding: 20px;
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-section h4 {
+            color: var(--text-light);
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .settings-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+        }
+
+        .settings-info i {
+            width: 20px;
+            color: var(--primary);
+        }
+
+        /* Dark Mode Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-info {
+                margin-left: 0;
+                margin-top: 60px;
+                text-align: center;
+            }
+            
+            .profile-picture {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .stats-bar {
+                flex-wrap: wrap;
+            }
+
+            .job-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .job-meta {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<div class="top-nav">
+    <div class="nav-left">
+        <a href="guest-feed.html" class="home-btn" title="Home">
+            <i class="fas fa-home"></i>
+        </a>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search resorts...">
+        </div>
+    </div>
+    
+    <div class="nav-center">
+        <a href="guest-feed.html" class="logo">
+            <i class="fas fa-umbrella-beach"></i>
+            <span>ResortReviews</span>
+        </a>
+    </div>
+    
+    <div class="nav-right">
+        <div class="nav-icons">
+            <a href="about.html" class="icon-btn" title="About">
+                <i class="fas fa-info-circle"></i>
+            </a>
+            <a href="resort-login.html" class="icon-btn" title="Resort Login">
+                <i class="fas fa-building"></i>
+            </a>
+            <button class="icon-btn" onclick="openSettings()" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content - Single Column -->
+<div class="profile-page" id="mainContent">
+    <div class="loading-spinner">Loading resort information...</div>
+</div>
+
+<!-- Category Modal -->
+<div class="category-modal-overlay" id="categoryModal" onclick="closeCategoryModal()">
+    <div class="category-modal" onclick="event.stopPropagation()">
+        <div class="category-modal-header">
+            <h2 id="modalCategoryTitle">Category Photos</h2>
+            <i class="fas fa-times modal-close" onclick="closeCategoryModal()"></i>
+        </div>
+        <div class="category-photos-grid" id="categoryPhotosGrid">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Job Details Modal -->
+<div class="modal-overlay" id="jobDetailModal" onclick="closeJobDetailModal()">
+    <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-briefcase"></i> Job Details</h3>
+            <i class="fas fa-times modal-close" onclick="closeJobDetailModal()"></i>
+        </div>
+        <div id="jobDetailContent" style="padding: 20px;">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal()">
+    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-cog"></i> Settings</h3>
+            <i class="fas fa-times modal-close" onclick="closeSettingsModal()"></i>
+        </div>
+        
+        <div class="settings-content">
+            <div class="settings-section">
+                <h4>Appearance</h4>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    
+    const { createClient } = supabase;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const resortId = urlParams.get('id');
+    
+    let currentTab = 'overview';
+    let categories = [];
+    let allReviews = [];
+    let allPhotos = [];
+    let allJobs = [];
+    
+    window.addEventListener('load', async function() {
+        if (!resortId) {
+            window.location.href = 'guest-feed.html';
+            return;
+        }
+        
+        await loadCategories();
+        await loadResortInfo();
+        await loadResortData();
+        await loadResortJobs();
+        initTheme();
+    });
+    
+    async function loadCategories() {
+        const { data } = await supabaseClient
+            .from('categories')
+            .select('*')
+            .order('display_order');
+        categories = data || [];
+    }
+    
+    async function loadResortInfo() {
+        const { data: resort } = await supabaseClient
+            .from('resorts')
+            .select('*')
+            .eq('id', resortId)
+            .single();
+        
+        document.getElementById('mainContent').innerHTML = `
+            <!-- Cover Photo -->
+            <div class="profile-cover">
+                <div class="profile-picture">
+                    🏨
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="profile-info">
+                <h1>${resort.name} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
+            </div>
+
+            <!-- Profile Navigation -->
+<div class="profile-nav">
+    <div class="profile-nav-item active" onclick="switchTab('overview', event)">Overview</div>
+    <div class="profile-nav-item" onclick="switchTab('reviews', event)">Reviews</div>
+    <div class="profile-nav-item" onclick="switchTab('photos', event)">Photos <span id="photoCount"></span></div>
+    <div class="profile-nav-item" onclick="switchTab('jobs', event)">Jobs <span id="jobCount"></span></div>
+</div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar" id="statsBar"></div>
+
+            <!-- Tab Content -->
+            <div id="tabContent"></div>
+        `;
+    }
+    
+    async function loadResortData() {
+        const { data: reviews } = await supabaseClient
+            .from('reviews')
+            .select('*, categories(*)')
+            .eq('resort_id', resortId)
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false });
+        
+        allReviews = reviews || [];
+        
+        allPhotos = [];
+        allReviews.forEach(review => {
+            if (review.photo_urls && review.photo_urls !== '[]') {
+                try {
+                    const urls = JSON.parse(review.photo_urls);
+                    urls.forEach(url => {
+                        allPhotos.push({
+                            url: url,
+                            reviewId: review.id,
+                            reviewText: review.review_text,
+                            rating: review.rating,
+                            category: review.categories,
+                            categoryId: review.category_id,
+                            date: review.created_at
+                        });
+                    });
+                } catch (e) {}
+            }
+        });
+        
+        const avgRating = allReviews.length > 0 
+            ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1)
+            : '0.0';
+        
+        document.getElementById('statsBar').innerHTML = `
+            <div class="stat-item">
+                <span class="stat-value">${avgRating}</span>
+                <span class="stat-label">Average Rating</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">${allReviews.length}</span>
+                <span class="stat-label">Reviews</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">${allPhotos.length}</span>
+                <span class="stat-label">Photos</span>
+            </div>
+        `;
+        
+        document.getElementById('photoCount').textContent = `(${allPhotos.length})`;
+        
+        switchTab('overview', null);
+    }
+    
+async function loadResortJobs() {
+    console.log('Loading jobs for resort ID in guest view:', resortId);
+    try {
+        const now = new Date().toISOString();
+        console.log('Current time:', now);
+        
+        // This version ONLY shows active, non-expired jobs
+        const { data: jobs, error } = await supabaseClient
+            .from('resort_jobs')
+            .select('*')
+            .eq('resort_id', resortId)
+            .eq('is_active', true)
+            .gt('expires_at', now)  // Only jobs expiring in the future
+            .order('created_at', { ascending: false });
+        
+        if (error) {
+            console.error('Error loading jobs:', error);
+            allJobs = [];
+        } else {
+            allJobs = jobs || [];
+            console.log('Active jobs loaded:', allJobs.length);
+            
+            // Also log any jobs that are excluded so we can see why
+            const { data: allJobsData } = await supabaseClient
+                .from('resort_jobs')
+                .select('id, title, is_active, expires_at')
+                .eq('resort_id', resortId);
+            
+            console.log('All jobs in DB (including expired):', allJobsData);
+        }
+        
+        // Update job count in the tab
+        const jobCountSpan = document.getElementById('jobCount');
+        if (jobCountSpan) {
+            jobCountSpan.textContent = `(${allJobs.length})`;
+        }
+        
+        // If we're on the jobs tab, refresh the display
+        if (currentTab === 'jobs') {
+            loadJobsTab();
+        }
+        
+    } catch (error) {
+        console.error('Exception loading jobs:', error);
+        allJobs = [];
+    }
+}
+
+window.switchTab = function(tab, clickEvent = null) {
+    console.log('Switching to tab:', tab);
+    currentTab = tab;
+    
+    // Update active class on navigation items
+    document.querySelectorAll('.profile-nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // If called from a click event, use event.target
+    if (clickEvent) {
+        clickEvent.target.classList.add('active');
+    } else {
+        // If called programmatically, find the matching nav item
+        document.querySelectorAll('.profile-nav-item').forEach(item => {
+            if (item.textContent.toLowerCase().includes(tab)) {
+                item.classList.add('active');
+            }
+        });
+    }
+    
+    if (tab === 'overview') loadOverview();
+    if (tab === 'reviews') loadReviewsTab();
+    if (tab === 'photos') loadPhotosTab();
+    if (tab === 'jobs') {
+        console.log('Loading jobs tab...');
+        loadJobsTab();
+    }
+};
+
+function loadOverview() {
+    supabaseClient
+        .from('resorts')
+        .select('*')
+        .eq('id', resortId)
+        .single()
+        .then(({ data: resort }) => {
+            // Simple text cleaning
+            const clean = (text) => {
+                if (!text) return 'Not available';
+                return String(text).replace(/\s+/g, ' ').trim();
+            };
+
+            const html = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
+                    <!-- Left Column -->
+                    <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📍 Location & Contact</h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">ADDRESS</div>
+                            <div style="color: var(--text-dark); font-size: 15px; line-height: 1.5;">${clean(resort.address)}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">PHONE</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.phone)}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">HOURS</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.hours)}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">WEBSITE</div>
+                            <div style="color: var(--text-dark); font-size: 15px; word-break: break-all;">
+                                ${resort.website ? `<a href="${clean(resort.website)}" target="_blank" style="color: var(--primary); text-decoration: none;">${clean(resort.website).replace(/^https?:\/\//, '')}</a>` : 'Not available'}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📊 Quick Stats</h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">GOOGLE RATING</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">⭐ ${resort.google_rating || 'N/A'}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">STAR RATING</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${resort.star_rating || 'N/A'} stars</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL PHOTOS</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${allPhotos.length}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL REVIEWS</div>
+                            <div style="color: var(--text-dark); font-size: 15px;">${allReviews.length}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('tabContent').innerHTML = html;
+        });
+}
+
+    
+    function loadReviewsTab() {
+        if (allReviews.length === 0) {
+            document.getElementById('tabContent').innerHTML = '<p style="text-align: center; padding: 40px;">No reviews yet</p>';
+            return;
+        }
+        
+        let html = '<div class="reviews-feed">';
+        allReviews.forEach(review => {
+            const date = new Date(review.created_at).toLocaleDateString();
+            const category = review.categories?.name || 'General';
+            const categoryIcon = review.categories?.icon || '📌';
+            
+            html += `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-category">${categoryIcon} ${category}</span>
+                        <span class="review-rating">${review.rating}/10</span>
+                    </div>
+                    <div class="review-date">${date}</div>
+                    <p class="review-text">${review.review_text}</p>
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        document.getElementById('tabContent').innerHTML = html;
+    }
+    
+    function loadPhotosTab() {
+        if (allPhotos.length === 0) {
+            document.getElementById('tabContent').innerHTML = `
+                <div class="photos-header">
+                    <h2>Photos</h2>
+                    <div class="photos-tabs">
+                        <button class="photo-tab active" onclick="showAllPhotos()">All Photos</button>
+                        <button class="photo-tab" onclick="showCategories()">Albums</button>
+                    </div>
+                </div>
+                <p style="text-align: center; padding: 40px;">No photos yet</p>
+            `;
+            return;
+        }
+        
+        let html = `
+            <div class="photos-header">
+                <h2>Photos</h2>
+                <div class="photos-tabs">
+                    <button class="photo-tab active" onclick="showAllPhotos()">All Photos</button>
+                    <button class="photo-tab" onclick="showCategories()">Albums</button>
+                </div>
+            </div>
+            <div id="photosContent">
+                ${generateAllPhotosView()}
+            </div>
+        `;
+        
+        document.getElementById('tabContent').innerHTML = html;
+    }
+    
+    function loadJobsTab() {
+        if (allJobs.length === 0) {
+            document.getElementById('tabContent').innerHTML = `
+                <div class="jobs-header">
+                    <h2><i class="fas fa-briefcase"></i> Current Job Openings</h2>
+                </div>
+                <div class="no-jobs">No job openings at the moment</div>
+            `;
+            return;
+        }
+        
+        let html = `
+            <div class="jobs-header">
+                <h2><i class="fas fa-briefcase"></i> Current Job Openings (${allJobs.length})</h2>
+                <div class="job-filters">
+                    <select class="job-filter-select" onchange="filterJobsByType(this.value)">
+                        <option value="all">All Types</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                    <select class="job-filter-select" onchange="filterJobsByDepartment(this.value)">
+                        <option value="all">All Departments</option>
+                        ${getUniqueDepartments().map(dept => 
+                            `<option value="${dept}">${dept}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+            </div>
+            <div class="jobs-grid" id="jobsGrid">
+                ${generateJobsHTML(allJobs)}
+            </div>
+        `;
+        
+        document.getElementById('tabContent').innerHTML = html;
+    }
+    
+    function getUniqueDepartments() {
+        const depts = new Set(allJobs.map(job => job.department));
+        return Array.from(depts);
+    }
+    
+    function generateJobsHTML(jobs) {
+        if (jobs.length === 0) {
+            return '<div class="no-jobs">No jobs match your filters</div>';
+        }
+        
+        return jobs.map(job => {
+            const date = new Date(job.created_at).toLocaleDateString();
+            const salaryText = job.salary_min && job.salary_max 
+                ? `Rf ${job.salary_min.toLocaleString()} - ${job.salary_max.toLocaleString()}/${job.salary_period || 'month'}`
+                : job.salary_min 
+                    ? `From Rf ${job.salary_min.toLocaleString()}/${job.salary_period || 'month'}`
+                    : 'Not specified';
+            
+            return `
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3 class="job-title">${job.title}</h3>
+                        <span class="job-badge">${job.department}</span>
+                    </div>
+                    
+                    <div class="job-meta">
+                        <span><i class="fas fa-clock"></i> ${job.job_type}</span>
+                        <span><i class="fas fa-money-bill-wave"></i> ${salaryText}</span>
+                    </div>
+                    
+                    <div class="job-description">
+                        ${job.description.substring(0, 200)}${job.description.length > 200 ? '...' : ''}
+                    </div>
+                    
+                    ${job.requirements ? `
+                        <div class="job-requirements">
+                            <strong>Requirements:</strong> ${job.requirements.substring(0, 150)}${job.requirements.length > 150 ? '...' : ''}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="job-footer">
+                        <span class="job-date"><i class="far fa-calendar"></i> Posted: ${date}</span>
+                        <button class="job-apply-btn" onclick="showJobDetails(${job.id})">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    window.filterJobsByType = function(type) {
+        const departmentFilter = document.querySelector('.job-filter-select:last-child').value;
+        let filtered = allJobs;
+        
+        if (type !== 'all') {
+            filtered = filtered.filter(job => job.job_type === type);
+        }
+        
+        if (departmentFilter !== 'all') {
+            filtered = filtered.filter(job => job.department === departmentFilter);
+        }
+        
+        document.getElementById('jobsGrid').innerHTML = generateJobsHTML(filtered);
+    };
+    
+    window.filterJobsByDepartment = function(department) {
+        const typeFilter = document.querySelector('.job-filter-select:first-child').value;
+        let filtered = allJobs;
+        
+        if (department !== 'all') {
+            filtered = filtered.filter(job => job.department === department);
+        }
+        
+        if (typeFilter !== 'all') {
+            filtered = filtered.filter(job => job.job_type === typeFilter);
+        }
+        
+        document.getElementById('jobsGrid').innerHTML = generateJobsHTML(filtered);
+    };
+    
+    window.showJobDetails = async function(jobId) {
+        const job = allJobs.find(j => j.id === jobId);
+        if (!job) return;
+        
+        const { data: resort } = await supabaseClient
+            .from('resorts')
+            .select('name, phone, email')
+            .eq('id', resortId)
+            .single();
+        
+        const salaryText = job.salary_min && job.salary_max 
+            ? `Rf ${job.salary_min.toLocaleString()} - ${job.salary_max.toLocaleString()}/${job.salary_period || 'month'}`
+            : job.salary_min 
+                ? `From Rf ${job.salary_min.toLocaleString()}/${job.salary_period || 'month'}`
+                : 'Not specified';
+        
+        document.getElementById('jobDetailContent').innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-size: 20px;">${job.title}</h3>
+                <span style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">${job.department}</span>
+            </div>
+            
+            <div style="display: flex; gap: 20px; margin-bottom: 20px; padding: 10px; background: var(--bg-color); border-radius: 8px;">
+                <span><i class="fas fa-clock"></i> ${job.job_type}</span>
+                <span><i class="fas fa-calendar-alt"></i> Expires: ${new Date(job.expires_at).toLocaleDateString()}</span>
+            </div>
+            
+            ${job.salary_min ? `
+                <div style="background: rgba(24, 119, 242, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
+                    <i class="fas fa-money-bill-wave" style="color: var(--primary);"></i>
+                    <strong style="color: var(--primary);"> ${salaryText}</strong>
+                </div>
+            ` : ''}
+            
+            <h4 style="margin-bottom: 10px;">Description</h4>
+            <p style="line-height: 1.6; margin-bottom: 20px;">${job.description}</p>
+            
+            ${job.requirements ? `
+                <h4 style="margin-bottom: 10px;">Requirements</h4>
+                <p style="line-height: 1.6; margin-bottom: 20px;">${job.requirements}</p>
+            ` : ''}
+            
+            <div style="background: var(--bg-color); padding: 15px; border-radius: 8px;">
+                <h4 style="margin-bottom: 10px;">How to Apply</h4>
+                ${job.application_email ? `
+                    <p style="margin-bottom: 8px;"><i class="fas fa-envelope"></i> Send CV to: <a href="mailto:${job.application_email}">${job.application_email}</a></p>
+                ` : ''}
+                ${job.contact_person ? `
+                    <p style="margin-bottom: 8px;"><i class="fas fa-user"></i> Contact: ${job.contact_person}</p>
+                ` : ''}
+                ${job.contact_phone ? `
+                    <p style="margin-bottom: 8px;"><i class="fas fa-phone"></i> Call: <a href="tel:${job.contact_phone}">${job.contact_phone}</a></p>
+                ` : ''}
+                ${resort?.phone && !job.contact_phone ? `
+                    <p style="margin-bottom: 8px;"><i class="fas fa-phone"></i> Resort Phone: <a href="tel:${resort.phone}">${resort.phone}</a></p>
+                ` : ''}
+            </div>
+        `;
+        
+        document.getElementById('jobDetailModal').classList.add('active');
+    };
+    
+    window.closeJobDetailModal = function() {
+        document.getElementById('jobDetailModal').classList.remove('active');
+    };
+    
+    window.showAllPhotos = function() {
+        document.querySelectorAll('.photo-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('photosContent').innerHTML = generateAllPhotosView();
+    };
+    
+    window.showCategories = function() {
+        document.querySelectorAll('.photo-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('photosContent').innerHTML = generateCategoriesView();
+    };
+    
+    function generateAllPhotosView() {
+        if (allPhotos.length === 0) {
+            return '<p style="text-align: center; padding: 40px;">No photos yet</p>';
+        }
+        
+        let html = '<div class="photos-grid">';
+        allPhotos.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(photo => {
+            const date = new Date(photo.date).toLocaleDateString();
+            const categoryName = photo.category?.name || 'Other';
+            const categoryIcon = photo.category?.icon || '📌';
+            html += `
+                <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
+                    <img src="${photo.url}" loading="lazy">
+                    <div class="photo-info">
+                        <div class="photo-category">${categoryIcon} ${categoryName}</div>
+                        <div class="photo-review">⭐ ${photo.rating}/10 • ${date}</div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        return html;
+    }
+    
+    function generateCategoriesView() {
+        const photosByCategory = {};
+        allPhotos.forEach(photo => {
+            const categoryId = photo.categoryId || 'uncategorized';
+            const categoryName = photo.category?.name || 'Other';
+            const categoryIcon = photo.category?.icon || '📌';
+            
+            if (!photosByCategory[categoryId]) {
+                photosByCategory[categoryId] = {
+                    name: categoryName,
+                    icon: categoryIcon,
+                    photos: []
+                };
+            }
+            photosByCategory[categoryId].photos.push(photo);
+        });
+        
+        if (Object.keys(photosByCategory).length === 0) {
+            return '<p style="text-align: center; padding: 40px;">No photos yet</p>';
+        }
+        
+        let html = '<div class="category-grid">';
+        
+        Object.values(photosByCategory).forEach(category => {
+            html += `
+                <div class="category-card" onclick="openCategoryModal('${category.name}')">
+                    <div class="category-icon">${category.icon}</div>
+                    <div class="category-name">${category.name}</div>
+                    <div class="category-count">${category.photos.length} photos</div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        return html;
+    }
+    
+    window.openCategoryModal = function(categoryName) {
+        const categoryPhotos = allPhotos.filter(p => p.category?.name === categoryName);
+        
+        let html = '';
+        categoryPhotos.forEach(photo => {
+            const date = new Date(photo.date).toLocaleDateString();
+            html += `
+                <div class="category-photo-card" onclick="openCommentModal(${photo.reviewId})">
+                    <img src="${photo.url}" loading="lazy">
+                    <div class="photo-review-preview">
+                        ⭐ ${photo.rating}/10 • ${date}
+                    </div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('modalCategoryTitle').textContent = `${categoryName} (${categoryPhotos.length} photos)`;
+        document.getElementById('categoryPhotosGrid').innerHTML = html;
+        document.getElementById('categoryModal').classList.add('active');
+    };
+    
+    window.closeCategoryModal = function() {
+        document.getElementById('categoryModal').classList.remove('active');
+    };
+    
+    window.openCommentModal = function(reviewId) {
+        console.log('Open comment modal for review:', reviewId);
+        // You can implement comment modal here if needed
+    };
+    
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = true;
+        }
+    }
+    
+    window.toggleDarkMode = function() {
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+    };
+    
+    window.openSettings = function() {
+        document.getElementById('settingsModal').classList.add('active');
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle) {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            toggle.checked = currentTheme === 'dark';
+        }
+    };
+    
+    window.closeSettingsModal = function() {
+        document.getElementById('settingsModal').classList.remove('active');
+    };
+</script>
+
+</body>
+</html>
