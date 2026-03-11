@@ -538,41 +538,62 @@
         if (currentTab === 'rejected') document.getElementById('tabRejected').className = 'tab active';
     }
     
-    function displayReviews(reviews) {
-        const container = document.getElementById('reviewsList');
-        
-        if (reviews.length === 0) {
-            container.innerHTML = '<p style="text-align: center; padding: 40px;">No reviews found</p>';
-            return;
-        }
-        
-        let html = '';
-        reviews.forEach(review => {
-            const date = new Date(review.created_at).toLocaleDateString();
-            
-            html += `
-                <div class="review-card">
-                    <div class="review-header">
-                        <span class="review-rating">${review.rating}/10</span>
-                        <span class="review-date">${date}</span>
-                    </div>
-                    <h3>${review.resort_name}</h3>
-                    <p class="review-text">${review.review_text}</p>
-                    ${review.photo_urls && review.photo_urls !== '[]' ? '<p><i class="fas fa-image"></i> Contains photos</p>' : ''}
-                    
-                    <div class="review-actions">
-                        ${currentTab === 'pending' ? `
-                            <button class="action-btn approve" onclick="updateStatus(${review.id}, 'approved')">Approve</button>
-                            <button class="action-btn reject" onclick="updateStatus(${review.id}, 'rejected')">Reject</button>
-                        ` : ''}
-                        <button class="action-btn" onclick="deleteReview(${review.id})">Delete</button>
-                    </div>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = html;
+function displayReviews(reviews) {
+    const container = document.getElementById('reviewsList');
+    
+    if (reviews.length === 0) {
+        container.innerHTML = '<p style="text-align: center; padding: 40px;">No reviews found</p>';
+        return;
     }
+    
+    let html = '';
+    reviews.forEach(review => {
+        const date = new Date(review.created_at).toLocaleDateString();
+        
+        html += `
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="review-rating">${review.rating}/10</span>
+                    <span class="review-date">${date}</span>
+                </div>
+                <h3>${review.resort_name}</h3>
+                <p class="review-text">${review.review_text}</p>
+                
+                ${review.photo_urls && review.photo_urls !== '[]' ? `
+                    <div style="margin: 15px 0;">
+                        <p style="margin-bottom: 8px; color: var(--text-light);"><i class="fas fa-image"></i> Photos:</p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            ${(() => {
+                                try {
+                                    const photoUrls = JSON.parse(review.photo_urls);
+                                    return photoUrls.map(url => `
+                                        <div style="width: 120px; height: 120px; border-radius: 8px; overflow: hidden; border: 2px solid var(--border); cursor: pointer;" 
+                                             onclick="window.open('${url}', '_blank')">
+                                            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;" 
+                                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'padding: 8px; color: var(--danger);\'>Failed to load</span>';">
+                                        </div>
+                                    `).join('');
+                                } catch (e) {
+                                    return '<span style="color: var(--danger);">Error loading photos</span>';
+                                }
+                            })()}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="review-actions">
+                    ${currentTab === 'pending' ? `
+                        <button class="action-btn approve" onclick="updateStatus(${review.id}, 'approved')">Approve</button>
+                        <button class="action-btn reject" onclick="updateStatus(${review.id}, 'rejected')">Reject</button>
+                    ` : ''}
+                    <button class="action-btn" onclick="deleteReview(${review.id})">Delete</button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
     
     async function updateStatus(id, status) {
         try {
