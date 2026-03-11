@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* ==================== VERIFICATION REQUEST STYLES ==================== */
         .admin-container {
             max-width: 1200px;
             margin: 100px auto 40px;
@@ -26,6 +27,13 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -169,6 +177,15 @@
             color: white;
         }
         
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+        
         .no-requests {
             text-align: center;
             padding: 60px;
@@ -193,7 +210,7 @@
             padding: 40px;
             color: var(--text-light);
         }
-
+        
         .domain-warning {
             background: #fee2e2;
             border: 1px solid #ef4444;
@@ -203,7 +220,7 @@
             color: #991b1b;
             font-size: 13px;
         }
-
+        
         .domain-success {
             background: #d1fae5;
             border: 1px solid #10b981;
@@ -213,39 +230,176 @@
             color: #065f46;
             font-size: 13px;
         }
-
-        .resort-not-found {
-            background: #fee2e2;
-            border: 1px solid #ef4444;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            color: #991b1b;
-            font-size: 14px;
-            font-weight: 500;
+        
+        /* Admin Navigation */
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
         }
-
-        .resort-found {
-            background: #d1fae5;
-            border: 1px solid #10b981;
-            padding: 15px;
+        
+        .admin-nav-item {
+            padding: 8px 16px;
             border-radius: 8px;
-            margin: 15px 0;
-            color: #065f46;
-            font-size: 14px;
-            font-weight: 500;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        
+        .admin-nav-item:hover {
+            background: var(--hover-bg);
+        }
+        
+        .admin-nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Resort Management Styles */
+        .resort-management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-resorts {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 300px;
+            background: var(--white);
+            color: var(--text-dark);
+        }
+        
+        .filter-select {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--white);
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        
+        .resort-table {
+            width: 100%;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .resort-table th {
+            background: var(--bg-color);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .resort-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dark);
+        }
+        
+        .resort-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .resort-table tr:hover {
+            background: var(--hover-bg);
+        }
+        
+        .verified-badge-small {
+            background: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+        
+        .unverified-badge {
+            background: #6b7280;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+        
+        .action-cell {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-small {
+            padding: 4px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-view {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-danger-small {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger-small:hover {
+            background: #dc2626;
+        }
+        
+        .confirm-modal {
+            max-width: 400px;
+        }
+        
+        .confirm-content {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .confirm-content p {
+            margin: 20px 0;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .confirm-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
+<!-- Top Navigation -->
 <div class="top-nav">
     <div class="nav-left">
         <a href="admin.html" class="home-btn" title="Admin Dashboard">
             <i class="fas fa-shield-alt"></i>
         </a>
     </div>
-    
     <div class="nav-center">
         <a href="admin.html" class="logo">
             <i class="fas fa-umbrella-beach"></i>
@@ -255,7 +409,7 @@
     <div class="nav-right">
         <div class="nav-icons">
             <button class="icon-btn" onclick="logout()" title="Logout">
-                 <i class="fas fa-sign-out-alt"></i>
+                <i class="fas fa-sign-out-alt"></i>
             </button>
             <a href="index.html" class="icon-btn" title="Home">
                 <i class="fas fa-home"></i>
@@ -269,65 +423,145 @@
         <a href="admin.html"><i class="fas fa-arrow-left"></i> Back to Admin Dashboard</a>
     </div>
     
-    <div class="admin-header">
-        <div>
-            <h1><i class="fas fa-check-circle"></i> Verification Requests</h1>
-            <p>Review and verify resort applications</p>
+    <!-- Admin Tabs -->
+    <div class="admin-nav" style="margin-bottom: 30px;">
+        <button class="admin-nav-item active" onclick="switchAdminTab('verification')" id="tab-verification">
+            <i class="fas fa-check-circle"></i> Verification Requests
+        </button>
+        <button class="admin-nav-item" onclick="switchAdminTab('resorts')" id="tab-resorts">
+            <i class="fas fa-building"></i> Resort Management
+        </button>
+    </div>
+    
+    <!-- Verification Requests Section -->
+    <div id="verification-section">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-check-circle"></i> Verification Requests</h1>
+                <p>Review and verify resort applications</p>
+            </div>
+        </div>
+        
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <span class="stat-value" id="pendingCount">0</span>
+                <span class="stat-label">Pending</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="approvedCount">0</span>
+                <span class="stat-label">Approved</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="rejectedCount">0</span>
+                <span class="stat-label">Rejected</span>
+            </div>
+        </div>
+        
+        <div class="tab-nav">
+            <button class="tab active" onclick="loadRequests('pending')" id="tabPending">Pending</button>
+            <button class="tab" onclick="loadRequests('approved')" id="tabApproved">Approved</button>
+            <button class="tab" onclick="loadRequests('rejected')" id="tabRejected">Rejected</button>
+        </div>
+        
+        <div id="requestsList">
+            <div class="loading-spinner">Loading requests...</div>
         </div>
     </div>
     
-    <div class="stats-grid" id="statsGrid">
-        <div class="stat-card">
-            <span class="stat-value" id="pendingCount">0</span>
-            <span class="stat-label">Pending</span>
+    <!-- Resort Management Section (hidden by default) -->
+    <div id="resort-section" style="display: none;">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-building"></i> Resort Management</h1>
+                <p>View and manage registered resorts</p>
+            </div>
         </div>
-        <div class="stat-card">
-            <span class="stat-value" id="approvedCount">0</span>
-            <span class="stat-label">Approved</span>
+        
+        <div class="stats-grid-4" id="resortStats">
+            <div class="stat-card">
+                <span class="stat-value" id="totalResorts">0</span>
+                <span class="stat-label">Total Resorts</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="verifiedResorts">0</span>
+                <span class="stat-label">Verified</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="activeJobs">0</span>
+                <span class="stat-label">Active Jobs</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="totalReviews">0</span>
+                <span class="stat-label">Total Reviews</span>
+            </div>
         </div>
-        <div class="stat-card">
-            <span class="stat-value" id="rejectedCount">0</span>
-            <span class="stat-label">Rejected</span>
+        
+        <div style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="resortSearch" class="search-resorts" placeholder="Search resorts by name or email...">
+            <select id="verificationFilter" class="filter-select" style="width: auto;">
+                <option value="all">All Resorts</option>
+                <option value="verified">Verified Only</option>
+                <option value="unverified">Unverified Only</option>
+            </select>
+        </div>
+        
+        <div id="resortsList">
+            <div class="loading-spinner">Loading resorts...</div>
         </div>
     </div>
-    
-    <div class="tab-nav">
-        <button class="tab active" onclick="loadRequests('pending')" id="tabPending">Pending</button>
-        <button class="tab" onclick="loadRequests('approved')" id="tabApproved">Approved</button>
-        <button class="tab" onclick="loadRequests('rejected')" id="tabRejected">Rejected</button>
-    </div>
-    
-    <div id="requestsList">
-        <div class="loading-spinner">Loading requests...</div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteConfirmModal" onclick="closeDeleteModal()">
+    <div class="modal-content confirm-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Confirm Deletion</h3>
+            <i class="fas fa-times modal-close" onclick="closeDeleteModal()"></i>
+        </div>
+        
+        <div class="confirm-content">
+            <p id="deleteMessage">Are you sure you want to delete this item?</p>
+            <p style="font-size: 13px; color: var(--text-light);" id="deleteWarning">This action cannot be undone.</p>
+            
+            <div class="confirm-actions">
+                <button class="action-btn" onclick="closeDeleteModal()">Cancel</button>
+                <button class="action-btn btn-delete" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-
     // ===========================================
-// SECURITY CHECK - MUST BE LOGGED IN
-// ===========================================
-(function() {
-    const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
-    const loginTimestamp = localStorage.getItem('admin_login_timestamp');
-    
-    if (!isLoggedIn) {
-        window.location.href = 'admin.html';
-        return;
-    }
-    
-    // Check session expiry (4 hours)
-    if (loginTimestamp) {
-        const elapsedTime = new Date().getTime() - parseInt(loginTimestamp);
-        if (elapsedTime > 4 * 60 * 60 * 1000) {
-            localStorage.removeItem('admin_logged_in');
-            localStorage.removeItem('admin_login_timestamp');
+    // SECURITY CHECK - MUST BE LOGGED IN
+    // ===========================================
+    (function() {
+        const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
+        const loginTimestamp = localStorage.getItem('admin_login_timestamp');
+        
+        console.log('Security check - Logged in:', isLoggedIn);
+        
+        if (!isLoggedIn) {
+            console.log('Not logged in, redirecting to admin.html');
             window.location.href = 'admin.html';
             return;
         }
-    }
-})();
+        
+        // Check session expiry (4 hours)
+        if (loginTimestamp) {
+            const elapsedTime = new Date().getTime() - parseInt(loginTimestamp);
+            const fourHoursInMs = 4 * 60 * 60 * 1000;
+            
+            if (elapsedTime > fourHoursInMs) {
+                console.log('Session expired, logging out');
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_login_timestamp');
+                window.location.href = 'admin.html';
+                return;
+            }
+        }
+    })();
 
     const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
     const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
@@ -336,26 +570,336 @@
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
     let currentStatus = 'pending';
+    let currentAdminTab = 'verification';
+    let deleteCallback = null;
+    let allResortsData = []; // Store all resorts for filtering
     
-    window.addEventListener('load', async function() {
-        await loadStats();
-        await loadRequests('pending');
+    // ===========================================
+    // FUNCTIONS DEFINED FIRST (before they're used)
+    // ===========================================
+    
+    function logout() {
+        localStorage.removeItem('admin_logged_in');
+        localStorage.removeItem('admin_login_timestamp');
+        window.location.href = 'admin.html';
+    }
+    
+    // ===========================================
+    // RESORT MANAGEMENT FUNCTIONS
+    // ===========================================
+    async function loadAllResorts() {
+        console.log('🔍 loadAllResorts function called');
+        const resortsList = document.getElementById('resortsList');
+        
+        if (!resortsList) {
+            console.error('resortsList element not found!');
+            return;
+        }
+        
+        resortsList.innerHTML = '<div class="loading-spinner">Loading resorts...</div>';
+        
+        try {
+            // Get all resorts
+            const { data: resorts, error } = await supabaseClient
+                .from('resorts')
+                .select('*')
+                .order('name');
+            
+            console.log('Resorts data:', resorts);
+            console.log('Error if any:', error);
+            
+            if (error) throw error;
+            
+            if (!resorts || resorts.length === 0) {
+                resortsList.innerHTML = '<div class="no-requests">No resorts found in database</div>';
+                return;
+            }
+            
+            // Store for filtering
+            allResortsData = resorts;
+            
+            // Get counts for each resort
+            const resortsWithCounts = await Promise.all(resorts.map(async (resort) => {
+                // Get job count
+                const { count: jobCount } = await supabaseClient
+                    .from('resort_jobs')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('resort_id', resort.id)
+                    .eq('is_active', true)
+                    .gt('expires_at', new Date().toISOString());
+                
+                // Get review count
+                const { count: reviewCount } = await supabaseClient
+                    .from('reviews')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('resort_id', resort.id)
+                    .eq('status', 'approved');
+                
+                return {
+                    ...resort,
+                    job_count: jobCount || 0,
+                    review_count: reviewCount || 0
+                };
+            }));
+            
+            displayResorts(resortsWithCounts);
+            
+        } catch (error) {
+            console.error('Error loading resorts:', error);
+            resortsList.innerHTML = '<div class="no-requests">Error loading resorts: ' + error.message + '</div>';
+        }
+    }
+    
+function displayResorts(resorts) {
+    const container = document.getElementById('resortsList');
+    
+    if (resorts.length === 0) {
+        container.innerHTML = '<div class="no-requests">No resorts found</div>';
+        return;
+    }
+    
+    let html = `
+        <table class="resort-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Resort Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Auth</th>
+                    <th>Jobs</th>
+                    <th>Reviews</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    resorts.forEach(resort => {
+        const hasAuth = resort.auth_user_id ? '✅' : '❌';
+        const verified = resort.verified ? 
+            '<span class="verified-badge-small">Verified</span>' : 
+            '<span class="unverified-badge">Unverified</span>';
+        
+        html += `
+            <tr>
+                <td>${resort.id}</td>
+                <td><strong>${resort.name}</strong></td>
+                <td>${resort.login_email || '-'}</td>
+                <td>${verified}</td>
+                <td style="text-align: center;">${hasAuth}</td>
+                <td style="text-align: center;">${resort.job_count}</td>
+                <td style="text-align: center;">${resort.review_count}</td>
+                <td class="action-cell">
+                    <button class="btn-small btn-view" onclick="window.open('resort.html?id=${resort.id}', '_blank')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-small" style="background: #f59e0b; color: white;" onclick="confirmResetVerification(${resort.id}, '${resort.name}')">
+                        <i class="fas fa-undo-alt"></i> Reset
+                    </button>
+                    <button class="btn-small btn-danger-small" onclick="confirmDeleteResort(${resort.id}, '${resort.name}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
     });
     
+    html += `
+            </tbody>
+        </table>
+    `;
+    
+    container.innerHTML = html;
+    
+    // Setup filters
+    setupResortFilters();
+}
+    
+    function setupResortFilters() {
+        const searchInput = document.getElementById('resortSearch');
+        const filterSelect = document.getElementById('verificationFilter');
+        
+        if (!searchInput || !filterSelect) return;
+        
+        function filterResorts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = filterSelect.value;
+            
+            const filtered = allResortsData.filter(resort => {
+                const matchesSearch = resort.name.toLowerCase().includes(searchTerm) || 
+                                     (resort.login_email && resort.login_email.toLowerCase().includes(searchTerm));
+                
+                if (filterValue === 'verified') return matchesSearch && resort.verified;
+                if (filterValue === 'unverified') return matchesSearch && !resort.verified;
+                return matchesSearch;
+            });
+            
+            // Get counts for filtered resorts
+            Promise.all(filtered.map(async (resort) => {
+                const { count: jobCount } = await supabaseClient
+                    .from('resort_jobs')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('resort_id', resort.id)
+                    .eq('is_active', true)
+                    .gt('expires_at', new Date().toISOString());
+                
+                const { count: reviewCount } = await supabaseClient
+                    .from('reviews')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('resort_id', resort.id)
+                    .eq('status', 'approved');
+                
+                return {
+                    ...resort,
+                    job_count: jobCount || 0,
+                    review_count: reviewCount || 0
+                };
+            })).then(resortsWithCounts => {
+                displayResorts(resortsWithCounts);
+            });
+        }
+        
+        searchInput.addEventListener('input', filterResorts);
+        filterSelect.addEventListener('change', filterResorts);
+    }
+    
+    async function loadResortStats() {
+        try {
+            // Total resorts
+            const { count: total } = await supabaseClient
+                .from('resorts')
+                .select('*', { count: 'exact', head: true });
+            
+            // Verified resorts
+            const { count: verified } = await supabaseClient
+                .from('resorts')
+                .select('*', { count: 'exact', head: true })
+                .eq('verified', true);
+            
+            // Active jobs
+            const { count: jobs } = await supabaseClient
+                .from('resort_jobs')
+                .select('*', { count: 'exact', head: true })
+                .eq('is_active', true)
+                .gt('expires_at', new Date().toISOString());
+            
+            // Total reviews
+            const { count: reviews } = await supabaseClient
+                .from('reviews')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'approved');
+            
+            document.getElementById('totalResorts').textContent = total || 0;
+            document.getElementById('verifiedResorts').textContent = verified || 0;
+            document.getElementById('activeJobs').textContent = jobs || 0;
+            document.getElementById('totalReviews').textContent = reviews || 0;
+            
+        } catch (error) {
+            console.error('Error loading resort stats:', error);
+        }
+    }
+    
+    // ===========================================
+    // DELETE RESORT
+    // ===========================================
+    window.confirmDeleteResort = function(resortId, resortName) {
+        document.getElementById('deleteMessage').textContent = `Delete "${resortName}"?`;
+        document.getElementById('deleteWarning').innerHTML = `
+            This will permanently delete:<br>
+            • The resort account<br>
+            • All job postings<br>
+            • All responses to reviews<br>
+            • The auth user (they won't be able to login)<br>
+            <strong style="color: #ef4444;">This action cannot be undone!</strong>
+        `;
+        
+        deleteCallback = async () => {
+            try {
+                // First, get the auth_user_id
+                const { data: resort } = await supabaseClient
+                    .from('resorts')
+                    .select('auth_user_id')
+                    .eq('id', resortId)
+                    .single();
+                
+                // Delete in correct order
+                if (resort?.auth_user_id) {
+                    // Delete auth user (this will cascade to resort_profiles)
+                    await supabaseClient.auth.admin.deleteUser(resort.auth_user_id);
+                }
+                
+                // Delete from resorts table
+                const { error } = await supabaseClient
+                    .from('resorts')
+                    .delete()
+                    .eq('id', resortId);
+                
+                if (error) throw error;
+                
+                alert('Resort deleted successfully!');
+                closeDeleteModal();
+                await loadResortStats();
+                await loadAllResorts();
+                
+            } catch (error) {
+                console.error('Error deleting resort:', error);
+                alert('Error deleting resort: ' + error.message);
+            }
+        };
+        
+        document.getElementById('deleteConfirmModal').classList.add('active');
+    };
+    
+    // ===========================================
+    // TAB SWITCHING
+    // ===========================================
+    window.switchAdminTab = function(tab) {
+        console.log('Switching to tab:', tab);
+        currentAdminTab = tab;
+        
+        document.querySelectorAll('.admin-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        
+        if (tab === 'verification') {
+            document.getElementById('verification-section').style.display = 'block';
+            document.getElementById('resort-section').style.display = 'none';
+            loadStats();
+            loadRequests(currentStatus);
+        } else {
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('resort-section').style.display = 'block';
+            console.log('Loading resorts...');
+            loadAllResorts();
+        }
+    };
+    
+    // Make functions globally available
+    window.loadAllResorts = loadAllResorts;
+    
+    // ===========================================
+    // VERIFICATION REQUESTS FUNCTIONS
+    // ===========================================
     async function loadStats() {
-        const { data: requests } = await supabaseClient
-            .from('verification_requests')
-            .select('status');
-        
-        if (!requests) return;
-        
-        const pending = requests.filter(r => r.status === 'pending').length;
-        const approved = requests.filter(r => r.status === 'approved').length;
-        const rejected = requests.filter(r => r.status === 'rejected').length;
-        
-        document.getElementById('pendingCount').textContent = pending;
-        document.getElementById('approvedCount').textContent = approved;
-        document.getElementById('rejectedCount').textContent = rejected;
+        try {
+            const { data: requests } = await supabaseClient
+                .from('verification_requests')
+                .select('status');
+            
+            if (!requests) return;
+            
+            const pending = requests.filter(r => r.status === 'pending').length;
+            const approved = requests.filter(r => r.status === 'approved').length;
+            const rejected = requests.filter(r => r.status === 'rejected').length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
     }
     
     async function loadRequests(status) {
@@ -366,13 +910,18 @@
         });
         document.getElementById(`tab${status.charAt(0).toUpperCase() + status.slice(1)}`).classList.add('active');
         
-        const { data: requests } = await supabaseClient
-            .from('verification_requests')
-            .select('*')
-            .eq('status', status)
-            .order('created_at', { ascending: false });
-        
-        displayRequests(requests || []);
+        try {
+            const { data: requests } = await supabaseClient
+                .from('verification_requests')
+                .select('*')
+                .eq('status', status)
+                .order('created_at', { ascending: false });
+            
+            displayRequests(requests || []);
+        } catch (error) {
+            console.error('Error loading requests:', error);
+            document.getElementById('requestsList').innerHTML = '<div class="no-requests">Error loading requests</div>';
+        }
     }
     
     function displayRequests(requests) {
@@ -385,7 +934,7 @@
         
         let html = '';
         
-        for (const request of requests) {
+        requests.forEach(request => {
             const date = new Date(request.created_at).toLocaleDateString();
             
             html += `
@@ -427,19 +976,24 @@
                         ${checkEmailDomain(request.contact_email)}
                     </div>
                     
-                    ${request.status === 'pending' ? `
-                        <div class="request-actions">
+                    <div class="request-actions">
+                        ${request.status === 'pending' ? `
                             <button class="action-btn btn-approve" onclick="approveRequest(${request.id})">
                                 <i class="fas fa-check"></i> Approve
                             </button>
                             <button class="action-btn btn-reject" onclick="rejectRequest(${request.id})">
                                 <i class="fas fa-times"></i> Reject
                             </button>
-                        </div>
-                    ` : ''}
+                        ` : ''}
+                        ${request.status !== 'pending' ? `
+                            <button class="action-btn btn-delete" onclick="confirmDeleteRequest(${request.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
             `;
-        }
+        });
         
         container.innerHTML = html;
     }
@@ -465,37 +1019,89 @@
         }
     }
     
-    async function sendEmailViaAPI(to, subject, html) {
-        console.log('📧 Attempting to send email via API...');
-        console.log('To:', to);
+    // ===========================================
+    // DELETE VERIFICATION REQUEST
+    // ===========================================
+    window.confirmDeleteRequest = function(requestId) {
+        document.getElementById('deleteMessage').textContent = 'Delete this verification request?';
+        document.getElementById('deleteWarning').textContent = 'This will permanently remove this request from the system.';
         
-        try {
-            const response = await fetch('/api/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    to: to,
-                    subject: subject,
-                    html: html
-                })
-            });
-            
-            const data = await response.json();
-            console.log('✅ API Response:', data);
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to send email');
+        deleteCallback = async () => {
+            try {
+                const { error } = await supabaseClient
+                    .from('verification_requests')
+                    .delete()
+                    .eq('id', requestId);
+                
+                if (error) throw error;
+                
+                alert('Request deleted successfully!');
+                closeDeleteModal();
+                await loadStats();
+                await loadRequests(currentStatus);
+            } catch (error) {
+                console.error('Error deleting request:', error);
+                alert('Error deleting request: ' + error.message);
             }
-            
-            return data;
-        } catch (error) {
-            console.error('❌ Error sending email:', error);
-            throw error;
-        }
+        };
+        
+        document.getElementById('deleteConfirmModal').classList.add('active');
+    };
+    
+    // ===========================================
+    // MODAL FUNCTIONS
+    // ===========================================
+    function closeDeleteModal() {
+        document.getElementById('deleteConfirmModal').classList.remove('active');
+        deleteCallback = null;
     }
     
+    document.getElementById('confirmDeleteBtn').onclick = () => {
+        if (deleteCallback) {
+            deleteCallback();
+        }
+    };
+    
+    // ===========================================
+    // INITIALIZATION
+    // ===========================================
+    window.addEventListener('load', async function() {
+        console.log('Page loaded, initializing...');
+        await loadStats();
+        await loadRequests('pending');
+        await loadResortStats();
+        // Preload resorts but don't display (they'll load when tab is clicked)
+        console.log('Initialization complete');
+    });
+    
+    // ===========================================
+    // APPROVE/REJECT FUNCTIONS (add your existing ones)
+    // ===========================================
+    window.rejectRequest = async function(requestId) {
+        console.log('❌ Reject button clicked for request:', requestId);
+        
+        const reason = prompt('Please provide a reason for rejection (optional):');
+        
+        try {
+            await supabaseClient
+                .from('verification_requests')
+                .update({ 
+                    status: 'rejected',
+                    admin_notes: reason,
+                    reviewed_at: new Date()
+                })
+                .eq('id', requestId);
+            
+            alert('Request rejected.');
+            await loadStats();
+            await loadRequests(currentStatus);
+        } catch (error) {
+            console.error('Error rejecting request:', error);
+            alert('Error rejecting request: ' + error.message);
+        }
+    };
+    
+    // Add your approveRequest function here if needed
     async function approveRequest(requestId) {
         console.log('✅ Approve button clicked for request:', requestId);
         
@@ -619,93 +1225,60 @@
             alert('Error approving request: ' + error.message);
         }
     }
+// ===========================================
+// RESET VERIFICATION (keeps resort, removes auth)
+// ===========================================
+window.confirmResetVerification = function(resortId, resortName) {
+    document.getElementById('deleteMessage').textContent = `Reset verification for "${resortName}"?`;
+    document.getElementById('deleteWarning').innerHTML = `
+        This will:<br>
+        • Remove the auth user (they won't be able to login)<br>
+        • Set verified = false<br>
+        • Clear login credentials<br>
+        • Keep the resort in database<br><br>
+        They can then submit a new verification request.
+    `;
     
-    async function rejectRequest(requestId) {
-        console.log('❌ Reject button clicked for request:', requestId);
-        
-        const reason = prompt('Please provide a reason for rejection (optional):');
-        
+    deleteCallback = async () => {
         try {
-            await supabaseClient
-                .from('verification_requests')
-                .update({ 
-                    status: 'rejected',
-                    admin_notes: reason,
-                    reviewed_at: new Date()
-                })
-                .eq('id', requestId);
+            // First, get the auth_user_id
+            const { data: resort } = await supabaseClient
+                .from('resorts')
+                .select('auth_user_id')
+                .eq('id', resortId)
+                .single();
             
-            alert('Request rejected.');
-            await loadStats();
-            await loadRequests(currentStatus);
+            // Delete auth user if exists
+            if (resort?.auth_user_id) {
+                await supabaseClient.auth.admin.deleteUser(resort.auth_user_id);
+            }
+            
+            // Reset the resort to unverified state
+            const { error } = await supabaseClient
+                .from('resorts')
+                .update({
+                    verified: false,
+                    login_email: null,
+                    temp_password: null,
+                    auth_user_id: null
+                })
+                .eq('id', resortId);
+            
+            if (error) throw error;
+            
+            alert(`✅ Verification reset for ${resortName}! They can now submit a new request.`);
+            closeDeleteModal();
+            await loadResortStats();
+            await loadAllResorts();
+            
         } catch (error) {
-            console.error('Error rejecting request:', error);
-            alert('Error rejecting request: ' + error.message);
+            console.error('Error resetting verification:', error);
+            alert('Error resetting verification: ' + error.message);
         }
-    }
-// ===========================================
-// ADMIN SESSION SECURITY
-// ===========================================
-function checkAdminSession() {
-    const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true';
-    const loginTimestamp = localStorage.getItem('admin_login_timestamp');
-    const currentTime = new Date().getTime();
-
-    // Check if logged in and session not expired (4 hours for admin)
-    if (!isLoggedIn) {
-        redirectToLogin();
-        return false;
-    }
-
-    if (loginTimestamp) {
-        const elapsedTime = currentTime - parseInt(loginTimestamp);
-        const fourHoursInMs = 4 * 60 * 60 * 1000;
-        if (elapsedTime > fourHoursInMs) {
-            // Session expired, logout
-            logout();
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function redirectToLogin() {
-    // If we're already on admin.html, show login screen
-    if (window.location.pathname.includes('admin.html')) {
-        document.getElementById('loginScreen').classList.add('active');
-        document.getElementById('dashboardScreen').classList.remove('active');
-    } else {
-        // Redirect to main admin login
-        window.location.href = 'admin.html';
-    }
-}
-
-function logout() {
-    localStorage.removeItem('admin_logged_in');
-    localStorage.removeItem('admin_login_timestamp');
-    redirectToLogin();
-}
-
-// Run check on every page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Special handling for admin.html
-    if (window.location.pathname.includes('admin.html')) {
-        // If already logged in, show dashboard
-        if (localStorage.getItem('admin_logged_in') === 'true') {
-            document.getElementById('loginScreen').classList.remove('active');
-            document.getElementById('dashboardScreen').classList.add('active');
-            loadStats();
-            loadPending();
-        }
-    } else {
-        // For reports and verification pages, redirect if not logged in
-        if (!checkAdminSession()) {
-            return; // stop further execution
-        }
-    }
-});
+    };
     
+    document.getElementById('deleteConfirmModal').classList.add('active');
+};
 </script>
 
 </body>

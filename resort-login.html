@@ -382,10 +382,17 @@
             <input type="email" id="email" placeholder="resort@example.com" required autocomplete="username">
         </div>
         
-        <div class="form-group">
-            <label><i class="fas fa-lock"></i> Password</label>
-            <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
-        </div>
+<div class="form-group" style="position: relative;">
+    <label><i class="fas fa-lock"></i> Password</label>
+    <div style="position: relative;">
+        <input type="password" id="password" placeholder="••••••••" required 
+               style="width: 100%; padding: 14px; padding-right: 45px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white;">
+        <button type="button" id="togglePassword" 
+                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: rgba(255,255,255,0.6); cursor: pointer; padding: 5px;">
+            <i class="fas fa-eye" id="togglePasswordIcon"></i>
+        </button>
+    </div>
+</div>
         
         <div class="forgot-password">
             <a href="#" onclick="showForgotPassword()">Forgot password?</a>
@@ -467,7 +474,7 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhcXRhaHpvc3ZzcnZienVyaGduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxODE3MzMsImV4cCI6MjA4Nzc1NzczM30.x1dxVDvFuwrAXiOuqv-T6LtEP2IRXZAeSKQjIZjvbwk";
     
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -479,6 +486,11 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     
+    console.log('🔐 Login attempt - Email:', email);
+    
+    // Clear previous error
+    document.getElementById('errorMessage').style.display = 'none';
+    
     try {
         // Use Supabase Auth to sign in
         const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
@@ -486,29 +498,70 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             password: password
         });
         
-        if (authError) throw authError;
+        if (authError) {
+            console.error('❌ Auth error:', authError);
+            throw authError;
+        }
         
-        // Now get the resort details linked to this auth user
-        const { data: resort, error: resortError } = await supabaseClient
-            .from('resorts')
+        console.log('✅ Auth successful:', authData);
+        
+        // Now get the resort profile linked to this auth user
+        const { data: profile, error: profileError } = await supabaseClient
+            .from('resort_profiles')
             .select('*')
-            .eq('auth_user_id', authData.user.id)
-            .single();
+            .eq('id', authData.user.id)
+            .maybeSingle();
         
-        if (resortError) throw resortError;
+        // If no profile in new table, check the old resorts table
+        if (!profile) {
+            const { data: oldResort } = await supabaseClient
+                .from('resorts')
+                .select('*')
+                .eq('auth_user_id', authData.user.id)
+                .maybeSingle();
+            
+            if (oldResort) {
+                // Migrate to new profile table
+                const { error: insertError } = await supabaseClient
+                    .from('resort_profiles')
+                    .insert([{
+                        id: authData.user.id,
+                        name: oldResort.name,
+                        slug: oldResort.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                        address: oldResort.address || '',
+                        phone: oldResort.phone || '',
+                        hours: oldResort.hours || 'Open 24 hours',
+                        website: oldResort.website || '',
+                        verified: oldResort.verified || false,
+                        google_rating: oldResort.google_rating || '',
+                        star_rating: oldResort.star_rating || ''
+                    }]);
+                
+                if (insertError) throw insertError;
+                
+                // Use the old resort data for login
+                localStorage.setItem('resort_id', oldResort.id);
+                localStorage.setItem('resort_name', oldResort.name);
+                localStorage.setItem('login_timestamp', new Date().getTime().toString());
+                
+                window.location.href = 'resort-dashboard.html';
+                return;
+            }
+        } else {
+            // Found profile in new table
+            localStorage.setItem('resort_id', profile.id);
+            localStorage.setItem('resort_name', profile.name);
+            localStorage.setItem('login_timestamp', new Date().getTime().toString());
+            
+            window.location.href = 'resort-dashboard.html';
+            return;
+        }
         
-        // Store in localStorage
-        localStorage.setItem('resort_id', resort.id);
-        localStorage.setItem('resort_name', resort.name);
-        localStorage.setItem('login_email', email); // Store email for later
-        localStorage.setItem('login_timestamp', new Date().getTime().toString());
-        
-        // Also store the Supabase session (it handles this automatically)
-        
-        window.location.href = 'resort-dashboard.html';
+        // If we get here, no resort found
+        throw new Error('No resort profile found for this account');
         
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('❌ Login error:', error);
         document.getElementById('errorMessage').textContent = 'Invalid email or password.';
         document.getElementById('errorMessage').style.display = 'block';
     }
@@ -615,6 +668,24 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         alert(`Demo: Reset link sent to ${email}\n\nCheck console for the link.`);
         closeForgotPassword();
     }
+// ===========================================
+// TOGGLE PASSWORD VISIBILITY
+// ===========================================
+const togglePassword = document.getElementById('togglePassword');
+const password = document.getElementById('password');
+const toggleIcon = document.getElementById('togglePasswordIcon');
+
+if (togglePassword && password) {
+    togglePassword.addEventListener('click', function() {
+        // Toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        
+        // Toggle the icon
+        toggleIcon.classList.toggle('fa-eye');
+        toggleIcon.classList.toggle('fa-eye-slash');
+    });
+}
 </script>
 
 </body>

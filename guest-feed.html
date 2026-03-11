@@ -1037,20 +1037,12 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-// Modal rating slider
-const modalRating = document.getElementById('modal_rating');
-const modalRatingValue = document.getElementById('modalRatingValue');
-
-if (modalRating) {
-    modalRating.addEventListener('input', function() {
-        modalRatingValue.textContent = this.value;
-    });
-}
-
     // Supabase configuration
     const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
     
     const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
     // Global variables
     let resortsMap = new Map();
@@ -1065,6 +1057,14 @@ if (modalRating) {
     window.addEventListener('load', async function() {
         try {
             await loadResorts();
+            // Setup rating slider and photo preview
+const modalRating = document.getElementById('modal_rating');
+const modalRatingValue = document.getElementById('modalRatingValue');
+if (modalRating) {
+    modalRating.addEventListener('input', function() {
+        modalRatingValue.textContent = this.value;
+    });
+}
             await loadReviews();
             await loadTopResorts();
             await loadAllResortsAZ();
@@ -1080,6 +1080,194 @@ if (modalRating) {
         }
     });
     
+// ===========================================
+// RATING SLIDER
+// ===========================================
+// Modal rating slider
+const modalRating = document.getElementById('modal_rating');
+const modalRatingValue = document.getElementById('modalRatingValue');
+
+if (modalRating) {
+    modalRating.addEventListener('input', function() {
+        modalRatingValue.textContent = this.value;
+    });
+}
+
+// Modal photo preview with remove buttons
+const modalPhotos = document.getElementById('modal_photos');
+if (modalPhotos) {
+    modalPhotos.addEventListener('change', function(e) {
+        const preview = document.getElementById('modalPhotoPreview');
+        preview.innerHTML = '';
+        
+        // Store files in a global array for removal
+        window.selectedFiles = Array.from(e.target.files).slice(0, 3);
+        
+        for (let i = 0; i < window.selectedFiles.length; i++) {
+            const file = window.selectedFiles[i];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const container = document.createElement('div');
+                container.style.position = 'relative';
+                container.style.display = 'inline-block';
+                container.style.margin = '5px';
+                
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '80px';
+                img.style.height = '80px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '8px';
+                img.style.border = '2px solid var(--border)';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '✕';
+                removeBtn.style.position = 'absolute';
+                removeBtn.style.top = '-5px';
+                removeBtn.style.right = '-5px';
+                removeBtn.style.width = '20px';
+                removeBtn.style.height = '20px';
+                removeBtn.style.borderRadius = '50%';
+                removeBtn.style.background = '#ef4444';
+                removeBtn.style.color = 'white';
+                removeBtn.style.border = 'none';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.style.display = 'flex';
+                removeBtn.style.alignItems = 'center';
+                removeBtn.style.justifyContent = 'center';
+                removeBtn.style.fontSize = '12px';
+                removeBtn.style.fontWeight = 'bold';
+                removeBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                
+                removeBtn.onclick = function() {
+                    container.remove();
+                    // Remove this file from the selectedFiles array
+                    window.selectedFiles.splice(i, 1);
+                    
+                    // Update the file input
+                    updateFileInput();
+                };
+                
+                container.appendChild(img);
+                container.appendChild(removeBtn);
+                preview.appendChild(container);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+}
+// ===========================================
+// POST REVIEW FORM SUBMISSION
+// ===========================================
+document.getElementById('modalReviewForm').addEventListener('submit', async function(e) {
+    e.preventDefault(); // This prevents page refresh
+    console.log('Form submitted');
+    
+    const resort_id = parseInt(document.getElementById('modal_resort_id').value);
+    const rating = parseInt(document.getElementById('modal_rating').value);
+    const review_text = document.getElementById('modal_review_text').value.trim();
+    const photoFiles = window.selectedFiles || []; // Use our stored files
+    const category_id = parseInt(document.getElementById('review_category').value);
+    
+    // Validation
+    if (!resort_id) {
+        alert('Please select a valid resort from the suggestions');
+        return;
+    }
+    
+    if (!category_id) {
+        alert('Please select a category');
+        return;
+    }
+    
+    if (!review_text) {
+        alert('Please write a review');
+        return;
+    }
+    
+    const messageDiv = document.getElementById('modalMessage');
+    messageDiv.style.display = 'block';
+    messageDiv.textContent = "Submitting...";
+    messageDiv.className = "message";
+    
+    try {
+        let photoUrls = [];
+        
+        // Upload photos if any
+        if (photoFiles.length > 0) {
+            const maxPhotos = Math.min(photoFiles.length, 3);
+            for (let i = 0; i < maxPhotos; i++) {
+                const file = photoFiles[i];
+                const fileName = `${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('resort-photos')
+                    .upload(`public/${fileName}`, file);
+                
+                if (uploadError) {
+                    console.error('Upload error:', uploadError);
+                    throw uploadError;
+                }
+                
+                const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/resort-photos/public/${fileName}`;
+                photoUrls.push(publicUrl);
+            }
+        }
+        
+        // Get resort name from map
+        const resortName = resortsMap.get(resort_id) || '';
+        
+        // Insert review
+        const { error } = await supabaseClient
+            .from('reviews')
+            .insert([{ 
+                resort_id: resort_id,
+                resort_name: resortName,
+                category_id: category_id,
+                rating: rating,
+                review_text: review_text,
+                photo_urls: JSON.stringify(photoUrls),
+                status: 'pending'
+            }]);
+        
+        if (error) throw error;
+        
+        // Success message
+        messageDiv.textContent = "✅ Review submitted for moderation!";
+        messageDiv.className = "message success";
+        
+        // Clear form
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+            closeModal();
+            // Clear selected files
+            window.selectedFiles = [];
+            document.getElementById('modalPhotoPreview').innerHTML = '';
+            document.getElementById('modal_resort_id').value = '';
+            document.getElementById('resort_search').value = '';
+            document.getElementById('modal_rating').value = '5';
+            document.getElementById('modalRatingValue').textContent = '5';
+            document.getElementById('review_category').value = '';
+            document.getElementById('modal_review_text').value = '';
+        }, 2000);
+        
+    } catch (error) {
+        console.error("Submission error:", error);
+        messageDiv.textContent = "Error: " + error.message;
+        messageDiv.className = "message error";
+    }
+});
+// Function to update file input with current selected files
+function updateFileInput() {
+    const dataTransfer = new DataTransfer();
+    window.selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+    });
+    document.getElementById('modal_photos').files = dataTransfer.files;
+}
+
     // ===========================================
     // MAIN CONTENT NAVIGATION
     // ===========================================
@@ -1114,37 +1302,148 @@ if (modalRating) {
         }
     };
     
-    // ===========================================
-    // LOAD RESORTS
-    // ===========================================
-// Debug: Check if resorts are loading
-async function debugResortSearch() {
-    console.log('🔍 Debugging resort search...');
+// ===========================================
+// LOAD RESORTS
+// ===========================================
+async function loadResorts() {
+    try {
+        const { data: resorts, error } = await supabaseClient
+            .from('resorts')
+            .select('id, name')
+            .order('name');
+        
+        if (error) throw error;
+        
+        // Store in map for quick lookup
+        resorts.forEach(r => resortsMap.set(r.id, r.name));
+        
+        // Store all resorts for search
+        allResorts = resorts || [];
+        
+        console.log(`✅ Loaded ${resorts.length} resorts`);
+        
+        // Setup searchable dropdown - THIS WAS MISSING!
+        setupResortSearch();
+        
+    } catch (error) {
+        console.error("Error loading resorts:", error);
+    }
+}
     
-    // Check if allResorts is populated
-    console.log('allResorts array:', allResorts);
-    console.log('allResorts length:', allResorts.length);
-    
-    // Check if the search input exists
+// ===========================================
+// SEARCHABLE RESORT DROPDOWN - FIXED VERSION
+// ===========================================
+function setupResortSearch() {
     const searchInput = document.getElementById('resort_search');
-    console.log('Search input element:', searchInput);
+    const suggestionsBox = document.getElementById('resort_suggestions');
+    const hiddenInput = document.getElementById('modal_resort_id');
     
-    if (searchInput) {
-        // Add a test event listener
-        searchInput.addEventListener('input', function(e) {
-            console.log('Search input value:', e.target.value);
-        });
+    if (!searchInput) {
+        console.log("Search input not found");
+        return;
     }
     
-    // Check the suggestions box
-    const suggestionsBox = document.getElementById('resort_suggestions');
-    console.log('Suggestions box:', suggestionsBox);
-}
-
-// Call this after loadResorts
-setTimeout(debugResortSearch, 2000);
-
+    console.log("Setting up resort search with", allResorts.length, "resorts");
     
+    // Handle input changes
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        // Only show suggestions after 2 or more characters
+        if (searchTerm.length < 2) {
+            suggestionsBox.classList.remove('active');
+            hiddenInput.value = '';
+            return;
+        }
+        
+        // Filter resorts - match ANY part of the name
+        const matches = allResorts.filter(resort => 
+            resort.name.toLowerCase().includes(searchTerm)
+        );
+        
+        // Show suggestions
+        if (matches.length > 0) {
+            let html = '';
+            matches.slice(0, 8).forEach(resort => {
+                html += `<div class="suggestion-item" data-id="${resort.id}" data-name="${resort.name.replace(/'/g, "\\'")}">${resort.name}</div>`;
+            });
+            suggestionsBox.innerHTML = html;
+            suggestionsBox.classList.add('active');
+        } else {
+            suggestionsBox.innerHTML = '<div class="no-results">No resorts found</div>';
+            suggestionsBox.classList.add('active');
+        }
+    });
+    
+    // Handle suggestion click
+    suggestionsBox.addEventListener('click', function(e) {
+        const suggestion = e.target.closest('.suggestion-item');
+        if (suggestion) {
+            const resortId = suggestion.dataset.id;
+            const resortName = suggestion.dataset.name;
+            
+            searchInput.value = resortName;
+            hiddenInput.value = resortId;
+            suggestionsBox.classList.remove('active');
+        }
+    });
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.classList.remove('active');
+        }
+    });
+    
+    // Handle keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        const items = suggestionsBox.querySelectorAll('.suggestion-item');
+        if (items.length === 0) return;
+        
+        let selectedIndex = -1;
+        
+        items.forEach((item, index) => {
+            if (item.classList.contains('selected')) {
+                selectedIndex = index;
+            }
+        });
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (selectedIndex < items.length - 1) {
+                items.forEach(item => item.classList.remove('selected'));
+                items[selectedIndex + 1].classList.add('selected');
+                items[selectedIndex + 1].scrollIntoView({ block: 'nearest' });
+            } else if (items.length > 0 && selectedIndex === -1) {
+                items.forEach(item => item.classList.remove('selected'));
+                items[0].classList.add('selected');
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (selectedIndex > 0) {
+                items.forEach(item => item.classList.remove('selected'));
+                items[selectedIndex - 1].classList.add('selected');
+                items[selectedIndex - 1].scrollIntoView({ block: 'nearest' });
+            }
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            let selectedItem = null;
+            if (selectedIndex >= 0) {
+                selectedItem = items[selectedIndex];
+            } else if (items.length > 0) {
+                selectedItem = items[0];
+            }
+            
+            if (selectedItem) {
+                searchInput.value = selectedItem.dataset.name;
+                hiddenInput.value = selectedItem.dataset.id;
+                suggestionsBox.classList.remove('active');
+            }
+        } else if (e.key === 'Escape') {
+            suggestionsBox.classList.remove('active');
+        }
+    });
+}
     // ===========================================
     // LOAD REVIEWS
     // ===========================================
