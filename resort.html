@@ -873,18 +873,18 @@ async function loadResortInfo() {
         return;
     }
     
-    document.getElementById('mainContent').innerHTML = `
-        <!-- Cover Photo -->
-        <div class="profile-cover">
-            <div class="profile-picture">
-                🏨
-            </div>
+document.getElementById('mainContent').innerHTML = `
+    <!-- Cover Photo -->
+    <div class="profile-cover" style="background-image: url('${resort.cover_photo || ''}'); background-size: cover; background-position: center;">
+        <div class="profile-picture" style="background-image: url('${resort.profile_photo || ''}'); background-size: cover; background-position: center;">
+            ${!resort.profile_photo ? '🏨' : ''}
         </div>
+    </div>
 
-        <!-- Profile Info -->
-        <div class="profile-info">
-            <h1>${resort.name} ${resort.verified ? '<span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span>' : ''}</h1>
-        </div>
+    <!-- Profile Info -->
+    <div class="profile-info">
+        <h1>${resort.name} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
+    </div>
 
         <!-- Profile Navigation -->
         <div class="profile-nav">

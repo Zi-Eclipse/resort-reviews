@@ -13,7 +13,7 @@
             padding: 0 20px;
         }
 
-        /* Cover Photo Section */
+        /* Cover photo styles */
         .profile-cover {
             position: relative;
             height: 350px;
@@ -21,9 +21,33 @@
             border-radius: 0 0 16px 16px;
             margin-bottom: 80px;
             overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        /* Profile Picture */
+        .cover-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .profile-cover:hover .cover-overlay {
+            opacity: 1;
+        }
+
+        /* Profile picture styles */
         .profile-picture {
             position: absolute;
             bottom: -50px;
@@ -38,35 +62,43 @@
             justify-content: center;
             font-size: 48px;
             color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: transform 0.2s;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
         }
 
         .profile-picture:hover {
             transform: scale(1.02);
         }
 
-        .profile-picture-upload {
+        .profile-picture-overlay {
             position: absolute;
             bottom: 0;
+            left: 0;
             right: 0;
-            background: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            transition: all 0.2s;
+            gap: 5px;
         }
 
-        .profile-picture-upload:hover {
-            background: #f0f2f5;
-            transform: scale(1.1);
+        .profile-picture:hover .profile-picture-overlay {
+            opacity: 1;
+        }
+
+        /* Hidden file inputs */
+        .hidden-input {
+            display: none;
         }
 
         /* Profile Info */
@@ -145,7 +177,7 @@
             width: 300px;
             background: var(--white);
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border);
             z-index: 1000;
             display: none;
@@ -307,7 +339,7 @@
             width: 200px;
             background: var(--white);
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border);
             z-index: 100;
             display: none;
@@ -484,7 +516,7 @@
         }
 
         .response-input-container button:hover {
-            background: rgba(24,119,242,0.1);
+            background: rgba(24, 119, 242, 0.1);
         }
 
         .existing-response {
@@ -675,7 +707,7 @@
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(24,119,242,0.1);
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.1);
         }
 
         .form-group {
@@ -782,11 +814,11 @@
             border-radius: 50%;
         }
 
-        input:checked + .slider {
+        input:checked+.slider {
             background-color: var(--primary);
         }
 
-        input:checked + .slider:before {
+        input:checked+.slider:before {
             transform: translateX(26px);
         }
 
@@ -824,7 +856,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .comment-modal-header {
@@ -1151,1532 +1183,1767 @@
             padding: 40px;
             color: var(--text-light);
         }
+
+        /* Image Modal */
+        .image-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal-overlay.active {
+            display: flex;
+        }
+
+        .image-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .image-modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .image-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .image-modal-caption {
+            text-align: center;
+            color: white;
+            margin-top: 15px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
-<!-- Top Navigation -->
-<div class="top-nav">
-    <div class="nav-left">
-        <a href="guest-feed.html" class="home-btn" title="Home">
-            <i class="fas fa-home"></i>
-        </a>
-    </div>
-    <div class="nav-center">
-        <a href="guest-feed.html" class="logo">
-            <i class="fas fa-umbrella-beach"></i>
-            <span>ResortReviews</span>
-        </a>
-    </div>
-    <div class="nav-right">
-        <div class="nav-icons">
-            <!-- Profile Dropdown Menu -->
-            <div class="profile-dropdown-container">
-                <div class="profile-avatar" onclick="toggleProfileDropdown()" id="profileAvatar">
-                    🏨
-                </div>
-                <div class="profile-dropdown" id="profileDropdown">
-                    <div class="dropdown-header">
-                        <strong id="dropdownResortName">Resort Name</strong>
-                        <p style="color: var(--text-light); font-size: 12px;">Verified Resort</p>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <a href="guest-feed.html" class="home-btn" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="guest-feed.html" class="logo">
+                <i class="fas fa-umbrella-beach"></i>
+                <span>ResortReviews</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-icons">
+                <!-- Profile Dropdown Menu -->
+                <div class="profile-dropdown-container">
+                    <div class="profile-avatar" onclick="toggleProfileDropdown()" id="profileAvatar">
+                        🏨
                     </div>
-                    
-                    <div class="dropdown-item" onclick="openSettings()">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings & privacy</span>
-                    </div>
-                    
-                    <div class="dropdown-item" onclick="openSettings()">
-                        <i class="fas fa-moon"></i>
-                        <span>Display & accessibility</span>
-                    </div>
-                    
-                    <div class="dropdown-divider"></div>
-                    
-                    <div class="dropdown-item" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Log out</span>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="dropdown-header">
+                            <strong id="dropdownResortName">Resort Name</strong>
+                            <p style="color: var(--text-light); font-size: 12px;">Verified Resort</p>
+                        </div>
+
+                        <div class="dropdown-item" onclick="openSettings()">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings & privacy</span>
+                        </div>
+
+                        <div class="dropdown-item" onclick="openSettings()">
+                            <i class="fas fa-moon"></i>
+                            <span>Display & accessibility</span>
+                        </div>
+
+                        <div class="dropdown-divider"></div>
+
+                        <div class="dropdown-item" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Log out</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Main Dashboard Content -->
-<div class="dashboard-container" id="dashboard">
-    <div class="loading-spinner">Loading dashboard...</div>
-</div>
+    <!-- Main Dashboard Content (will be populated by JavaScript) -->
+    <div class="dashboard-container" id="dashboard">
+        <div class="loading-spinner">Loading dashboard...</div>
+    </div>
 
-<!-- Settings Modal -->
-<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal()">
-    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
-        <div class="modal-header">
-            <h3><i class="fas fa-cog"></i> Settings</h3>
-            <i class="fas fa-times modal-close" onclick="closeSettingsModal()"></i>
+    <!-- Hidden file inputs for photo uploads -->
+    <input type="file" id="coverUpload" accept="image/*" class="hidden-input">
+    <input type="file" id="profileUpload" accept="image/*" class="hidden-input">
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal()">
+        <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Settings</h3>
+                <i class="fas fa-times modal-close" onclick="closeSettingsModal()"></i>
+            </div>
+
+            <div class="settings-content">
+                <!-- Profile Settings -->
+                <div class="settings-section">
+                    <h4>Profile</h4>
+                    <div class="settings-item" onclick="editCover()">
+                        <div class="settings-info">
+                            <i class="fas fa-camera"></i>
+                            <span>Change cover photo</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="editProfilePicture()">
+                        <div class="settings-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Change profile picture</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <!-- Resort Information -->
+                <div class="settings-section">
+                    <h4>Resort Information</h4>
+                    <div class="settings-item" onclick="editInfo('address')">
+                        <div class="settings-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Edit location</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="editInfo('phone')">
+                        <div class="settings-info">
+                            <i class="fas fa-phone"></i>
+                            <span>Edit contact number</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="editInfo('hours')">
+                        <div class="settings-info">
+                            <i class="fas fa-clock"></i>
+                            <span>Edit hours</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="settings-item" onclick="editInfo('website')">
+                        <div class="settings-info">
+                            <i class="fas fa-globe"></i>
+                            <span>Edit website</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <!-- Security Section - Change Password -->
+                <div class="settings-section">
+                    <h4>Security</h4>
+                    <div class="settings-item" onclick="openChangePasswordModal()">
+                        <div class="settings-info">
+                            <i class="fas fa-key"></i>
+                            <span>Change password</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <!-- Appearance -->
+                <div class="settings-section">
+                    <h4>Appearance</h4>
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <i class="fas fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="settings-section">
+                    <h4>About</h4>
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Version 1.0.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <div class="settings-content">
-            <!-- Profile Settings -->
-            <div class="settings-section">
-                <h4>Profile</h4>
-                <div class="settings-item" onclick="editCover()">
-                    <div class="settings-info">
-                        <i class="fas fa-camera"></i>
-                        <span>Change cover photo</span>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-                <div class="settings-item" onclick="editProfilePicture()">
-                    <div class="settings-info">
-                        <i class="fas fa-user-circle"></i>
-                        <span>Change profile picture</span>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
+    </div>
+
+    <!-- Job Post Modal -->
+    <div class="modal-overlay" id="jobModal" onclick="closeJobModal()">
+        <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3><i class="fas fa-briefcase"></i> Post a Job</h3>
+                <i class="fas fa-times modal-close" onclick="closeJobModal()"></i>
             </div>
 
-            <!-- Resort Information -->
-            <div class="settings-section">
-                <h4>Resort Information</h4>
-                <div class="settings-item" onclick="editInfo('address')">
-                    <div class="settings-info">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Edit location</span>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
+            <form id="jobForm" style="padding: 20px;">
+                <input type="hidden" id="job_id" value="">
+
+                <div class="form-group">
+                    <label>Job Title *</label>
+                    <input type="text" id="job_title" class="form-input" required
+                        placeholder="e.g., Housekeeping Supervisor">
                 </div>
-                <div class="settings-item" onclick="editInfo('phone')">
-                    <div class="settings-info">
-                        <i class="fas fa-phone"></i>
-                        <span>Edit contact number</span>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
+
+                <div class="form-group">
+                    <label>Department *</label>
+                    <select id="job_department" class="form-input" required>
+                        <option value="">Select department</option>
+                        <option value="Housekeeping">🧹 Housekeeping</option>
+                        <option value="Food & Beverage">🍽️ Food & Beverage</option>
+                        <option value="Kitchen">👨‍🍳 Kitchen</option>
+                        <option value="Front Office">🛎️ Front Office</option>
+                        <option value="Reservations">📞 Reservations</option>
+                        <option value="Engineering">🔧 Engineering</option>
+                        <option value="Spa & Wellness">💆 Spa & Wellness</option>
+                        <option value="Recreation">🏊 Recreation</option>
+                        <option value="Management">👔 Management</option>
+                        <option value="Sales & Marketing">📊 Sales & Marketing</option>
+                        <option value="Human Resources">👥 Human Resources</option>
+                        <option value="Finance">💰 Finance</option>
+                        <option value="Security">🛡️ Security</option>
+                        <option value="Other">📌 Other</option>
+                    </select>
                 </div>
-                <div class="settings-item" onclick="editInfo('hours')">
-                    <div class="settings-info">
-                        <i class="fas fa-clock"></i>
-                        <span>Edit hours</span>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label>Job Type *</label>
+                        <select id="job_type" class="form-input" required>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                        </select>
                     </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-                <div class="settings-item" onclick="editInfo('website')">
-                    <div class="settings-info">
-                        <i class="fas fa-globe"></i>
-                        <span>Edit website</span>
+
+                    <div class="form-group">
+                        <label>Expires In (Days) *</label>
+                        <input type="number" id="job_expires" class="form-input" value="30" min="1" max="90" required>
                     </div>
-                    <i class="fas fa-chevron-right"></i>
                 </div>
+
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="job_description" class="form-input" rows="5" required
+                        placeholder="Describe the role, responsibilities, and what you're looking for..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Requirements</label>
+                    <textarea id="job_requirements" class="form-input" rows="3"
+                        placeholder="List key requirements, qualifications, experience..."></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label>Salary Min</label>
+                        <input type="number" id="salary_min" class="form-input" placeholder="e.g., 8000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Salary Max</label>
+                        <input type="number" id="salary_max" class="form-input" placeholder="e.g., 12000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Period</label>
+                        <select id="salary_period" class="form-input">
+                            <option value="monthly">per month</option>
+                            <option value="hourly">per hour</option>
+                            <option value="yearly">per year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Application Email</label>
+                    <input type="email" id="application_email" class="form-input" placeholder="hr@resort.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Person</label>
+                    <input type="text" id="contact_person" class="form-input" placeholder="HR Manager Name">
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Phone</label>
+                    <input type="text" id="contact_phone" class="form-input" placeholder="+960 123 4567">
+                </div>
+
+                <button type="submit" class="post-btn">
+                    <i class="fas fa-paper-plane"></i> Post Job
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="changePasswordModal" onclick="closeChangePasswordModal()">
+        <div class="modal-content settings-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Change Password</h3>
+                <i class="fas fa-times modal-close" onclick="closeChangePasswordModal()"></i>
             </div>
 
-            <!-- Security Section - Change Password -->
-            <div class="settings-section">
-                <h4>Security</h4>
-                <div class="settings-item" onclick="openChangePasswordModal()">
-                    <div class="settings-info">
-                        <i class="fas fa-key"></i>
-                        <span>Change password</span>
+            <div class="settings-content">
+                <div class="settings-section">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" class="form-input">
                     </div>
-                    <i class="fas fa-chevron-right"></i>
+
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="form-input">
+                    </div>
+
+                    <button class="post-btn" onclick="updatePassword()" style="width: 100%;">
+                        <i class="fas fa-save"></i> Update Password
+                    </button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Appearance -->
-            <div class="settings-section">
-                <h4>Appearance</h4>
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <i class="fas fa-moon"></i>
-                        <span>Dark Mode</span>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-                        <span class="slider round"></span>
+    <!-- Report Modal -->
+    <div class="modal-overlay" id="reportModal" onclick="closeReportModal()">
+        <div class="modal-content report-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3><i class="fas fa-flag"></i> Report Review</h3>
+                <i class="fas fa-times modal-close" onclick="closeReportModal()"></i>
+            </div>
+
+            <div class="report-content">
+                <p style="margin-bottom: 15px; color: var(--text-dark);">Why are you reporting this review?</p>
+
+                <div class="report-options">
+                    <label class="report-option">
+                        <input type="radio" name="reason" value="inappropriate">
+                        <span>Inappropriate content</span>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" name="reason" value="false_info">
+                        <span>False information</span>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" name="reason" value="privacy">
+                        <span>Privacy violation (identifiable info)</span>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" name="reason" value="harassment">
+                        <span>Harassment or bullying</span>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" name="reason" value="other">
+                        <span>Other</span>
                     </label>
                 </div>
-            </div>
 
-            <!-- About -->
-            <div class="settings-section">
-                <h4>About</h4>
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Version 1.0.0</span>
-                    </div>
+                <textarea id="reportDescription" placeholder="Provide more details..."></textarea>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="cancel-btn" onclick="closeReportModal()">Cancel</button>
+                    <button class="save-btn" onclick="submitReport()">Submit Report</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Job Post Modal -->
-<div class="modal-overlay" id="jobModal" onclick="closeJobModal()">
-    <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
-        <div class="modal-header">
-            <h3><i class="fas fa-briefcase"></i> Post a Job</h3>
-            <i class="fas fa-times modal-close" onclick="closeJobModal()"></i>
-        </div>
-        
-        <form id="jobForm" style="padding: 20px;">
-            <input type="hidden" id="job_id" value="">
-            
-            <div class="form-group">
-                <label>Job Title *</label>
-                <input type="text" id="job_title" class="form-input" required placeholder="e.g., Housekeeping Supervisor">
+    <!-- Comment Modal -->
+    <div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal()">
+        <div class="comment-modal" onclick="event.stopPropagation()">
+            <div class="comment-modal-header">
+                <h3><i class="far fa-comments"></i> Review & Comments</h3>
+                <i class="fas fa-times comment-modal-close" onclick="closeCommentModal()"></i>
             </div>
-            
-            <div class="form-group">
-                <label>Department *</label>
-                <select id="job_department" class="form-input" required>
-                    <option value="">Select department</option>
-                    <option value="Housekeeping">🧹 Housekeeping</option>
-                    <option value="Food & Beverage">🍽️ Food & Beverage</option>
-                    <option value="Kitchen">👨‍🍳 Kitchen</option>
-                    <option value="Front Office">🛎️ Front Office</option>
-                    <option value="Reservations">📞 Reservations</option>
-                    <option value="Engineering">🔧 Engineering</option>
-                    <option value="Spa & Wellness">💆 Spa & Wellness</option>
-                    <option value="Recreation">🏊 Recreation</option>
-                    <option value="Management">👔 Management</option>
-                    <option value="Sales & Marketing">📊 Sales & Marketing</option>
-                    <option value="Human Resources">👥 Human Resources</option>
-                    <option value="Finance">💰 Finance</option>
-                    <option value="Security">🛡️ Security</option>
-                    <option value="Other">📌 Other</option>
-                </select>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group">
-                    <label>Job Type *</label>
-                    <select id="job_type" class="form-input" required>
-                        <option value="Full-time">Full-time</option>
-                        <option value="Part-time">Part-time</option>
-                        <option value="Contract">Contract</option>
-                        <option value="Internship">Internship</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Expires In (Days) *</label>
-                    <input type="number" id="job_expires" class="form-input" value="30" min="1" max="90" required>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Description *</label>
-                <textarea id="job_description" class="form-input" rows="5" required placeholder="Describe the role, responsibilities, and what you're looking for..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>Requirements</label>
-                <textarea id="job_requirements" class="form-input" rows="3" placeholder="List key requirements, qualifications, experience..."></textarea>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                <div class="form-group">
-                    <label>Salary Min</label>
-                    <input type="number" id="salary_min" class="form-input" placeholder="e.g., 8000">
-                </div>
-                
-                <div class="form-group">
-                    <label>Salary Max</label>
-                    <input type="number" id="salary_max" class="form-input" placeholder="e.g., 12000">
-                </div>
-                
-                <div class="form-group">
-                    <label>Period</label>
-                    <select id="salary_period" class="form-input">
-                        <option value="monthly">per month</option>
-                        <option value="hourly">per hour</option>
-                        <option value="yearly">per year</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Application Email</label>
-                <input type="email" id="application_email" class="form-input" placeholder="hr@resort.com">
-            </div>
-            
-            <div class="form-group">
-                <label>Contact Person</label>
-                <input type="text" id="contact_person" class="form-input" placeholder="HR Manager Name">
-            </div>
-            
-            <div class="form-group">
-                <label>Contact Phone</label>
-                <input type="text" id="contact_phone" class="form-input" placeholder="+960 123 4567">
-            </div>
-            
-            <button type="submit" class="post-btn">
-                <i class="fas fa-paper-plane"></i> Post Job
-            </button>
-        </form>
-    </div>
-</div>
-
-<!-- Change Password Modal -->
-<div class="modal-overlay" id="changePasswordModal" onclick="closeChangePasswordModal()">
-    <div class="modal-content settings-modal" onclick="event.stopPropagation()">
-        <div class="modal-header">
-            <h3><i class="fas fa-key"></i> Change Password</h3>
-            <i class="fas fa-times modal-close" onclick="closeChangePasswordModal()"></i>
-        </div>
-        
-        <div class="settings-content">
-            <div class="settings-section">
-                <div class="form-group">
-                    <label>Current Password</label>
-                    <input type="password" id="currentPassword" class="form-input">
-                </div>
-                
-                <div class="form-group">
-                    <label>New Password</label>
-                    <input type="password" id="newPassword" class="form-input">
-                </div>
-                
-                <div class="form-group">
-                    <label>Confirm New Password</label>
-                    <input type="password" id="confirmPassword" class="form-input">
-                </div>
-                
-                <button class="post-btn" onclick="updatePassword()" style="width: 100%;">
-                    <i class="fas fa-save"></i> Update Password
-                </button>
+            <div class="comment-modal-content" id="commentModalContent">
+                <!-- Populated by JavaScript -->
             </div>
         </div>
     </div>
-</div>
 
-<!-- Report Modal -->
-<div class="modal-overlay" id="reportModal" onclick="closeReportModal()">
-    <div class="modal-content report-modal" onclick="event.stopPropagation()">
-        <div class="modal-header">
-            <h3><i class="fas fa-flag"></i> Report Review</h3>
-            <i class="fas fa-times modal-close" onclick="closeReportModal()"></i>
-        </div>
-        
-        <div class="report-content">
-            <p style="margin-bottom: 15px; color: var(--text-dark);">Why are you reporting this review?</p>
-            
-            <div class="report-options">
-                <label class="report-option">
-                    <input type="radio" name="reason" value="inappropriate">
-                    <span>Inappropriate content</span>
-                </label>
-                <label class="report-option">
-                    <input type="radio" name="reason" value="false_info">
-                    <span>False information</span>
-                </label>
-                <label class="report-option">
-                    <input type="radio" name="reason" value="privacy">
-                    <span>Privacy violation (identifiable info)</span>
-                </label>
-                <label class="report-option">
-                    <input type="radio" name="reason" value="harassment">
-                    <span>Harassment or bullying</span>
-                </label>
-                <label class="report-option">
-                    <input type="radio" name="reason" value="other">
-                    <span>Other</span>
-                </label>
+    <!-- Image Modal for viewing full-size photos -->
+    <div class="image-modal-overlay" id="imageModal" onclick="closeImageModal()">
+        <div class="image-modal-content" onclick="event.stopPropagation()">
+            <img id="modalImage" src="" alt="">
+            <div class="image-modal-close" onclick="closeImageModal()">
+                <i class="fas fa-times"></i>
             </div>
-            
-            <textarea id="reportDescription" placeholder="Provide more details..."></textarea>
-            
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button class="cancel-btn" onclick="closeReportModal()">Cancel</button>
-                <button class="save-btn" onclick="submitReport()">Submit Report</button>
-            </div>
+            <div class="image-modal-caption" id="modalImageCaption"></div>
         </div>
     </div>
-</div>
 
-<!-- Comment Modal -->
-<div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal()">
-    <div class="comment-modal" onclick="event.stopPropagation()">
-        <div class="comment-modal-header">
-            <h3><i class="far fa-comments"></i> Review & Comments</h3>
-            <i class="fas fa-times comment-modal-close" onclick="closeCommentModal()"></i>
-        </div>
-        <div class="comment-modal-content" id="commentModalContent">
-            <!-- Populated by JavaScript -->
-        </div>
-    </div>
-</div>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
-    
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: false,
-            storage: localStorage
-        }
-    });
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: false,
+                storage: localStorage
+            }
+        });
 
-    let currentResort = null;
-    let allReviews = [];
-    let currentReviewId = null;
-    let currentReportReviewId = null;
-    let currentJobs = [];
+        let currentResort = null;
+        let allReviews = [];
+        let currentReviewId = null;
+        let currentReportReviewId = null;
+        let currentJobs = [];
 
-    // ===========================================
-    // SESSION CHECK
-    // ===========================================
-    function checkSession() {
-        const resortId = localStorage.getItem('resort_id');
-        const loginTimestamp = localStorage.getItem('login_timestamp');
-        const currentTime = new Date().getTime();
+        // ===========================================
+        // IMAGE MODAL FUNCTIONS
+        // ===========================================
+        function openCoverModal() {
+            const coverDiv = document.getElementById('profileCover');
+            const coverUrl = coverDiv.style.backgroundImage.slice(5, -2);
 
-        if (!resortId) {
-            window.location.href = 'resort-login.html';
-            return null;
+            if (coverUrl && coverUrl !== '' && coverUrl !== 'none') {
+                document.getElementById('modalImage').src = coverUrl;
+                document.getElementById('modalImageCaption').textContent = 'Cover Photo';
+                document.getElementById('imageModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert('No cover photo uploaded yet. You can add one in Settings.');
+            }
         }
 
-        if (loginTimestamp) {
-            const elapsedTime = currentTime - parseInt(loginTimestamp);
-            const eightHoursInMs = 8 * 60 * 60 * 1000;
-            if (elapsedTime > eightHoursInMs) {
-                localStorage.clear();
+        function openProfileModal() {
+            const profileDiv = document.getElementById('profilePicture');
+            const profileUrl = profileDiv.style.backgroundImage.slice(5, -2);
+
+            if (profileUrl && profileUrl !== '' && profileUrl !== 'none') {
+                document.getElementById('modalImage').src = profileUrl;
+                document.getElementById('modalImageCaption').textContent = 'Profile Picture';
+                document.getElementById('imageModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert('No profile picture uploaded yet. You can add one in Settings.');
+            }
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ===========================================
+        // PROFILE PHOTO UPLOAD FUNCTIONS
+        // ===========================================
+        async function loadResortPhotos() {
+            try {
+                const { data: profile } = await supabaseClient
+                    .from('resort_profiles')
+                    .select('cover_photo, profile_photo')
+                    .eq('id', resortId)
+                    .single();
+
+                if (profile) {
+                    if (profile.cover_photo) {
+                        document.getElementById('profileCover').style.backgroundImage = `url('${profile.cover_photo}')`;
+                        document.getElementById('profileCover').style.backgroundSize = 'cover';
+                        document.getElementById('profileCover').style.backgroundPosition = 'center';
+                    }
+                    if (profile.profile_photo) {
+                        document.getElementById('profilePicture').style.backgroundImage = `url('${profile.profile_photo}')`;
+                        document.getElementById('profilePicture').style.backgroundSize = 'cover';
+                        document.getElementById('profilePicture').style.backgroundPosition = 'center';
+                        document.getElementById('profileInitial').style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading photos:', error);
+            }
+        }
+
+        // Cover photo upload handler
+        document.getElementById('coverUpload').addEventListener('change', async function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const coverDiv = document.getElementById('profileCover');
+            const originalBg = coverDiv.style.backgroundImage;
+            coverDiv.style.opacity = '0.7';
+
+            try {
+                const fileName = `cover-${resortId}-${Date.now()}.${file.name.split('.').pop()}`;
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('resort-photos')
+                    .upload(`profiles/${fileName}`, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('resort-photos')
+                    .getPublicUrl(`profiles/${fileName}`);
+
+                await supabaseClient
+                    .from('resort_profiles')
+                    .update({ cover_photo: publicUrl })
+                    .eq('id', resortId);
+
+                await supabaseClient
+                    .from('resorts')
+                    .update({ cover_photo: publicUrl })
+                    .eq('id', currentResort?.integer_id);
+
+                coverDiv.style.backgroundImage = `url('${publicUrl}')`;
+                coverDiv.style.backgroundSize = 'cover';
+                coverDiv.style.backgroundPosition = 'center';
+                coverDiv.style.opacity = '1';
+
+                alert('✅ Cover photo updated!');
+
+            } catch (error) {
+                console.error('Error uploading cover:', error);
+                alert('Error uploading photo: ' + error.message);
+                coverDiv.style.backgroundImage = originalBg;
+                coverDiv.style.opacity = '1';
+            }
+        });
+
+        // Profile picture upload handler
+        document.getElementById('profileUpload').addEventListener('change', async function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const profileDiv = document.getElementById('profilePicture');
+            const initialSpan = document.getElementById('profileInitial');
+            profileDiv.style.opacity = '0.7';
+
+            try {
+                const fileName = `profile-${resortId}-${Date.now()}.${file.name.split('.').pop()}`;
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('resort-photos')
+                    .upload(`profiles/${fileName}`, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('resort-photos')
+                    .getPublicUrl(`profiles/${fileName}`);
+
+                await supabaseClient
+                    .from('resort_profiles')
+                    .update({ profile_photo: publicUrl })
+                    .eq('id', resortId);
+
+                await supabaseClient
+                    .from('resorts')
+                    .update({ profile_photo: publicUrl })
+                    .eq('id', currentResort?.integer_id);
+
+                profileDiv.style.backgroundImage = `url('${publicUrl}')`;
+                profileDiv.style.backgroundSize = 'cover';
+                profileDiv.style.backgroundPosition = 'center';
+                profileDiv.style.opacity = '1';
+                if (initialSpan) initialSpan.style.display = 'none';
+
+                alert('✅ Profile picture updated!');
+
+            } catch (error) {
+                console.error('Error uploading profile:', error);
+                alert('Error uploading photo: ' + error.message);
+                profileDiv.style.opacity = '1';
+            }
+        });
+
+        // Settings click handlers
+        window.editCover = function () {
+            document.getElementById('coverUpload').click();
+        };
+
+        window.editProfilePicture = function () {
+            document.getElementById('profileUpload').click();
+        };
+
+        // ===========================================
+        // SESSION CHECK
+        // ===========================================
+        function checkSession() {
+            const resortId = localStorage.getItem('resort_id');
+            const loginTimestamp = localStorage.getItem('login_timestamp');
+            const currentTime = new Date().getTime();
+
+            if (!resortId) {
                 window.location.href = 'resort-login.html';
                 return null;
             }
-        }
 
-        return resortId;
-    }
-
-    const resortId = checkSession();
-    if (!resortId) {
-        throw new Error('Session check failed');
-    }
-
-    // ===========================================
-    // INITIALIZATION
-    // ===========================================
-window.addEventListener('load', async function() {
-    try {
-        // First check session from localStorage
-        const resortId = checkSession();
-        if (!resortId) return;
-        
-        // Load resort data FIRST and wait for it to complete
-        await loadResortData();
-        
-        // Now that currentResort is fully loaded, load the dashboard
-        await loadDashboard();
-        
-        initTheme();
-    } catch (error) {
-        console.error('Error during initialization:', error);
-    }
-});
-
-    // ===========================================
-    // LOAD RESORT DATA
-    // ===========================================
-async function loadResortData() {
-    try {
-        console.log('Loading resort data for ID:', resortId);
-        
-        // First try to get from resort_profiles (new table) using UUID
-        const { data: profile, error: profileError } = await supabaseClient
-            .from('resort_profiles')
-            .select('*')
-            .eq('id', resortId)
-            .maybeSingle();
-        
-        if (profile) {
-            currentResort = profile;
-            
-            // Get the integer ID from old resorts table
-            const { data: oldResort } = await supabaseClient
-                .from('resorts')
-                .select('id')
-                .eq('name', profile.name)
-                .maybeSingle();
-            
-            if (oldResort) {
-                currentResort.integer_id = oldResort.id;
-                console.log('Found integer ID:', oldResort.id);
-            } else {
-                console.error('Could not find integer ID for resort');
-            }
-            
-            document.getElementById('dropdownResortName').textContent = profile.name;
-            console.log('CurrentResort after load:', currentResort);
-            return;
-        }
-        
-        // If no profile, try by name
-        const { data: nameMatch } = await supabaseClient
-            .from('resorts')
-            .select('*')
-            .eq('name', 'Niku Maldives')
-            .maybeSingle();
-        
-        if (nameMatch) {
-            currentResort = {
-                id: resortId,
-                integer_id: nameMatch.id,
-                name: nameMatch.name,
-                address: nameMatch.address,
-                phone: nameMatch.phone,
-                hours: nameMatch.hours,
-                website: nameMatch.website,
-                verified: nameMatch.verified
-            };
-            document.getElementById('dropdownResortName').textContent = nameMatch.name;
-            console.log('CurrentResort from name match:', currentResort);
-            return;
-        }
-        
-        console.error('No resort found');
-        logout();
-        
-    } catch (error) {
-        console.error('Error in loadResortData:', error);
-    }
-}
-
-    // ===========================================
-    // LOAD DASHBOARD
-    // ===========================================
-    async function loadDashboard() {
-        try {
-            const { data: reviews, error: reviewsError } = await supabaseClient
-                .from('reviews')
-                .select('*')
-                .eq('resort_id', currentResort?.integer_id)
-                .eq('status', 'approved')
-                .order('created_at', { ascending: false });
-
-            if (reviewsError) {
-                console.error('Error loading reviews:', reviewsError);
-                allReviews = [];
-            } else {
-                allReviews = reviews || [];
-            }
-
-            const { data: comments, error: commentsError } = await supabaseClient
-                .from('resort_comments')
-                .select('*')
-                .eq('resort_id', currentResort?.integer_id)
-
-            if (commentsError) {
-                console.error('Error loading comments:', commentsError);
-            }
-
-            const commentCount = comments?.length || 0;
-
-            const avgRating = allReviews.length > 0 
-                ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1)
-                : '0.0';
-
-            const allPhotos = [];
-            allReviews.forEach(review => {
-                if (review.photo_urls && review.photo_urls !== '[]') {
-                    try {
-                        const urls = JSON.parse(review.photo_urls);
-                        urls.forEach(url => {
-                            allPhotos.push({
-                                url: url,
-                                reviewId: review.id,
-                                reviewText: review.review_text,
-                                rating: review.rating,
-                                date: review.created_at
-                            });
-                        });
-                    } catch (e) {
-                        console.error('Error parsing photos:', e);
-                    }
+            if (loginTimestamp) {
+                const elapsedTime = currentTime - parseInt(loginTimestamp);
+                const eightHoursInMs = 8 * 60 * 60 * 1000;
+                if (elapsedTime > eightHoursInMs) {
+                    localStorage.clear();
+                    window.location.href = 'resort-login.html';
+                    return null;
                 }
-            });
+            }
 
-            document.getElementById('dashboard').innerHTML = `
-                <div class="profile-cover">
-                    <div class="profile-picture" onclick="openSettings()">
-                        <span>🏨</span>
-                        <div class="profile-picture-upload" onclick="event.stopPropagation(); openSettings()">
-                            <i class="fas fa-camera"></i>
+            return resortId;
+        }
+
+        const resortId = checkSession();
+        if (!resortId) {
+            throw new Error('Session check failed');
+        }
+
+        // ===========================================
+        // INITIALIZATION
+        // ===========================================
+        window.addEventListener('load', async function () {
+            try {
+                const resortId = checkSession();
+                if (!resortId) return;
+
+                await loadResortData();
+                await loadDashboard();
+                await loadResortPhotos();
+                initTheme();
+
+                // Attach file input listeners after dashboard loads
+                document.getElementById('coverUpload').addEventListener('change', handleCoverUpload);
+                document.getElementById('profileUpload').addEventListener('change', handleProfileUpload);
+
+            } catch (error) {
+                console.error('Error during initialization:', error);
+            }
+        });
+
+        // ===========================================
+        // LOAD RESORT DATA
+        // ===========================================
+        async function loadResortData() {
+            try {
+                console.log('Loading resort data for ID:', resortId);
+
+                const { data: profile, error: profileError } = await supabaseClient
+                    .from('resort_profiles')
+                    .select('*')
+                    .eq('id', resortId)
+                    .maybeSingle();
+
+                if (profile) {
+                    currentResort = profile;
+
+                    const { data: oldResort } = await supabaseClient
+                        .from('resorts')
+                        .select('id')
+                        .eq('name', profile.name)
+                        .maybeSingle();
+
+                    if (oldResort) {
+                        currentResort.integer_id = oldResort.id;
+                        console.log('Found integer ID:', oldResort.id);
+                    }
+
+                    document.getElementById('dropdownResortName').textContent = profile.name;
+                    return;
+                }
+
+                const { data: nameMatch } = await supabaseClient
+                    .from('resorts')
+                    .select('*')
+                    .eq('name', 'Niku Maldives')
+                    .maybeSingle();
+
+                if (nameMatch) {
+                    currentResort = {
+                        id: resortId,
+                        integer_id: nameMatch.id,
+                        name: nameMatch.name,
+                        address: nameMatch.address,
+                        phone: nameMatch.phone,
+                        hours: nameMatch.hours,
+                        website: nameMatch.website,
+                        verified: nameMatch.verified
+                    };
+                    document.getElementById('dropdownResortName').textContent = nameMatch.name;
+                    return;
+                }
+
+                console.error('No resort found');
+                logout();
+
+            } catch (error) {
+                console.error('Error in loadResortData:', error);
+            }
+        }
+
+        // ===========================================
+        // LOAD DASHBOARD
+        // ===========================================
+        async function loadDashboard() {
+            try {
+                const { data: reviews, error: reviewsError } = await supabaseClient
+                    .from('reviews')
+                    .select('*')
+                    .eq('resort_id', currentResort?.integer_id)
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+
+                if (reviewsError) {
+                    console.error('Error loading reviews:', reviewsError);
+                    allReviews = [];
+                } else {
+                    allReviews = reviews || [];
+                }
+
+                const { data: comments, error: commentsError } = await supabaseClient
+                    .from('resort_comments')
+                    .select('*')
+                    .eq('resort_id', currentResort?.integer_id)
+
+                if (commentsError) {
+                    console.error('Error loading comments:', commentsError);
+                }
+
+                const commentCount = comments?.length || 0;
+                const avgRating = allReviews.length > 0
+                    ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1)
+                    : '0.0';
+
+                const allPhotos = [];
+                allReviews.forEach(review => {
+                    if (review.photo_urls && review.photo_urls !== '[]') {
+                        try {
+                            const urls = JSON.parse(review.photo_urls);
+                            urls.forEach(url => {
+                                allPhotos.push({
+                                    url: url,
+                                    reviewId: review.id,
+                                    reviewText: review.review_text,
+                                    rating: review.rating,
+                                    date: review.created_at
+                                });
+                            });
+                        } catch (e) {
+                            console.error('Error parsing photos:', e);
+                        }
+                    }
+                });
+
+                document.getElementById('dashboard').innerHTML = `
+                    <!-- Cover Photo Section -->
+                    <div class="profile-cover" id="profileCover" onclick="openCoverModal()" style="cursor: pointer; background-image: ${currentResort?.cover_photo ? `url('${currentResort.cover_photo}')` : 'none'}; background-size: cover; background-position: center;">
+                        <div class="cover-overlay">
+                            <i class="fas fa-image"></i>
+                            <span>View Cover</span>
+                        </div>
+                        
+                        <div class="profile-picture" id="profilePicture" onclick="event.stopPropagation(); openProfileModal()" style="background-image: ${currentResort?.profile_photo ? `url('${currentResort.profile_photo}')` : 'none'}; background-size: cover; background-position: center;">
+                            ${!currentResort?.profile_photo ? '<span id="profileInitial">🏨</span>' : ''}
+                            <div class="profile-picture-overlay">
+                                <i class="fas fa-image"></i>
+                                <span>View</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="profile-info">
-                    <h1>${currentResort?.name || 'Resort'} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
-                </div>
-
-                <div class="profile-nav">
-                    <div class="profile-nav-item active" onclick="switchTab('overview')">Overview</div>
-                    <div class="profile-nav-item" onclick="switchTab('reviews')">Reviews</div>
-                    <div class="profile-nav-item" onclick="switchTab('photos')">Photos (${allPhotos.length})</div>
-                    <div class="profile-nav-item" onclick="switchTab('jobs')">Jobs</div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <span class="stat-value">${avgRating}</span>
-                        <span class="stat-label">Average Rating</span>
+                    <div class="profile-info">
+                        <h1>${currentResort?.name || 'Resort'} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-value">${allReviews.length}</span>
-                        <span class="stat-label">Total Reviews</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value">${commentCount}</span>
-                        <span class="stat-label">Your Responses</span>
-                    </div>
-                </div>
 
-                <div id="overview-tab" class="overview-section">
-                    <h2 style="margin-bottom: 20px;">Overview</h2>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <label>Location</label>
-                            <p id="display-address">${currentResort?.address || 'Not set'}</p>
+                    <div class="profile-nav">
+                        <div class="profile-nav-item active" onclick="switchTab('overview')">Overview</div>
+                        <div class="profile-nav-item" onclick="switchTab('reviews')">Reviews</div>
+                        <div class="profile-nav-item" onclick="switchTab('photos')">Photos (${allPhotos.length})</div>
+                        <div class="profile-nav-item" onclick="switchTab('jobs')">Jobs</div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-value">${avgRating}</span>
+                            <span class="stat-label">Average Rating</span>
                         </div>
-                        <div class="info-item">
-                            <label>Contact</label>
-                            <p id="display-phone">${currentResort?.phone || 'Not set'}</p>
+                        <div class="stat-card">
+                            <span class="stat-value">${allReviews.length}</span>
+                            <span class="stat-label">Total Reviews</span>
                         </div>
-                        <div class="info-item">
-                            <label>Hours</label>
-                            <p id="display-hours">${currentResort?.hours || 'Open 24 hours'}</p>
-                        </div>
-                        <div class="info-item">
-                            <label>Website</label>
-                            <p id="display-website">${currentResort?.website ? `<a href="${currentResort.website}" target="_blank">${currentResort.website}</a>` : 'Not set'}</p>
+                        <div class="stat-card">
+                            <span class="stat-value">${commentCount}</span>
+                            <span class="stat-label">Your Responses</span>
                         </div>
                     </div>
-                </div>
 
-                <div id="reviews-tab" style="display: none;">
-                    <div class="reviews-feed">
-                        <h2 style="margin-bottom: 20px;">Staff Reviews</h2>
-                        <div id="reviews-list"></div>
+                    <div id="overview-tab" class="overview-section">
+                        <h2 style="margin-bottom: 20px;">Overview</h2>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Location</label>
+                                <p id="display-address">${currentResort?.address || 'Not set'}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Contact</label>
+                                <p id="display-phone">${currentResort?.phone || 'Not set'}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Hours</label>
+                                <p id="display-hours">${currentResort?.hours || 'Open 24 hours'}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Website</label>
+                                <p id="display-website">${currentResort?.website ? `<a href="${currentResort.website}" target="_blank">${currentResort.website}</a>` : 'Not set'}</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div id="photos-tab" style="display: none;">
-                    <div class="reviews-feed">
-                        <h2 style="margin-bottom: 20px;">All Photos</h2>
-                        <div class="photos-grid" id="photos-grid">
-                            ${allPhotos.length > 0 ? 
-                                allPhotos.map(photo => {
-                                    const previewText = photo.reviewText ? photo.reviewText.substring(0, 50) : '';
-                                    return `
-                                        <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
-                                            <img src="${photo.url}" loading="lazy">
-                                            <div class="review-preview">
-                                                ⭐ ${photo.rating || 0}/10 • ${previewText}...
+                    <div id="reviews-tab" style="display: none;">
+                        <div class="reviews-feed">
+                            <h2 style="margin-bottom: 20px;">Staff Reviews</h2>
+                            <div id="reviews-list"></div>
+                        </div>
+                    </div>
+
+                    <div id="photos-tab" style="display: none;">
+                        <div class="reviews-feed">
+                            <h2 style="margin-bottom: 20px;">All Photos</h2>
+                            <div class="photos-grid" id="photos-grid">
+                                ${allPhotos.length > 0 ?
+                        allPhotos.map(photo => {
+                            const previewText = photo.reviewText ? photo.reviewText.substring(0, 50) : '';
+                            return `
+                                            <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
+                                                <img src="${photo.url}" loading="lazy">
+                                                <div class="review-preview">
+                                                    ⭐ ${photo.rating || 0}/10 • ${previewText}...
+                                                </div>
                                             </div>
+                                        `;
+                        }).join('')
+                        : '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">No photos yet</p>'
+                    }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="jobs-tab" style="display: none;">
+                        <div class="reviews-feed">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h2><i class="fas fa-briefcase"></i> Job Postings</h2>
+                                <button class="post-btn" onclick="showJobModal()" style="width: auto; padding: 10px 20px;">
+                                    <i class="fas fa-plus"></i> Post New Job
+                                </button>
+                            </div>
+                            <div id="jobsList" class="jobs-grid">
+                                <div class="loading-spinner">Loading jobs...</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                await loadReviewsList();
+                await loadResortJobs();
+
+            } catch (error) {
+                console.error('Error in loadDashboard:', error);
+            }
+        }
+
+        // ===========================================
+        // SWITCH TAB
+        // ===========================================
+        window.switchTab = function (tab) {
+            document.querySelectorAll('.profile-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.getElementById('overview-tab').style.display = 'none';
+            document.getElementById('reviews-tab').style.display = 'none';
+            document.getElementById('photos-tab').style.display = 'none';
+            document.getElementById('jobs-tab').style.display = 'none';
+
+            if (tab === 'overview') {
+                document.getElementById('overview-tab').style.display = 'block';
+            } else if (tab === 'reviews') {
+                document.getElementById('reviews-tab').style.display = 'block';
+            } else if (tab === 'photos') {
+                document.getElementById('photos-tab').style.display = 'block';
+            } else if (tab === 'jobs') {
+                document.getElementById('jobs-tab').style.display = 'block';
+                loadResortJobs();
+            }
+        };
+
+        // ===========================================
+        // LOAD REVIEWS LIST
+        // ===========================================
+        async function loadReviewsList() {
+            const reviewsList = document.getElementById('reviews-list');
+            if (!reviewsList) return;
+
+            try {
+                const { data: allComments } = await supabaseClient
+                    .from('resort_comments')
+                    .select('*')
+                    .eq('resort_id', currentResort?.integer_id);
+
+                const commentMap = {};
+                if (allComments) {
+                    allComments.forEach(c => commentMap[c.review_id] = c);
+                }
+
+                let html = '';
+
+                for (const review of allReviews) {
+                    const date = new Date(review.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+
+                    const existingComment = commentMap[review.id];
+
+                    let photosHtml = '';
+                    if (review.photo_urls && review.photo_urls !== '[]') {
+                        try {
+                            const photoUrls = JSON.parse(review.photo_urls);
+                            if (photoUrls.length > 0) {
+                                photosHtml = '<div class="photo-gallery">';
+                                photoUrls.forEach(url => {
+                                    photosHtml += `
+                                        <div class="photo-thumbnail" onclick="openCommentModal(${review.id})">
+                                            <img src="${url}" loading="lazy">
                                         </div>
                                     `;
-                                }).join('') 
-                                : '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">No photos yet</p>'
+                                });
+                                photosHtml += '</div>';
                             }
+                        } catch (e) { }
+                    }
+
+                    html += `
+                        <div class="review-card">
+                            <div class="review-menu-container">
+                                <div class="menu-trigger" onclick="toggleReviewMenu(${review.id})">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
+                                <div class="review-menu" id="menu-${review.id}">
+                                    <div class="menu-item report" onclick="openReportModal(${review.id})">
+                                        <i class="fas fa-flag"></i>
+                                        <span>Report</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="review-header">
+                                <span class="review-rating">${review.rating}/10</span>
+                                <span class="review-date">${date}</span>
+                            </div>
+                            <p class="review-text">${review.review_text}</p>
+                            ${photosHtml}
+                            
+                            <div class="review-actions">
+                                <button class="action-btn" onclick="openCommentModal(${review.id})">
+                                    <i class="far fa-comment"></i> ${existingComment ? 'View/Edit Response' : 'Add Response'}
+                                </button>
+                                <button class="action-btn" onclick="shareReview(${review.id})">
+                                    <i class="far fa-share-square"></i> Share
+                                </button>
+                            </div>
+                            
+                            <div id="response-container-${review.id}">
+                                ${existingComment ? renderExistingResponse(existingComment) : renderResponseInput(review.id)}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                reviewsList.innerHTML = html || '<p style="text-align: center; padding: 40px;">No reviews yet</p>';
+            } catch (error) {
+                console.error('Error loading reviews list:', error);
+            }
+        }
+
+        // ===========================================
+        // JOB FUNCTIONS
+        // ===========================================
+        async function loadResortJobs() {
+            const jobsList = document.getElementById('jobsList');
+            if (!jobsList) return;
+
+            try {
+                const { data: jobs } = await supabaseClient
+                    .from('resort_jobs')
+                    .select('*')
+                    .eq('resort_id', currentResort?.integer_id)
+                    .order('created_at', { ascending: false });
+
+                currentJobs = jobs || [];
+
+                if (!jobs || jobs.length === 0) {
+                    jobsList.innerHTML = '<p class="no-jobs">No jobs posted yet. Click "Post New Job" to get started.</p>';
+                    return;
+                }
+
+                let html = '<div class="jobs-grid">';
+                jobs.forEach(job => {
+                    const expires = new Date(job.expires_at).toLocaleDateString();
+                    const isActive = job.is_active && new Date(job.expires_at) > new Date();
+                    const status = isActive ? 'Active' : 'Expired';
+                    const statusClass = isActive ? 'active' : 'expired';
+
+                    html += `
+                        <div class="job-card">
+                            <div class="job-status ${statusClass}">${status}</div>
+                            <h4>${job.title}</h4>
+                            <div class="job-department">${job.department} • ${job.job_type}</div>
+                            <div class="job-expires">Expires: ${expires}</div>
+                            <div class="job-actions">
+                                <button class="action-btn small" onclick="editJob(${job.id})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="action-btn small" onclick="toggleJobStatus(${job.id}, ${!isActive})">
+                                    <i class="fas fa-${isActive ? 'pause' : 'play'}"></i> 
+                                    ${isActive ? 'Deactivate' : 'Activate'}
+                                </button>
+                                <button class="action-btn small" onclick="deleteJob(${job.id})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+
+                jobsList.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+                jobsList.innerHTML = '<p class="no-jobs">Error loading jobs</p>';
+            }
+        }
+
+        window.showJobModal = function (jobId = null) {
+            if (jobId) {
+                editJob(jobId);
+            } else {
+                document.getElementById('job_id').value = '';
+                document.getElementById('job_title').value = '';
+                document.getElementById('job_department').value = '';
+                document.getElementById('job_type').value = 'Full-time';
+                document.getElementById('job_description').value = '';
+                document.getElementById('job_requirements').value = '';
+                document.getElementById('salary_min').value = '';
+                document.getElementById('salary_max').value = '';
+                document.getElementById('salary_period').value = 'monthly';
+                document.getElementById('application_email').value = '';
+                document.getElementById('contact_person').value = '';
+                document.getElementById('contact_phone').value = '';
+                document.getElementById('job_expires').value = '30';
+
+                document.getElementById('jobModal').classList.add('active');
+            }
+        };
+
+        window.closeJobModal = function () {
+            document.getElementById('jobModal').classList.remove('active');
+        };
+
+        document.getElementById('jobForm')?.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const jobId = document.getElementById('job_id').value;
+            const expiresDays = parseInt(document.getElementById('job_expires').value);
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + expiresDays);
+
+            const jobData = {
+                resort_id: parseInt(currentResort?.integer_id),
+                title: document.getElementById('job_title').value,
+                department: document.getElementById('job_department').value,
+                job_type: document.getElementById('job_type').value,
+                description: document.getElementById('job_description').value,
+                requirements: document.getElementById('job_requirements').value || null,
+                salary_min: document.getElementById('salary_min').value ? parseInt(document.getElementById('salary_min').value) : null,
+                salary_max: document.getElementById('salary_max').value ? parseInt(document.getElementById('salary_max').value) : null,
+                salary_period: document.getElementById('salary_period').value,
+                application_email: document.getElementById('application_email').value || null,
+                contact_person: document.getElementById('contact_person').value || null,
+                contact_phone: document.getElementById('contact_phone').value || null,
+                expires_at: expiresAt.toISOString(),
+                is_active: true
+            };
+
+            try {
+                let error;
+                if (jobId) {
+                    const { error: updateError } = await supabaseClient
+                        .from('resort_jobs')
+                        .update(jobData)
+                        .eq('id', jobId);
+                    error = updateError;
+                } else {
+                    const { error: insertError } = await supabaseClient
+                        .from('resort_jobs')
+                        .insert([jobData]);
+                    error = insertError;
+                }
+
+                if (error) {
+                    alert('Error saving job: ' + error.message);
+                } else {
+                    alert(jobId ? 'Job updated!' : 'Job posted!');
+                    closeJobModal();
+                    loadResortJobs();
+                }
+            } catch (err) {
+                console.error('Job submission error:', err);
+                alert('Error: ' + err.message);
+            }
+        });
+
+        window.editJob = function (jobId) {
+            const job = currentJobs.find(j => j.id === jobId);
+            if (!job) {
+                console.error('Job not found:', jobId);
+                return;
+            }
+
+            document.getElementById('job_id').value = job.id;
+            document.getElementById('job_title').value = job.title || '';
+            document.getElementById('job_department').value = job.department || '';
+            document.getElementById('job_type').value = job.job_type || 'Full-time';
+            document.getElementById('job_description').value = job.description || '';
+            document.getElementById('job_requirements').value = job.requirements || '';
+            document.getElementById('salary_min').value = job.salary_min || '';
+            document.getElementById('salary_max').value = job.salary_max || '';
+            document.getElementById('salary_period').value = job.salary_period || 'monthly';
+            document.getElementById('application_email').value = job.application_email || '';
+            document.getElementById('contact_person').value = job.contact_person || '';
+            document.getElementById('contact_phone').value = job.contact_phone || '';
+
+            if (job.expires_at) {
+                const today = new Date();
+                const expiryDate = new Date(job.expires_at);
+                const diffTime = expiryDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                document.getElementById('job_expires').value = diffDays > 0 ? diffDays : 30;
+            } else {
+                document.getElementById('job_expires').value = '30';
+            }
+
+            document.getElementById('jobModal').classList.add('active');
+        };
+
+        window.deleteJob = async function (jobId) {
+            if (!confirm('Delete this job posting?')) return;
+
+            const { error } = await supabaseClient
+                .from('resort_jobs')
+                .delete()
+                .eq('id', jobId);
+
+            if (error) {
+                alert('Error deleting job: ' + error.message);
+            } else {
+                loadResortJobs();
+            }
+        };
+
+        window.toggleJobStatus = async function (jobId, newStatus) {
+            const { error } = await supabaseClient
+                .from('resort_jobs')
+                .update({ is_active: newStatus })
+                .eq('id', jobId);
+
+            if (error) {
+                alert('Error updating job: ' + error.message);
+            } else {
+                loadResortJobs();
+            }
+        };
+
+        // ===========================================
+        // RESPONSE FUNCTIONS
+        // ===========================================
+        function renderExistingResponse(comment) {
+            return `
+                <div class="response-section" id="response-${comment.id}">
+                    <div class="existing-response">
+                        <p><strong>Your response:</strong> ${comment.comment_text}</p>
+                        <div class="response-actions">
+                            <button onclick="startEditResponse(${comment.id}, '${comment.comment_text.replace(/'/g, "\\'")}')">Edit</button>
+                            <button onclick="deleteResponse(${comment.id})">Delete</button>
                         </div>
                     </div>
                 </div>
+            `;
+        }
 
-                <div id="jobs-tab" style="display: none;">
-                    <div class="reviews-feed">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h2><i class="fas fa-briefcase"></i> Job Postings</h2>
-                            <button class="post-btn" onclick="showJobModal()" style="width: auto; padding: 10px 20px;">
-                                <i class="fas fa-plus"></i> Post New Job
-                            </button>
+        function renderResponseInput(reviewId) {
+            return `
+                <div class="response-section">
+                    <div class="response-input-container">
+                        <textarea id="response-${reviewId}" placeholder="Write your official response..." rows="1"></textarea>
+                        <button onclick="submitResponse(${reviewId})">Post</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.submitResponse = async function (reviewId) {
+            const response = document.getElementById(`response-${reviewId}`).value.trim();
+            if (!response) return;
+
+            const { error } = await supabaseClient
+                .from('resort_comments')
+                .insert([{
+                    review_id: reviewId,
+                    resort_id: parseInt(currentResort?.integer_id),
+                    comment_text: response,
+                    is_official: true
+                }]);
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                const { data } = await supabaseClient
+                    .from('resort_comments')
+                    .select('*')
+                    .eq('review_id', reviewId)
+                    .eq('resort_id', currentResort?.integer_id)
+                    .single();
+
+                const container = document.getElementById(`response-container-${reviewId}`);
+                container.innerHTML = renderExistingResponse(data);
+            }
+        };
+
+        window.startEditResponse = function (commentId, currentText) {
+            const container = document.getElementById(`response-${commentId}`);
+            container.innerHTML = renderEditResponse(commentId, currentText);
+        };
+
+        function renderEditResponse(commentId, currentText) {
+            return `
+                <div class="response-section edit-comment-container" id="edit-${commentId}">
+                    <textarea id="edit-text-${commentId}">${currentText}</textarea>
+                    <div class="edit-actions">
+                        <button class="cancel-btn" onclick="cancelEditResponse(${commentId})">Cancel</button>
+                        <button class="save-btn" onclick="saveEditResponse(${commentId})">Save</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.cancelEditResponse = function (commentId) {
+            supabaseClient
+                .from('resort_comments')
+                .select('*')
+                .eq('id', commentId)
+                .single()
+                .then(({ data }) => {
+                    const container = document.getElementById(`edit-${commentId}`).parentNode;
+                    container.innerHTML = renderExistingResponse(data);
+                });
+        };
+
+        window.saveEditResponse = async function (commentId) {
+            const newText = document.getElementById(`edit-text-${commentId}`).value.trim();
+            if (!newText) return;
+
+            const { error } = await supabaseClient
+                .from('resort_comments')
+                .update({ comment_text: newText })
+                .eq('id', commentId);
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                const { data } = await supabaseClient
+                    .from('resort_comments')
+                    .select('*')
+                    .eq('id', commentId)
+                    .single();
+
+                const container = document.getElementById(`edit-${commentId}`).parentNode;
+                container.innerHTML = renderExistingResponse(data);
+            }
+        };
+
+        window.deleteResponse = async function (commentId) {
+            if (!confirm('Delete this response?')) return;
+
+            const { error } = await supabaseClient
+                .from('resort_comments')
+                .delete()
+                .eq('id', commentId);
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                const reviewId = commentId;
+                const container = document.getElementById(`response-container-${reviewId}`);
+                container.innerHTML = renderResponseInput(reviewId);
+            }
+        };
+
+        // ===========================================
+        // REPORT FUNCTIONS
+        // ===========================================
+        function toggleReviewMenu(reviewId) {
+            const menu = document.getElementById(`menu-${reviewId}`);
+            document.querySelectorAll('.review-menu.active').forEach(m => {
+                if (m.id !== `menu-${reviewId}`) {
+                    m.classList.remove('active');
+                }
+            });
+            menu.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.review-menu-container')) {
+                document.querySelectorAll('.review-menu.active').forEach(m => {
+                    m.classList.remove('active');
+                });
+            }
+        });
+
+        window.openReportModal = function (reviewId) {
+            currentReportReviewId = reviewId;
+            document.getElementById('reportModal').classList.add('active');
+            document.getElementById(`menu-${reviewId}`).classList.remove('active');
+        };
+
+        window.closeReportModal = function () {
+            document.getElementById('reportModal').classList.remove('active');
+            currentReportReviewId = null;
+            document.querySelectorAll('input[name="reason"]').forEach(r => r.checked = false);
+            document.getElementById('reportDescription').value = '';
+        };
+
+        window.submitReport = async function () {
+            const reason = document.querySelector('input[name="reason"]:checked')?.value;
+            const description = document.getElementById('reportDescription').value.trim();
+
+            if (!reason) {
+                alert('Please select a reason');
+                return;
+            }
+
+            const { error } = await supabaseClient
+                .from('reports')
+                .insert([{
+                    review_id: currentReportReviewId,
+                    resort_id: parseInt(currentResort?.integer_id),
+                    reason: reason,
+                    description: description,
+                    status: 'pending'
+                }]);
+
+            if (error) {
+                alert('Error submitting report: ' + error.message);
+            } else {
+                alert('Report submitted! We will review it shortly.');
+                closeReportModal();
+            }
+        };
+
+        // ===========================================
+        // COMMENT MODAL FUNCTIONS
+        // ===========================================
+        window.openCommentModal = async function (reviewId) {
+            currentReviewId = reviewId;
+
+            const { data: review } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('id', reviewId)
+                .single();
+
+            const { data: comments } = await supabaseClient
+                .from('resort_comments')
+                .select('*')
+                .eq('review_id', reviewId)
+                .order('created_at', { ascending: false });
+
+            const date = new Date(review.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            let photosHtml = '';
+            if (review.photo_urls && review.photo_urls !== '[]') {
+                try {
+                    const photoUrls = JSON.parse(review.photo_urls);
+                    if (photoUrls.length > 0) {
+                        photosHtml = '<div class="modal-post-photos">';
+                        photoUrls.forEach(url => {
+                            photosHtml += `
+                                <div class="modal-post-photo" onclick="window.open('${url}')">
+                                    <img src="${url}" loading="lazy">
+                                </div>
+                            `;
+                        });
+                        photosHtml += '</div>';
+                    }
+                } catch (e) { }
+            }
+
+            let commentsHtml = '<div class="comments-list">';
+            if (comments && comments.length > 0) {
+                comments.forEach(comment => {
+                    const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    });
+
+                    commentsHtml += `
+                        <div class="modal-comment-item" id="modal-comment-${comment.id}">
+                            <div class="modal-comment-avatar">
+                                ${comment.is_official ? '🏨' : '👤'}
+                            </div>
+                            <div class="modal-comment-content">
+                                <div class="modal-comment-header">
+                                    <span class="modal-comment-author">
+                                        ${comment.is_official ? 'Your Response' : 'Guest'}
+                                    </span>
+                                    ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                                    <span class="comment-date-small">${commentDate}</span>
+                                </div>
+                                <p class="modal-comment-text">${comment.comment_text}</p>
+                                ${comment.is_official ? `
+                                    <div class="modal-comment-actions">
+                                        <button onclick="modalEditComment(${comment.id}, '${comment.comment_text.replace(/'/g, "\\'")}')">Edit</button>
+                                        <button onclick="modalDeleteComment(${comment.id})">Delete</button>
+                                    </div>
+                                ` : ''}
+                            </div>
                         </div>
-                        <div id="jobsList" class="jobs-grid">
-                            <div class="loading-spinner">Loading jobs...</div>
+                    `;
+                });
+            } else {
+                commentsHtml += '<div class="no-comments-modal">No comments yet</div>';
+            }
+            commentsHtml += '</div>';
+
+            const modalContent = `
+                <div class="modal-post">
+                    <div class="modal-post-header">
+                        <span class="modal-post-rating">${review.rating}/10</span>
+                        <span class="modal-post-date">${date}</span>
+                    </div>
+                    <p class="modal-post-text">${review.review_text}</p>
+                    ${photosHtml}
+                </div>
+                <div class="modal-comments">
+                    ${commentsHtml}
+                    <div class="modal-response-section" id="modal-response-${reviewId}">
+                        <div class="modal-response-input">
+                            <textarea id="modal-response-text" placeholder="Write your official response..."></textarea>
+                            <button onclick="submitModalResponse(${reviewId})">Post</button>
                         </div>
                     </div>
                 </div>
             `;
 
-            await loadReviewsList();
-        } catch (error) {
-            console.error('Error in loadDashboard:', error);
-        }
-    }
-
-    // ===========================================
-    // SWITCH TAB
-    // ===========================================
-    window.switchTab = function(tab) {
-        document.querySelectorAll('.profile-nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        event.target.classList.add('active');
-        
-        document.getElementById('overview-tab').style.display = 'none';
-        document.getElementById('reviews-tab').style.display = 'none';
-        document.getElementById('photos-tab').style.display = 'none';
-        document.getElementById('jobs-tab').style.display = 'none';
-        
-        if (tab === 'overview') {
-            document.getElementById('overview-tab').style.display = 'block';
-        } else if (tab === 'reviews') {
-            document.getElementById('reviews-tab').style.display = 'block';
-        } else if (tab === 'photos') {
-            document.getElementById('photos-tab').style.display = 'block';
-        } else if (tab === 'jobs') {
-            document.getElementById('jobs-tab').style.display = 'block';
-            loadResortJobs();
-        }
-    };
-
-    // ===========================================
-    // LOAD REVIEWS LIST
-    // ===========================================
-    async function loadReviewsList() {
-        const reviewsList = document.getElementById('reviews-list');
-        if (!reviewsList) return;
-
-        try {
-            const { data: allComments } = await supabaseClient
-                .from('resort_comments')
-                .select('*')
-                .eq('resort_id', currentResort?.integer_id); 
-
-            const commentMap = {};
-            if (allComments) {
-                allComments.forEach(c => commentMap[c.review_id] = c);
-            }
-
-            let html = '';
-
-            for (const review of allReviews) {
-                const date = new Date(review.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                });
-
-                const existingComment = commentMap[review.id];
-
-                let photosHtml = '';
-                if (review.photo_urls && review.photo_urls !== '[]') {
-                    try {
-                        const photoUrls = JSON.parse(review.photo_urls);
-                        if (photoUrls.length > 0) {
-                            photosHtml = '<div class="photo-gallery">';
-                            photoUrls.forEach(url => {
-                                photosHtml += `
-                                    <div class="photo-thumbnail" onclick="openCommentModal(${review.id})">
-                                        <img src="${url}" loading="lazy">
-                                    </div>
-                                `;
-                            });
-                            photosHtml += '</div>';
-                        }
-                    } catch (e) {}
-                }
-
-                html += `
-                    <div class="review-card">
-                        <div class="review-menu-container">
-                            <div class="menu-trigger" onclick="toggleReviewMenu(${review.id})">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                            <div class="review-menu" id="menu-${review.id}">
-                                <div class="menu-item report" onclick="openReportModal(${review.id})">
-                                    <i class="fas fa-flag"></i>
-                                    <span>Report</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="review-header">
-                            <span class="review-rating">${review.rating}/10</span>
-                            <span class="review-date">${date}</span>
-                        </div>
-                        <p class="review-text">${review.review_text}</p>
-                        ${photosHtml}
-                        
-                        <div class="review-actions">
-                            <button class="action-btn" onclick="openCommentModal(${review.id})">
-                                <i class="far fa-comment"></i> ${existingComment ? 'View/Edit Response' : 'Add Response'}
-                            </button>
-                            <button class="action-btn" onclick="shareReview(${review.id})">
-                                <i class="far fa-share-square"></i> Share
-                            </button>
-                        </div>
-                        
-                        <div id="response-container-${review.id}">
-                            ${existingComment ? renderExistingResponse(existingComment) : renderResponseInput(review.id)}
-                        </div>
-                    </div>
-                `;
-            }
-
-            reviewsList.innerHTML = html || '<p style="text-align: center; padding: 40px;">No reviews yet</p>';
-        } catch (error) {
-            console.error('Error loading reviews list:', error);
-        }
-    }
-
-    // ===========================================
-    // JOB FUNCTIONS
-    // ===========================================
-    async function loadResortJobs() {
-        const jobsList = document.getElementById('jobsList');
-        if (!jobsList) return;
-
-        try {
-            const { data: jobs } = await supabaseClient
-                .from('resort_jobs')
-                .select('*')
-                .eq('resort_id', currentResort?.integer_id)
-                .order('created_at', { ascending: false });
-
-            currentJobs = jobs || [];
-
-            if (!jobs || jobs.length === 0) {
-                jobsList.innerHTML = '<p class="no-jobs">No jobs posted yet. Click "Post New Job" to get started.</p>';
-                return;
-            }
-
-            let html = '<div class="jobs-grid">';
-            jobs.forEach(job => {
-                const expires = new Date(job.expires_at).toLocaleDateString();
-                const isActive = job.is_active && new Date(job.expires_at) > new Date();
-                const status = isActive ? 'Active' : 'Expired';
-                const statusClass = isActive ? 'active' : 'expired';
-
-                html += `
-                    <div class="job-card">
-                        <div class="job-status ${statusClass}">${status}</div>
-                        <h4>${job.title}</h4>
-                        <div class="job-department">${job.department} • ${job.job_type}</div>
-                        <div class="job-expires">Expires: ${expires}</div>
-                        <div class="job-actions">
-                            <button class="action-btn small" onclick="editJob(${job.id})">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="action-btn small" onclick="toggleJobStatus(${job.id}, ${!isActive})">
-                                <i class="fas fa-${isActive ? 'pause' : 'play'}"></i> 
-                                ${isActive ? 'Deactivate' : 'Activate'}
-                            </button>
-                            <button class="action-btn small" onclick="deleteJob(${job.id})">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-
-            jobsList.innerHTML = html;
-        } catch (error) {
-            console.error('Error loading jobs:', error);
-            jobsList.innerHTML = '<p class="no-jobs">Error loading jobs</p>';
-        }
-    }
-
-    window.showJobModal = function(jobId = null) {
-        if (jobId) {
-            editJob(jobId);
-        } else {
-            document.getElementById('job_id').value = '';
-            document.getElementById('job_title').value = '';
-            document.getElementById('job_department').value = '';
-            document.getElementById('job_type').value = 'Full-time';
-            document.getElementById('job_description').value = '';
-            document.getElementById('job_requirements').value = '';
-            document.getElementById('salary_min').value = '';
-            document.getElementById('salary_max').value = '';
-            document.getElementById('salary_period').value = 'monthly';
-            document.getElementById('application_email').value = '';
-            document.getElementById('contact_person').value = '';
-            document.getElementById('contact_phone').value = '';
-            document.getElementById('job_expires').value = '30';
-            
-            document.getElementById('jobModal').classList.add('active');
-        }
-    };
-
-    window.closeJobModal = function() {
-        document.getElementById('jobModal').classList.remove('active');
-    };
-
-    document.getElementById('jobForm')?.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const jobId = document.getElementById('job_id').value;
-        const expiresDays = parseInt(document.getElementById('job_expires').value);
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + expiresDays);
-
-        const jobData = {
-            resort_id: parseInt(resortId),
-            title: document.getElementById('job_title').value,
-            department: document.getElementById('job_department').value,
-            job_type: document.getElementById('job_type').value,
-            description: document.getElementById('job_description').value,
-            requirements: document.getElementById('job_requirements').value || null,
-            salary_min: document.getElementById('salary_min').value ? parseInt(document.getElementById('salary_min').value) : null,
-            salary_max: document.getElementById('salary_max').value ? parseInt(document.getElementById('salary_max').value) : null,
-            salary_period: document.getElementById('salary_period').value,
-            application_email: document.getElementById('application_email').value || null,
-            contact_person: document.getElementById('contact_person').value || null,
-            contact_phone: document.getElementById('contact_phone').value || null,
-            expires_at: expiresAt.toISOString(),
-            is_active: true
+            document.getElementById('commentModalContent').innerHTML = modalContent;
+            document.getElementById('commentModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         };
 
-        try {
-            let error;
-            if (jobId) {
-                const { error: updateError } = await supabaseClient
-                    .from('resort_jobs')
-                    .update(jobData)
-                    .eq('id', jobId);
-                error = updateError;
-            } else {
-                const { error: insertError } = await supabaseClient
-                    .from('resort_jobs')
-                    .insert([jobData]);
-                error = insertError;
-            }
+        window.closeCommentModal = function () {
+            document.getElementById('commentModal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
 
-            if (error) {
-                alert('Error saving job: ' + error.message);
-            } else {
-                alert(jobId ? 'Job updated!' : 'Job posted!');
-                closeJobModal();
-                loadResortJobs();
-            }
-        } catch (err) {
-            console.error('Job submission error:', err);
-            alert('Error: ' + err.message);
-        }
-    });
-
-    window.editJob = function(jobId) {
-        const job = currentJobs.find(j => j.id === jobId);
-        if (!job) {
-            console.error('Job not found:', jobId);
-            return;
-        }
-
-        document.getElementById('job_id').value = job.id;
-        document.getElementById('job_title').value = job.title || '';
-        document.getElementById('job_department').value = job.department || '';
-        document.getElementById('job_type').value = job.job_type || 'Full-time';
-        document.getElementById('job_description').value = job.description || '';
-        document.getElementById('job_requirements').value = job.requirements || '';
-        document.getElementById('salary_min').value = job.salary_min || '';
-        document.getElementById('salary_max').value = job.salary_max || '';
-        document.getElementById('salary_period').value = job.salary_period || 'monthly';
-        document.getElementById('application_email').value = job.application_email || '';
-        document.getElementById('contact_person').value = job.contact_person || '';
-        document.getElementById('contact_phone').value = job.contact_phone || '';
-
-        if (job.expires_at) {
-            const today = new Date();
-            const expiryDate = new Date(job.expires_at);
-            const diffTime = expiryDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            document.getElementById('job_expires').value = diffDays > 0 ? diffDays : 30;
-        } else {
-            document.getElementById('job_expires').value = '30';
-        }
-
-        document.getElementById('jobModal').classList.add('active');
-    };
-
-    window.deleteJob = async function(jobId) {
-        if (!confirm('Delete this job posting?')) return;
-
-        const { error } = await supabaseClient
-            .from('resort_jobs')
-            .delete()
-            .eq('id', jobId);
-
-        if (error) {
-            alert('Error deleting job: ' + error.message);
-        } else {
-            loadResortJobs();
-        }
-    };
-
-    window.toggleJobStatus = async function(jobId, newStatus) {
-        const { error } = await supabaseClient
-            .from('resort_jobs')
-            .update({ is_active: newStatus })
-            .eq('id', jobId);
-
-        if (error) {
-            alert('Error updating job: ' + error.message);
-        } else {
-            loadResortJobs();
-        }
-    };
-
-    // ===========================================
-    // RESPONSE FUNCTIONS
-    // ===========================================
-    function renderExistingResponse(comment) {
-        return `
-            <div class="response-section" id="response-${comment.id}">
-                <div class="existing-response">
-                    <p><strong>Your response:</strong> ${comment.comment_text}</p>
-                    <div class="response-actions">
-                        <button onclick="startEditResponse(${comment.id}, '${comment.comment_text.replace(/'/g, "\\'")}')">Edit</button>
-                        <button onclick="deleteResponse(${comment.id})">Delete</button>
+        window.modalEditComment = function (commentId, currentText) {
+            const commentDiv = document.getElementById(`modal-comment-${commentId}`);
+            commentDiv.innerHTML = `
+                <div class="modal-comment-avatar">🏨</div>
+                <div class="modal-comment-content">
+                    <div class="modal-comment-header">
+                        <span class="modal-comment-author">Your Response</span>
+                        <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
                     </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderResponseInput(reviewId) {
-        return `
-            <div class="response-section">
-                <div class="response-input-container">
-                    <textarea id="response-${reviewId}" placeholder="Write your official response..." rows="1"></textarea>
-                    <button onclick="submitResponse(${reviewId})">Post</button>
-                </div>
-            </div>
-        `;
-    }
-
-    window.submitResponse = async function(reviewId) {
-        const response = document.getElementById(`response-${reviewId}`).value.trim();
-        if (!response) return;
-
-        const { error } = await supabaseClient
-            .from('resort_comments')
-            .insert([{
-                review_id: reviewId,
-                resort_id: parseInt(resortId),
-                comment_text: response,
-                is_official: true
-            }]);
-
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
-            const { data } = await supabaseClient
-                .from('resort_comments')
-                .select('*')
-                .eq('review_id', reviewId)
-                .eq('resort_id', currentResort?.integer_id)
-                .single();
-
-            const container = document.getElementById(`response-container-${reviewId}`);
-            container.innerHTML = renderExistingResponse(data);
-        }
-    };
-
-    window.startEditResponse = function(commentId, currentText) {
-        const container = document.getElementById(`response-${commentId}`);
-        container.innerHTML = renderEditResponse(commentId, currentText);
-    };
-
-    function renderEditResponse(commentId, currentText) {
-        return `
-            <div class="response-section edit-comment-container" id="edit-${commentId}">
-                <textarea id="edit-text-${commentId}">${currentText}</textarea>
-                <div class="edit-actions">
-                    <button class="cancel-btn" onclick="cancelEditResponse(${commentId})">Cancel</button>
-                    <button class="save-btn" onclick="saveEditResponse(${commentId})">Save</button>
-                </div>
-            </div>
-        `;
-    }
-
-    window.cancelEditResponse = function(commentId) {
-        supabaseClient
-            .from('resort_comments')
-            .select('*')
-            .eq('id', commentId)
-            .single()
-            .then(({ data }) => {
-                const container = document.getElementById(`edit-${commentId}`).parentNode;
-                container.innerHTML = renderExistingResponse(data);
-            });
-    };
-
-    window.saveEditResponse = async function(commentId) {
-        const newText = document.getElementById(`edit-text-${commentId}`).value.trim();
-        if (!newText) return;
-
-        const { error } = await supabaseClient
-            .from('resort_comments')
-            .update({ comment_text: newText })
-            .eq('id', commentId);
-
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
-            const { data } = await supabaseClient
-                .from('resort_comments')
-                .select('*')
-                .eq('id', commentId)
-                .single();
-
-            const container = document.getElementById(`edit-${commentId}`).parentNode;
-            container.innerHTML = renderExistingResponse(data);
-        }
-    };
-
-    window.deleteResponse = async function(commentId) {
-        if (!confirm('Delete this response?')) return;
-
-        const { error } = await supabaseClient
-            .from('resort_comments')
-            .delete()
-            .eq('id', commentId);
-
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
-            const reviewId = commentId;
-            const container = document.getElementById(`response-container-${reviewId}`);
-            container.innerHTML = renderResponseInput(reviewId);
-        }
-    };
-
-    // ===========================================
-    // REPORT FUNCTIONS
-    // ===========================================
-    function toggleReviewMenu(reviewId) {
-        const menu = document.getElementById(`menu-${reviewId}`);
-        document.querySelectorAll('.review-menu.active').forEach(m => {
-            if (m.id !== `menu-${reviewId}`) {
-                m.classList.remove('active');
-            }
-        });
-        menu.classList.toggle('active');
-    }
-
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.review-menu-container')) {
-            document.querySelectorAll('.review-menu.active').forEach(m => {
-                m.classList.remove('active');
-            });
-        }
-    });
-
-    window.openReportModal = function(reviewId) {
-        currentReportReviewId = reviewId;
-        document.getElementById('reportModal').classList.add('active');
-        document.getElementById(`menu-${reviewId}`).classList.remove('active');
-    };
-
-    window.closeReportModal = function() {
-        document.getElementById('reportModal').classList.remove('active');
-        currentReportReviewId = null;
-        document.querySelectorAll('input[name="reason"]').forEach(r => r.checked = false);
-        document.getElementById('reportDescription').value = '';
-    };
-
-    window.submitReport = async function() {
-        const reason = document.querySelector('input[name="reason"]:checked')?.value;
-        const description = document.getElementById('reportDescription').value.trim();
-
-        if (!reason) {
-            alert('Please select a reason');
-            return;
-        }
-
-        const { error } = await supabaseClient
-            .from('reports')
-            .insert([{
-                review_id: currentReportReviewId,
-                resort_id: parseInt(resortId),
-                reason: reason,
-                description: description,
-                status: 'pending'
-            }]);
-
-        if (error) {
-            alert('Error submitting report: ' + error.message);
-        } else {
-            alert('Report submitted! We will review it shortly.');
-            closeReportModal();
-        }
-    };
-
-    // ===========================================
-    // COMMENT MODAL FUNCTIONS
-    // ===========================================
-    window.openCommentModal = async function(reviewId) {
-        currentReviewId = reviewId;
-
-        const { data: review } = await supabaseClient
-            .from('reviews')
-            .select('*')
-            .eq('id', reviewId)
-            .single();
-
-        const { data: comments } = await supabaseClient
-            .from('resort_comments')
-            .select('*')
-            .eq('review_id', reviewId)
-            .order('created_at', { ascending: false });
-
-        const date = new Date(review.created_at).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-
-        let photosHtml = '';
-        if (review.photo_urls && review.photo_urls !== '[]') {
-            try {
-                const photoUrls = JSON.parse(review.photo_urls);
-                if (photoUrls.length > 0) {
-                    photosHtml = '<div class="modal-post-photos">';
-                    photoUrls.forEach(url => {
-                        photosHtml += `
-                            <div class="modal-post-photo" onclick="window.open('${url}')">
-                                <img src="${url}" loading="lazy">
-                            </div>
-                        `;
-                    });
-                    photosHtml += '</div>';
-                }
-            } catch (e) {}
-        }
-
-        let commentsHtml = '<div class="comments-list">';
-        if (comments && comments.length > 0) {
-            comments.forEach(comment => {
-                const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric'
-                });
-
-                commentsHtml += `
-                    <div class="modal-comment-item" id="modal-comment-${comment.id}">
-                        <div class="modal-comment-avatar">
-                            ${comment.is_official ? '🏨' : '👤'}
-                        </div>
-                        <div class="modal-comment-content">
-                            <div class="modal-comment-header">
-                                <span class="modal-comment-author">
-                                    ${comment.is_official ? 'Your Response' : 'Guest'}
-                                </span>
-                                ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
-                                <span class="comment-date-small">${commentDate}</span>
-                            </div>
-                            <p class="modal-comment-text">${comment.comment_text}</p>
-                            ${comment.is_official ? `
-                                <div class="modal-comment-actions">
-                                    <button onclick="modalEditComment(${comment.id}, '${comment.comment_text.replace(/'/g, "\\'")}')">Edit</button>
-                                    <button onclick="modalDeleteComment(${comment.id})">Delete</button>
-                                </div>
-                            ` : ''}
+                    <div class="modal-edit-mode">
+                        <textarea id="modal-edit-${commentId}">${currentText}</textarea>
+                        <div class="modal-edit-actions">
+                            <button class="cancel-btn" onclick="cancelModalEdit(${commentId})">Cancel</button>
+                            <button class="save-btn" onclick="saveModalEdit(${commentId})">Save</button>
                         </div>
                     </div>
-                `;
-            });
-        } else {
-            commentsHtml += '<div class="no-comments-modal">No comments yet</div>';
-        }
-        commentsHtml += '</div>';
-
-        const modalContent = `
-            <div class="modal-post">
-                <div class="modal-post-header">
-                    <span class="modal-post-rating">${review.rating}/10</span>
-                    <span class="modal-post-date">${date}</span>
                 </div>
-                <p class="modal-post-text">${review.review_text}</p>
-                ${photosHtml}
-            </div>
-            <div class="modal-comments">
-                ${commentsHtml}
-                <div class="modal-response-section" id="modal-response-${reviewId}">
-                    <div class="modal-response-input">
-                        <textarea id="modal-response-text" placeholder="Write your official response..."></textarea>
-                        <button onclick="submitModalResponse(${reviewId})">Post</button>
-                    </div>
-                </div>
-            </div>
-        `;
+            `;
+        };
 
-        document.getElementById('commentModalContent').innerHTML = modalContent;
-        document.getElementById('commentModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    };
-
-    window.closeCommentModal = function() {
-        document.getElementById('commentModal').classList.remove('active');
-        document.body.style.overflow = '';
-    };
-
-    window.modalEditComment = function(commentId, currentText) {
-        const commentDiv = document.getElementById(`modal-comment-${commentId}`);
-        commentDiv.innerHTML = `
-            <div class="modal-comment-avatar">🏨</div>
-            <div class="modal-comment-content">
-                <div class="modal-comment-header">
-                    <span class="modal-comment-author">Your Response</span>
-                    <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-                </div>
-                <div class="modal-edit-mode">
-                    <textarea id="modal-edit-${commentId}">${currentText}</textarea>
-                    <div class="modal-edit-actions">
-                        <button class="cancel-btn" onclick="cancelModalEdit(${commentId})">Cancel</button>
-                        <button class="save-btn" onclick="saveModalEdit(${commentId})">Save</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    };
-
-    window.cancelModalEdit = function(commentId) {
-        openCommentModal(currentReviewId);
-    };
-
-    window.saveModalEdit = async function(commentId) {
-        const newText = document.getElementById(`modal-edit-${commentId}`).value.trim();
-        if (!newText) return;
-
-        const { error } = await supabaseClient
-            .from('resort_comments')
-            .update({ comment_text: newText })
-            .eq('id', commentId);
-
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
+        window.cancelModalEdit = function (commentId) {
             openCommentModal(currentReviewId);
-        }
-    };
+        };
 
-    window.modalDeleteComment = async function(commentId) {
-        if (!confirm('Delete this response?')) return;
+        window.saveModalEdit = async function (commentId) {
+            const newText = document.getElementById(`modal-edit-${commentId}`).value.trim();
+            if (!newText) return;
 
-        const { error } = await supabaseClient
-            .from('resort_comments')
-            .delete()
-            .eq('id', commentId);
+            const { error } = await supabaseClient
+                .from('resort_comments')
+                .update({ comment_text: newText })
+                .eq('id', commentId);
 
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
-            openCommentModal(currentReviewId);
-        }
-    };
-
-    window.submitModalResponse = async function(reviewId) {
-        const response = document.getElementById('modal-response-text').value.trim();
-        if (!response) return;
-
-        const { error } = await supabaseClient
-            .from('resort_comments')
-            .insert([{
-                review_id: reviewId,
-                resort_id: parseInt(resortId),
-                comment_text: response,
-                is_official: true
-            }]);
-
-        if (error) {
-            alert('Error: ' + error.message);
-        } else {
-            openCommentModal(reviewId);
-        }
-    };
-
-    window.shareReview = function(reviewId) {
-        const url = `https://resortreviews.vercel.app/resort.html?id=${reviewId}`;
-        navigator.clipboard.writeText(url);
-        alert('Link copied to clipboard!');
-    };
-
-// ===========================================
-// EDIT INFO FUNCTION - UPDATED
-// ===========================================
-window.editInfo = function(field) {
-    const currentValue = currentResort[field] || '';
-    const newValue = prompt(`Edit ${field}:`, currentValue);
-
-    if (newValue === null) return;
-
-    const updates = {};
-    updates[field] = newValue;
-
-    // Update resort_profiles table (NOT resorts)
-    supabaseClient
-        .from('resort_profiles')
-        .update(updates)
-        .eq('id', resortId) // resortId is the UUID
-        .then(({ error }) => {
             if (error) {
                 alert('Error: ' + error.message);
             } else {
-                currentResort[field] = newValue;
-                document.getElementById(`display-${field}`).innerHTML = field === 'website' && newValue ? 
-                    `<a href="${newValue}" target="_blank">${newValue}</a>` : newValue || 'Not set';
-                
-                // Also update the resorts table if needed for backward compatibility
-                supabaseClient
-                    .from('resorts')
-                    .update(updates)
-                    .eq('id', currentResort.integer_id);
+                openCommentModal(currentReviewId);
+            }
+        };
+
+        window.modalDeleteComment = async function (commentId) {
+            if (!confirm('Delete this response?')) return;
+
+            const { error } = await supabaseClient
+                .from('resort_comments')
+                .delete()
+                .eq('id', commentId);
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                openCommentModal(currentReviewId);
+            }
+        };
+
+        window.submitModalResponse = async function (reviewId) {
+            const response = document.getElementById('modal-response-text').value.trim();
+            if (!response) return;
+
+            const { error } = await supabaseClient
+                .from('resort_comments')
+                .insert([{
+                    review_id: reviewId,
+                    resort_id: parseInt(currentResort?.integer_id),
+                    comment_text: response,
+                    is_official: true
+                }]);
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                openCommentModal(reviewId);
+            }
+        };
+
+        window.shareReview = function (reviewId) {
+            const url = `https://resortreviews.vercel.app/resort.html?id=${reviewId}`;
+            navigator.clipboard.writeText(url);
+            alert('Link copied to clipboard!');
+        };
+
+        // ===========================================
+        // EDIT INFO FUNCTION
+        // ===========================================
+        window.editInfo = function (field) {
+            const currentValue = currentResort[field] || '';
+            const newValue = prompt(`Edit ${field}:`, currentValue);
+
+            if (newValue === null) return;
+
+            const updates = {};
+            updates[field] = newValue;
+
+            supabaseClient
+                .from('resort_profiles')
+                .update(updates)
+                .eq('id', resortId)
+                .then(({ error }) => {
+                    if (error) {
+                        alert('Error: ' + error.message);
+                    } else {
+                        currentResort[field] = newValue;
+                        document.getElementById(`display-${field}`).innerHTML = field === 'website' && newValue ?
+                            `<a href="${newValue}" target="_blank">${newValue}</a>` : newValue || 'Not set';
+
+                        supabaseClient
+                            .from('resorts')
+                            .update(updates)
+                            .eq('id', currentResort.integer_id);
+                    }
+                });
+        };
+
+        // ===========================================
+        // PROFILE DROPDOWN
+        // ===========================================
+        window.toggleProfileDropdown = function () {
+            document.getElementById('profileDropdown').classList.toggle('active');
+        };
+
+        document.addEventListener('click', function (e) {
+            const dropdown = document.getElementById('profileDropdown');
+            const avatar = document.getElementById('profileAvatar');
+
+            if (!avatar.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
             }
         });
-};
 
-    // ===========================================
-    // PROFILE DROPDOWN
-    // ===========================================
-    window.toggleProfileDropdown = function() {
-        document.getElementById('profileDropdown').classList.toggle('active');
-    };
+        // ===========================================
+        // SETTINGS
+        // ===========================================
+        window.openSettings = function () {
+            document.getElementById('settingsModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                toggle.checked = currentTheme === 'dark';
+            }
+            toggleProfileDropdown();
+        };
 
-    document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('profileDropdown');
-        const avatar = document.getElementById('profileAvatar');
+        window.closeSettingsModal = function () {
+            document.getElementById('settingsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
 
-        if (!avatar.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.classList.remove('active');
-        }
-    });
+        window.openChangePasswordModal = function () {
+            closeSettingsModal();
+            document.getElementById('changePasswordModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
 
-    // ===========================================
-    // SETTINGS
-    // ===========================================
-    window.openSettings = function() {
-        document.getElementById('settingsModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        const toggle = document.getElementById('darkModeToggle');
-        if (toggle) {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            toggle.checked = currentTheme === 'dark';
-        }
-        toggleProfileDropdown();
-    };
+        window.closeChangePasswordModal = function () {
+            document.getElementById('changePasswordModal').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        };
 
-    window.closeSettingsModal = function() {
-        document.getElementById('settingsModal').classList.remove('active');
-        document.body.style.overflow = '';
-    };
+        window.updatePassword = async function () {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
 
-    window.openChangePasswordModal = function() {
-        closeSettingsModal();
-        document.getElementById('changePasswordModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    };
-
-    window.closeChangePasswordModal = function() {
-        document.getElementById('changePasswordModal').classList.remove('active');
-        document.body.style.overflow = '';
-        document.getElementById('currentPassword').value = '';
-        document.getElementById('newPassword').value = '';
-        document.getElementById('confirmPassword').value = '';
-    };
-
-    window.updatePassword = async function() {
-        const current = document.getElementById('currentPassword').value;
-        const newPass = document.getElementById('newPassword').value;
-        const confirm = document.getElementById('confirmPassword').value;
-
-        if (!current || !newPass || !confirm) {
-            alert('Please fill all fields');
-            return;
-        }
-
-        if (newPass !== confirm) {
-            alert('New passwords do not match');
-            return;
-        }
-
-        if (newPass.length < 6) {
-            alert('Password must be at least 6 characters');
-            return;
-        }
-
-        try {
-            const { data: resort } = await supabaseClient
-                .from('resorts')
-                .select('temp_password')
-                .eq('id', resortId)
-                .single();
-
-            if (current !== resort.temp_password && current !== 'admin123') {
-                alert('Current password is incorrect');
+            if (!current || !newPass || !confirm) {
+                alert('Please fill all fields');
                 return;
             }
 
-            const { error } = await supabaseClient
-                .from('resorts')
-                .update({ temp_password: newPass })
-                .eq('id', resortId);
-
-            if (error) {
-                alert('Error updating password: ' + error.message);
-            } else {
-                alert('✅ Password updated successfully!');
-                closeChangePasswordModal();
+            if (newPass !== confirm) {
+                alert('New passwords do not match');
+                return;
             }
-        } catch (error) {
-            console.error('Error updating password:', error);
-            alert('Error updating password. Please try again.');
+
+            if (newPass.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+
+            try {
+                const { data: resort } = await supabaseClient
+                    .from('resorts')
+                    .select('temp_password')
+                    .eq('id', currentResort?.integer_id)
+                    .single();
+
+                if (current !== resort.temp_password && current !== 'admin123') {
+                    alert('Current password is incorrect');
+                    return;
+                }
+
+                const { error } = await supabaseClient
+                    .from('resorts')
+                    .update({ temp_password: newPass })
+                    .eq('id', currentResort?.integer_id);
+
+                if (error) {
+                    alert('Error updating password: ' + error.message);
+                } else {
+                    alert('✅ Password updated successfully!');
+                    closeChangePasswordModal();
+                }
+            } catch (error) {
+                console.error('Error updating password:', error);
+                alert('Error updating password. Please try again.');
+            }
+        };
+
+        // ===========================================
+        // MISC
+        // ===========================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                const toggle = document.getElementById('darkModeToggle');
+                if (toggle) toggle.checked = true;
+            }
         }
-    };
 
-    // ===========================================
-    // MISC
-    // ===========================================
-    window.editCover = function() {
-        alert('Cover photo upload coming soon!');
-    };
-
-    window.editProfilePicture = function() {
-        alert('Profile picture upload coming soon!');
-    };
-
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
+        window.toggleDarkMode = function () {
             const toggle = document.getElementById('darkModeToggle');
-            if (toggle) toggle.checked = true;
-        }
-    }
+            if (toggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        };
 
-    window.toggleDarkMode = function() {
-        const toggle = document.getElementById('darkModeToggle');
-        if (toggle.checked) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
+        function logout() {
+            localStorage.removeItem('resort_id');
+            localStorage.removeItem('resort_name');
+            window.location.href = 'resort-login.html';
         }
-    };
 
-    function logout() {
-        localStorage.removeItem('resort_id');
-        localStorage.removeItem('resort_name');
-        window.location.href = 'resort-login.html';
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeSettingsModal();
-            closeCommentModal();
-            closeReportModal();
-            closeChangePasswordModal();
-        }
-    });
-</script>
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeSettingsModal();
+                closeCommentModal();
+                closeReportModal();
+                closeChangePasswordModal();
+                closeImageModal();
+            }
+        });
+    </script>
 
 </body>
 </html>
