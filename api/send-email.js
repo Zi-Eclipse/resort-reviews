@@ -15,11 +15,11 @@ export default async function handler(req, res) {
         const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer re_7ZwTCynk_H3fynxGAsK76XTu25p5vJ4BL`,
+                'Authorization': `re_X1gmX2jc_8FZAuccJsAd7NVRjsBVvdCqi`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                from: 'ResortReviews <onboarding@resend.dev>',
+                from: 'Resort Reviews <noreply@resortreviews.pro>',
                 to: [to],
                 subject: subject,
                 html: html
