@@ -972,13 +972,14 @@
             <i class="fas fa-times modal-close" onclick="closeModal()"></i>
         </div>
         
+        <div class="searchable-dropdown" style="padding: 20px 20px 0;">
+            <input type="text" id="resort_search" placeholder="Search for a resort..." autocomplete="off">
+            <input type="hidden" id="modal_resort_id">
+            <div id="resort_suggestions" class="suggestions-box"></div>
+        </div>
+
         <form id="modalReviewForm">
-            <div class="searchable-dropdown">
-                <input type="text" id="resort_search" placeholder="Search for a resort..." autocomplete="off" required>
-                <input type="hidden" id="modal_resort_id" required>
-                <div id="resort_suggestions" class="suggestions-box"></div>
-            </div>
-            
+
 <!-- Category Dropdown - make it bigger -->
 <select id="review_category" 
         style="width: 100%; 
@@ -998,7 +999,6 @@
     <option value="6">🚌 Transport</option>
     <option value="7">👔 Management</option>
     <option value="8">📌 Other</option>
-    <option value="9">🕌 Mosque</option>
 </select>
             
             <div class="rating-selector">
@@ -1037,20 +1037,9 @@
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
 <script>
-    // Supabase configuration
-    const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
-    
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-    
-    // Global variables
-    let resortsMap = new Map();
-    let allResorts = [];
-    let allResortsList = [];
-    let selectedResort1 = null;
-    let selectedResort2 = null;
+    // Global variables (resortsMap, allResorts, allResortsList, selectedResort1/2 are declared in script.js)
     
     // ===========================================
     // INITIALIZATION
@@ -1269,39 +1258,7 @@ function updateFileInput() {
     document.getElementById('modal_photos').files = dataTransfer.files;
 }
 
-    // ===========================================
-    // MAIN CONTENT NAVIGATION
-    // ===========================================
-    window.switchMainContent = function(section) {
-        // Update nav active states
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        document.getElementById(`nav-${section}`).classList.add('active');
-        
-        // Hide all content sections
-        document.getElementById('home-content').style.display = 'none';
-        document.getElementById('jobs-content').style.display = 'none';
-        document.getElementById('compare-content').style.display = 'none';
-        
-        // Hide home-specific elements
-        const topResortsBar = document.getElementById('topResortsBar');
-        const shareBox = document.getElementById('shareBox');
-        
-        if (section === 'home') {
-            document.getElementById('home-content').style.display = 'block';
-            topResortsBar.style.display = 'block';
-            shareBox.style.display = 'block';
-        } else if (section === 'jobs') {
-            document.getElementById('jobs-content').style.display = 'block';
-            topResortsBar.style.display = 'none';
-            shareBox.style.display = 'none';
-        } else if (section === 'compare') {
-            document.getElementById('compare-content').style.display = 'block';
-            topResortsBar.style.display = 'none';
-            shareBox.style.display = 'none';
-        }
-    };
+    // switchMainContent is defined globally in script.js
     
 // ===========================================
 // LOAD RESORTS
@@ -1338,12 +1295,18 @@ function setupResortSearch() {
     const searchInput = document.getElementById('resort_search');
     const suggestionsBox = document.getElementById('resort_suggestions');
     const hiddenInput = document.getElementById('modal_resort_id');
-    
+
     if (!searchInput) {
         console.log("Search input not found");
         return;
     }
-    
+
+    if (searchInput.dataset.listenerAttached) {
+        console.log("Resort search already set up with", allResorts.length, "resorts");
+        return;
+    }
+    searchInput.dataset.listenerAttached = 'true';
+
     console.log("Setting up resort search with", allResorts.length, "resorts");
     
     // Handle input changes
@@ -2169,6 +2132,7 @@ window.closeJobDetailModal = function() {
     function openModal() {
         document.getElementById('shareModal').classList.add('active');
         document.body.style.overflow = 'hidden';
+        setupResortSearch();
     }
     
     function closeModal() {
@@ -2406,6 +2370,5 @@ window.closeJobDetailModal = function() {
         }
     });
 </script>
-
 </body>
 </html>

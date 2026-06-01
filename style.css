@@ -564,11 +564,17 @@ body {
     width: 90%;
     max-width: 500px;
     max-height: 90vh;
-    overflow-y: auto;
+    overflow: visible;   /* ← allows dropdown to escape */
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     animation: modalSlideIn 0.3s ease;
 }
-
+.modal-content form {
+    overflow: visible;
+    max-height: calc(90vh - 70px); /* 70px accounts for the modal header */
+    padding: 20px;
+}
 @keyframes modalSlideIn {
     from {
         transform: translateY(-30px);
@@ -618,6 +624,8 @@ body {
 
 .modal-content form {
     padding: 20px;
+    overflow-y: auto;
+    max-height: calc(90vh - 70px);
 }
 
 /* Settings Modal */

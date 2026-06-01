@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
     <title>Resort Dashboard - ResortReviews</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1241,9 +1246,37 @@
             margin-top: 15px;
             font-size: 16px;
         }
+
+        [data-theme="dark"] body { background: #18191a !important; }
+        [data-theme="dark"] .login-card, [data-theme="dark"] .login-box { background: #242526 !important; }
+        [data-theme="dark"] input { background: #3a3b3c !important; color: white !important; border-color: #555 !important; }
+        [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] p { color: #e4e6ea !important; }
     </style>
 </head>
 <body>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg-color); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:var(--white); padding:40px; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.15); max-width:420px; width:90%;">
+            <div style="text-align:center; margin-bottom:28px;">
+                <i class="fas fa-umbrella-beach" style="font-size:44px; color:var(--primary);"></i>
+                <h2 style="margin-top:14px; color:var(--text-dark); font-size:22px;">Resort Portal</h2>
+                <p style="color:var(--text-light); margin-top:6px; font-size:14px;">Sign in with your resort credentials</p>
+            </div>
+            <input type="email" id="loginEmail" placeholder="Email address" onkeydown="if(event.key==='Enter')handleLogin()"
+                   style="width:100%; padding:12px 16px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text-dark); font-size:15px; margin-bottom:12px; box-sizing:border-box; outline:none;">
+            <input type="password" id="loginPassword" placeholder="Password" onkeydown="if(event.key==='Enter')handleLogin()"
+                   style="width:100%; padding:12px 16px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text-dark); font-size:15px; margin-bottom:16px; box-sizing:border-box; outline:none;">
+            <div id="loginError" style="display:none; color:#ef4444; margin-bottom:14px; font-size:14px; text-align:center;"></div>
+            <button id="loginBtn" onclick="handleLogin()"
+                    style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; transition:background 0.2s;">
+                Sign In
+            </button>
+            <p style="text-align:center; margin-top:16px; font-size:13px;">
+                <a href="guest-feed.html" style="color:var(--primary); text-decoration:none;">← Back to guest feed</a>
+            </p>
+        </div>
+    </div>
 
     <!-- Top Navigation -->
     <div class="top-nav">
@@ -1803,15 +1836,21 @@
         };
 
         // ===========================================
-        // SESSION CHECK
+        // SESSION CHECK & LOGIN
         // ===========================================
+        function showLoginScreen() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.querySelector('.top-nav').style.display = 'none';
+        }
+
         function checkSession() {
-            const resortId = localStorage.getItem('resort_id');
+            const storedId = localStorage.getItem('resort_id');
             const loginTimestamp = localStorage.getItem('login_timestamp');
             const currentTime = new Date().getTime();
 
-            if (!resortId) {
-                window.location.href = 'resort-login.html';
+            if (!storedId) {
+                showLoginScreen();
                 return null;
             }
 
@@ -1820,18 +1859,78 @@
                 const eightHoursInMs = 8 * 60 * 60 * 1000;
                 if (elapsedTime > eightHoursInMs) {
                     localStorage.clear();
-                    window.location.href = 'resort-login.html';
+                    showLoginScreen();
                     return null;
                 }
             }
 
-            return resortId;
+            return storedId;
         }
 
-        const resortId = checkSession();
-        if (!resortId) {
-            throw new Error('Session check failed');
-        }
+        window.handleLogin = async function() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+
+            errorDiv.style.display = 'none';
+
+            if (!email || !password) {
+                errorDiv.textContent = 'Please enter your email and password.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
+
+            try {
+                const { data: resort } = await supabaseClient
+                    .from('resorts')
+                    .select('id, name, temp_password, auth_user_id')
+                    .eq('login_email', email)
+                    .maybeSingle();
+
+                if (!resort) {
+                    errorDiv.textContent = 'No account found with that email address.';
+                    errorDiv.style.display = 'block';
+                    btn.textContent = 'Sign In';
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (resort.temp_password !== password) {
+                    errorDiv.textContent = 'Incorrect password.';
+                    errorDiv.style.display = 'block';
+                    btn.textContent = 'Sign In';
+                    btn.disabled = false;
+                    return;
+                }
+
+                resortId = resort.auth_user_id || String(resort.id);
+                localStorage.setItem('resort_id', resortId);
+                localStorage.setItem('resort_name', resort.name);
+                localStorage.setItem('login_timestamp', new Date().getTime().toString());
+
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.querySelector('.top-nav').style.display = 'flex';
+
+                await loadResortData();
+                await loadDashboard();
+                await loadResortPhotos();
+                initTheme();
+
+            } catch (err) {
+                console.error('Login error:', err);
+                errorDiv.textContent = 'Error signing in. Please try again.';
+                errorDiv.style.display = 'block';
+                btn.textContent = 'Sign In';
+                btn.disabled = false;
+            }
+        };
+
+        let resortId = checkSession();
 
         // ===========================================
         // INITIALIZATION
@@ -1886,10 +1985,11 @@
                     return;
                 }
 
+                const storedResortName = localStorage.getItem('resort_name') || '';
                 const { data: nameMatch } = await supabaseClient
                     .from('resorts')
                     .select('*')
-                    .eq('name', 'Niku Maldives')
+                    .eq('name', storedResortName)
                     .maybeSingle();
 
                 if (nameMatch) {
@@ -2032,7 +2132,10 @@
                             </div>
                         </div>
                     </div>
-
+<div class="info-note" style="background: var(--bg-color); padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+    <i class="fas fa-info-circle"></i> 
+    <strong>Note:</strong> Reviews are submitted anonymously. You can respond to all reviews, but reviewer identities remain private.
+</div>
                     <div id="reviews-tab" style="display: none;">
                         <div class="reviews-feed">
                             <h2 style="margin-bottom: 20px;">Staff Reviews</h2>

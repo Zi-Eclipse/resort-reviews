@@ -198,7 +198,7 @@ async function loadApprovedReviews() {
 // DISPLAY REVIEWS WITH COMMENTS
 // ===========================================
 async function displayReviews(reviews) {
-    const feed = document.getElementById('reviews-list');
+    const feed = document.getElementById('reviews-feed');
     
     if (!reviews || reviews.length === 0) {
         feed.innerHTML = '<div class="review-item">No reviews yet. Be the first to share!</div>';
@@ -819,6 +819,39 @@ function closeSettingsModal() {
 
 // Initialize theme
 initTheme();
+
+// ===========================================
+// NAVIGATION - GUEST FEED MAIN CONTENT SWITCH
+// ===========================================
+window.switchMainContent = function(section) {
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    const navItem = document.getElementById(`nav-${section}`);
+    if (navItem) navItem.classList.add('active');
+
+    const homeContent = document.getElementById('home-content');
+    const jobsContent = document.getElementById('jobs-content');
+    const compareContent = document.getElementById('compare-content');
+    const topResortsBar = document.getElementById('topResortsBar');
+    const shareBox = document.getElementById('shareBox');
+
+    if (homeContent) homeContent.style.display = 'none';
+    if (jobsContent) jobsContent.style.display = 'none';
+    if (compareContent) compareContent.style.display = 'none';
+
+    if (section === 'home') {
+        if (homeContent) homeContent.style.display = 'block';
+        if (topResortsBar) topResortsBar.style.display = 'block';
+        if (shareBox) shareBox.style.display = 'block';
+    } else if (section === 'jobs') {
+        if (jobsContent) jobsContent.style.display = 'block';
+        if (topResortsBar) topResortsBar.style.display = 'none';
+        if (shareBox) shareBox.style.display = 'none';
+    } else if (section === 'compare') {
+        if (compareContent) compareContent.style.display = 'block';
+        if (topResortsBar) topResortsBar.style.display = 'none';
+        if (shareBox) shareBox.style.display = 'none';
+    }
+};
 
 // Close modals with Escape key
 document.addEventListener('keydown', function(e) {

@@ -91,35 +91,44 @@
             color: var(--primary);
             border-bottom-color: var(--primary);
         }
+/* Stats Bar - Improved */
+.stats-bar {
+    display: flex;
+    gap: 20px;
+    padding: 24px 20px;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    justify-content: space-between;
+}
 
-        /* Stats Bar */
-        .stats-bar {
-            display: flex;
-            gap: 30px;
-            padding: 20px;
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            justify-content: space-around;
-        }
+.stat-item {
+    text-align: center;
+    flex: 1;
+    padding: 0 12px;
+    border-right: 1px solid var(--border);
+}
 
-        .stat-item {
-            text-align: center;
-            flex: 1;
-        }
+.stat-item:last-child {
+    border-right: none;
+}
 
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-            display: block;
-        }
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
 
-        .stat-label {
-            color: var(--text-light);
-            font-size: 13px;
-        }
+.stat-label {
+    color: var(--text-light);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
 
         /* Overview Grid */
         .overview-grid {
@@ -709,6 +718,25 @@
                 flex-wrap: wrap;
             }
         }
+        /* Stats Bar Mobile Fix */
+@media (max-width: 600px) {
+    .stats-bar {
+        gap: 10px;
+        padding: 16px 12px;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+    }
+    
+    .stat-item {
+        padding: 0 6px;
+    }
+}
     </style>
 </head>
 <body>
@@ -1035,7 +1063,6 @@ window.switchTab = function(tab, clickEvent = null) {
 };
 
 function loadOverview() {
-    // Get the resort ID from URL
     const resortId = urlParams.get('id');
     
     supabaseClient
@@ -1052,65 +1079,67 @@ function loadOverview() {
             };
 
             const html = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <!-- Left Column -->
-                    <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
-                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📍 Location & Contact</h3>
+                    <div style="background: var(--white); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--text-dark);">
+                            <i class="fas fa-map-marker-alt" style="color: var(--primary); margin-right: 8px;"></i> Location & Contact
+                        </h3>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">ADDRESS</div>
-                            <div style="color: var(--text-dark); font-size: 15px; line-height: 1.5;">${clean(resort.address)}</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Address</div>
+                            <div style="color: var(--text-dark); font-size: 14px; line-height: 1.5;">${clean(resort.address)}</div>
                         </div>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">PHONE</div>
-                            <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.phone)}</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Phone</div>
+                            <div style="color: var(--text-dark); font-size: 14px;">${clean(resort.phone)}</div>
                         </div>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">HOURS</div>
-                            <div style="color: var(--text-dark); font-size: 15px;">${clean(resort.hours)}</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Hours</div>
+                            <div style="color: var(--text-dark); font-size: 14px;">${clean(resort.hours)}</div>
                         </div>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">WEBSITE</div>
-                            <div style="color: var(--text-dark); font-size: 15px; word-break: break-all;">
+                        <div style="margin-bottom: 0;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Website</div>
+                            <div style="color: var(--text-dark); font-size: 14px; word-break: break-all;">
                                 ${resort.website ? `<a href="${clean(resort.website)}" target="_blank" style="color: var(--primary); text-decoration: none;">${clean(resort.website).replace(/^https?:\/\//, '')}</a>` : 'Not available'}
                             </div>
                         </div>
                     </div>
                     
                     <!-- Right Column -->
-                    <div style="background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow);">
-                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">📊 Quick Stats</h3>
+                    <div style="background: var(--white); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--text-dark);">
+                            <i class="fas fa-chart-simple" style="color: var(--primary); margin-right: 8px;"></i> Quick Stats
+                        </h3>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">GOOGLE RATING</div>
-                            <div style="color: var(--text-dark); font-size: 15px;">⭐ ${resort.google_rating || 'N/A'}</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Google Rating</div>
+                            <div style="color: var(--text-dark); font-size: 14px;">⭐ ${resort.google_rating || 'N/A'}</div>
                         </div>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">STAR RATING</div>
-                            <div style="color: var(--text-dark); font-size: 15px;">${resort.star_rating || 'N/A'} stars</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Star Rating</div>
+                            <div style="color: var(--text-dark); font-size: 14px;">${resort.star_rating || 'N/A'} stars</div>
                         </div>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL PHOTOS</div>
-                            <div style="color: var(--text-dark); font-size: 15px;">${allPhotos.length}</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Total Photos</div>
+                            <div style="color: var(--text-dark); font-size: 14px;">${allPhotos.length}</div>
                         </div>
                         
-                        <div style="margin-bottom: 15px;">
-                            <div style="color: var(--text-light); font-size: 12px; margin-bottom: 4px;">TOTAL REVIEWS</div>
-                            <div style="color: var(--text-dark); font-size: 15px;">${allReviews.length}</div>
+                        <div style="margin-bottom: 0;">
+                            <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Total Reviews</div>
+                            <div style="color: var(--text-dark); font-size: 14px;">${allReviews.length}</div>
                         </div>
                     </div>
                 </div>
             `;
             document.getElementById('tabContent').innerHTML = html;
         });
-}
-
-    
+} 
     function loadReviewsTab() {
         if (allReviews.length === 0) {
             document.getElementById('tabContent').innerHTML = '<p style="text-align: center; padding: 40px;">No reviews yet</p>';

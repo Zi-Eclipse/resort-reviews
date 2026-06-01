@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Resort Reviews Maldives</title>
+    <title>ResortReviews Maldives</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -170,29 +170,87 @@
             border-bottom-color: white;
         }
 
+        /* Dark mode — deeper gradient + subtler cards */
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+
+        [data-theme="dark"] .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        [data-theme="dark"] .card:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.22);
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 10px 18px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            font-family: inherit;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .theme-toggle span {
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
             }
-            
+
             .tagline {
                 font-size: 1rem;
             }
-            
+
             .card {
                 width: 100%;
                 max-width: 350px;
+            }
+
+            .theme-toggle span {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleDarkMode()" title="Toggle dark mode">
+        <i id="themeIcon" class="fas fa-sun"></i>
+        <span id="themeLabel">Day</span>
+    </button>
+
     <div class="landing-container">
         <div class="logo-section">
             <div class="logo-icon">
                 <i class="fas fa-umbrella-beach"></i>
             </div>
-            <h1>Resort Reviews Maldives</h1>
+            <h1>ResortReviews Maldives</h1>
             <p class="tagline">
                 Honest reviews from resort staff. Real experiences. 
                 Official responses from verified resorts.
@@ -220,7 +278,7 @@
             </a>
 
             <!-- Option B: Access as Resort -->
-            <a href="resort-login.html" class="card resort-card">
+            <a href="resort-dashboard.html" class="card resort-card">
                 <div class="card-icon">
                     <i class="fas fa-building"></i>
                 </div>
@@ -248,5 +306,29 @@
             </p>
         </div>
     </div>
+<script>
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = document.getElementById('themeIcon');
+        const label = document.getElementById('themeLabel');
+        if (theme === 'dark') {
+            icon.className = 'fas fa-moon';
+            label.textContent = 'Night';
+        } else {
+            icon.className = 'fas fa-sun';
+            label.textContent = 'Day';
+        }
+    }
+
+    function toggleDarkMode() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        localStorage.setItem('theme', next);
+        applyTheme(next);
+    }
+
+    // Apply saved preference immediately
+    applyTheme(localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
+</script>
 </body>
 </html>
