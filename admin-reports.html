@@ -229,6 +229,22 @@
             padding: 40px;
             color: var(--text-light);
         }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .theme-btn:hover { background: var(--border); }
     </style>
 </head>
 <body>
@@ -242,12 +258,20 @@
     </div>
     <div class="nav-center">
         <a href="admin.html" class="logo">
-            <i class="fas fa-umbrella-beach"></i>
+            <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
+              <rect width="32" height="32" rx="8" fill="#1877f2"/>
+              <circle cx="16" cy="11" r="4" fill="white"/>
+              <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+            </svg>
             <span>ResortReviews Admin</span>
         </a>
     </div>
     <div class="nav-right">
         <div class="nav-icons">
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
             <button class="icon-btn" onclick="logout()" title="Logout">
                 <i class="fas fa-sign-out-alt"></i>
             </button>
@@ -496,21 +520,40 @@
     
     async function deleteReport(reportId) {
         if (!confirm('Are you sure you want to delete this report?')) return;
-        
+
         try {
             const { error } = await supabaseClient
                 .from('reports')
                 .delete()
                 .eq('id', reportId);
-            
+
             if (error) throw error;
-            
+
             await loadStats();
             await loadReports(currentStatus);
         } catch (error) {
             alert('Error deleting report: ' + error.message);
         }
     }
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeIcon').className = 'fas fa-sun';
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.getElementById('themeIcon').className = 'fas fa-moon';
+        }
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', next);
+        applyTheme(next);
+    }
+
+    applyTheme(localStorage.getItem('theme') || 'light');
 </script>
 
 </body>

@@ -398,23 +398,16 @@ async function loadTopResorts() {
         }
         
         let html = '';
-        sorted.forEach((resort, index) => {
-            // Get first word of resort name for display
-            const displayName = resort.name.split(' ')[0];
-            html += `
-                <div class="ranking-item" onclick="window.location.href='resort.html?id=${resort.id}'">
-                    <div class="rank">#${index + 1}</div>
-                    <div class="name">${displayName}</div>
-                    <div class="rating">&#11088; ${resort.avg}</div>
-                </div>
-            `;
+        sorted.forEach(resort => {
+            const initials = resort.name.split(' ').slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('');
+            html += `<div class="resort-row" onclick="window.location.href='resort.html?id=${resort.id}'"><div class="resort-avatar top">${initials}</div><span class="resort-row-name">${resort.name}</span><span class="resort-row-rating"><i class="fas fa-star"></i> ${parseFloat(resort.avg||0).toFixed(1)}</span></div>`;
         });
-        
+
         rankingsDiv.innerHTML = html;
-        
+
     } catch (error) {
         console.error("Error in loadTopResorts:", error);
-        document.getElementById('topResorts').innerHTML = '<div class="ranking-item">No reviews yet</div>';
+        document.getElementById('topResorts').innerHTML = '';
     }
 }
 
@@ -433,56 +426,17 @@ async function loadAllResortsAZ() {
         const resortList = document.getElementById('resortRankings');
         if (!resortList) return;
         
-        // Group resorts by first letter
-        const grouped = {};
+        let html = '';
         resorts.forEach(resort => {
-            const firstLetter = resort.name.charAt(0).toUpperCase();
-            if (!grouped[firstLetter]) {
-                grouped[firstLetter] = [];
-            }
-            grouped[firstLetter].push(resort);
+            const initials = resort.name.split(' ').slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('');
+            html += `<div class="resort-row" onclick="window.location.href='resort.html?id=${resort.id}'"><div class="resort-avatar regular">${initials}</div><span class="resort-row-name">${resort.name}</span></div>`;
         });
-        
-        // Create A-Z navigation
-        let html = `
-            <div class="az-nav">
-                ${Object.keys(grouped).sort().map(letter => 
-                    `<span class="az-letter" onclick="scrollToLetter('${letter}')">${letter}</span>`
-                ).join('')}
-            </div>
-            <div class="az-resort-list">
-        `;
-        
-        // List all resorts by letter
-        Object.keys(grouped).sort().forEach(letter => {
-            html += `<div class="az-section" id="letter-${letter}">`;
-            html += `<h4 class="az-section-title">${letter}</h4>`;
-            
-            grouped[letter].forEach(resort => {
-                html += `
-                    <div class="az-resort-item" onclick="window.location.href='resort.html?id=${resort.id}'">
-                        <span class="resort-name">${resort.name}</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-        });
-        
-        html += `</div>`;
-        
+
         resortList.innerHTML = html;
-        
-        // Also update the header
-        const sidebarHeader = document.querySelector('.sidebar-header h3');
-        if (sidebarHeader) {
-            sidebarHeader.innerHTML = '<i class="fas fa-list"></i> All Resorts A-Z';
-        }
-        
+
     } catch (error) {
         console.error("Error loading resorts A-Z:", error);
-        document.getElementById('resortRankings').innerHTML = '<div class="loading-spinner">Error loading resorts</div>';
+        document.getElementById('resortRankings').innerHTML = '';
     }
 }
 
@@ -824,9 +778,13 @@ initTheme();
 // NAVIGATION - GUEST FEED MAIN CONTENT SWITCH
 // ===========================================
 window.switchMainContent = function(section) {
+    const normalized = section === 'feed' ? 'home' : section;
+
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    const navItem = document.getElementById(`nav-${section}`);
+    const navItem = document.getElementById(`nav-${normalized}`);
     if (navItem) navItem.classList.add('active');
+
+    if (typeof setNavbarActive === 'function') setNavbarActive(section);
 
     const homeContent = document.getElementById('home-content');
     const jobsContent = document.getElementById('jobs-content');
@@ -838,15 +796,15 @@ window.switchMainContent = function(section) {
     if (jobsContent) jobsContent.style.display = 'none';
     if (compareContent) compareContent.style.display = 'none';
 
-    if (section === 'home') {
+    if (normalized === 'home') {
         if (homeContent) homeContent.style.display = 'block';
         if (topResortsBar) topResortsBar.style.display = 'block';
         if (shareBox) shareBox.style.display = 'block';
-    } else if (section === 'jobs') {
+    } else if (normalized === 'jobs') {
         if (jobsContent) jobsContent.style.display = 'block';
         if (topResortsBar) topResortsBar.style.display = 'none';
         if (shareBox) shareBox.style.display = 'none';
-    } else if (section === 'compare') {
+    } else if (normalized === 'compare') {
         if (compareContent) compareContent.style.display = 'block';
         if (topResortsBar) topResortsBar.style.display = 'none';
         if (shareBox) shareBox.style.display = 'none';
