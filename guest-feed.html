@@ -48,21 +48,21 @@
 
         /* ── NAVBAR ── */
         .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 200;
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .navbar-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-            height: 60px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 56px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            box-sizing: border-box;
         }
+
+        .navbar-left { display: flex; align-items: center; gap: 10px; }
 
         .nav-brand {
             display: flex;
@@ -70,19 +70,6 @@
             gap: 10px;
             text-decoration: none;
             color: var(--text);
-            flex-shrink: 0;
-        }
-
-        .brand-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--blue);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 15px;
         }
 
         .brand-name {
@@ -91,12 +78,7 @@
             letter-spacing: -0.02em;
         }
 
-        .navbar-center {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-        }
+        .navbar-center { display: flex; align-items: center; gap: 4px; }
 
         .nav-icon-btn {
             width: 48px;
@@ -141,12 +123,7 @@
             pointer-events: none;
         }
 
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
+        .navbar-right { display: flex; align-items: center; gap: 8px; }
 
         .btn-resort-login {
             padding: 8px 16px;
@@ -916,7 +893,7 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-    <div class="navbar-inner">
+    <div class="navbar-left">
         <a href="index.html" class="nav-brand">
             <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
               <rect width="32" height="32" rx="8" fill="#1877f2"/>
@@ -926,25 +903,25 @@
             </svg>
             <span class="brand-name">ResortReviews</span>
         </a>
+    </div>
 
-        <div class="navbar-center">
-            <button class="nav-icon-btn active" onclick="switchMainContent('feed')" id="navReviews" title="Reviews">
-                <i class="fas fa-home"></i>
-            </button>
-            <button class="nav-icon-btn" onclick="switchMainContent('jobs')" id="navJobs" title="Jobs">
-                <i class="fas fa-briefcase"></i>
-            </button>
-            <button class="nav-icon-btn" onclick="switchMainContent('compare')" id="navCompare" title="Compare">
-                <i class="fas fa-balance-scale"></i>
-            </button>
-        </div>
+    <div class="navbar-center">
+        <button class="nav-icon-btn active" onclick="switchMainContent('feed')" id="navReviews" title="Reviews">
+            <i class="fas fa-home"></i>
+        </button>
+        <button class="nav-icon-btn" onclick="switchMainContent('jobs')" id="navJobs" title="Jobs">
+            <i class="fas fa-briefcase"></i>
+        </button>
+        <button class="nav-icon-btn" onclick="switchMainContent('compare')" id="navCompare" title="Compare">
+            <i class="fas fa-balance-scale"></i>
+        </button>
+    </div>
 
-        <div class="navbar-right">
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
-                <i class="fas fa-moon" id="themeIcon"></i>
-            </button>
-            <a href="resort-login.html" class="btn-resort-login">Resort login</a>
-        </div>
+    <div class="navbar-right">
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <a href="resort-login.html" class="btn-resort-login">Resort login</a>
     </div>
 </nav>
 
