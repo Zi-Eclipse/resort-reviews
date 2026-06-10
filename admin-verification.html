@@ -1125,7 +1125,19 @@ function displayResorts(resorts) {
         }
     };
     
-    // Add your approveRequest function here if needed
+    async function sendEmailViaAPI(to, subject, html) {
+        const response = await fetch('https://www.resortreviews.pro/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ to, subject, html })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            throw new Error(data.error || ('Email API returned status ' + response.status));
+        }
+        return data;
+    }
+
     async function approveRequest(requestId) {
         console.log('✅ Approve button clicked for request:', requestId);
         
