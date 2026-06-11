@@ -1194,17 +1194,6 @@ function displayResorts(resorts) {
             
             console.log('🔍 Verification - Password in DB:', verifyResort?.temp_password);
             console.log('✅ Passwords match?', tempPassword === verifyResort?.temp_password);
-            
-            // Update request status
-            const { error: statusError } = await supabaseClient
-                .from('verification_requests')
-                .update({ 
-                    status: 'approved',
-                    reviewed_at: new Date()
-                })
-                .eq('id', requestId);
-            
-            if (statusError) throw statusError;
 
             // Create or update the Supabase Auth user with the same password
             const authRes = await fetch('https://www.resortreviews.pro/api/create-resort-user', {
@@ -1224,6 +1213,17 @@ function displayResorts(resorts) {
                 .from('resorts')
                 .update({ auth_user_id: authData.userId })
                 .eq('id', existingResort.id);
+
+            // Update request status
+            const { error: statusError } = await supabaseClient
+                .from('verification_requests')
+                .update({
+                    status: 'approved',
+                    reviewed_at: new Date()
+                })
+                .eq('id', requestId);
+
+            if (statusError) throw statusError;
 
             // Create email HTML with THE SAME password
             const emailHtml = `
