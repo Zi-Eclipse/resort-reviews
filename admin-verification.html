@@ -1205,7 +1205,26 @@ function displayResorts(resorts) {
                 .eq('id', requestId);
             
             if (statusError) throw statusError;
-            
+
+            // Create or update the Supabase Auth user with the same password
+            const authRes = await fetch('https://www.resortreviews.pro/api/create-resort-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: request.contact_email,
+                    password: tempPassword,
+                    resortName: existingResort.name
+                })
+            });
+            const authData = await authRes.json();
+            if (!authRes.ok) throw new Error('Auth user setup failed: ' + (authData.error || authRes.status));
+
+            // Link the auth user to the resort
+            await supabaseClient
+                .from('resorts')
+                .update({ auth_user_id: authData.userId })
+                .eq('id', existingResort.id);
+
             // Create email HTML with THE SAME password
             const emailHtml = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e6eb; border-radius: 12px;">
