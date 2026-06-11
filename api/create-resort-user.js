@@ -21,6 +21,12 @@ export default async function handler(req, res) {
 
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+    if (!SUPABASE_URL || !SUPABASE_URL.startsWith('http')) {
+        return res.status(500).json({ error: 'SUPABASE_URL env variable is missing or invalid on the server' });
+    }
+    if (!SERVICE_KEY) {
+        return res.status(500).json({ error: 'SUPABASE_SERVICE_KEY env variable is missing on the server' });
+    }
     const adminHeaders = {
         'apikey': SERVICE_KEY,
         'Authorization': `Bearer ${SERVICE_KEY}`,
