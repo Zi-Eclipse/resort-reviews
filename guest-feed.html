@@ -161,10 +161,10 @@
         .main-layout {
             max-width: 100%;
             margin: 0 auto;
-            padding: 20px 0 20px 24px;
+            padding: 20px 24px;
             display: grid;
-            grid-template-columns: 220px 1fr 280px;
-            gap: 20px;
+            grid-template-columns: 260px minmax(0, 1fr) 320px;
+            gap: 24px;
             align-items: start;
         }
 
@@ -221,7 +221,12 @@
         .stat-mini-value { font-weight: 700; color: var(--blue); font-size: 15px; }
 
         /* ── MAIN CONTENT ── */
-        .main-content { min-width: 0; }
+        .main-content {
+            min-width: 0;
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+        }
 
         /* Share box */
         .share-box {
@@ -412,14 +417,16 @@
 
         .photo-thumbnail img {
             width: 100%;
-            height: 240px;
-            object-fit: cover;
+            height: auto;
+            max-height: 480px;
+            object-fit: contain;
+            object-position: center;
             display: block;
+            background: var(--bg-secondary);
         }
 
-        /* Single photo: full width, taller */
         .photo-thumbnail:only-child img {
-            height: 400px;
+            max-height: 560px;
         }
 
         /* Loading */
@@ -878,7 +885,7 @@
 
         /* ── RESPONSIVE ── */
         @media (max-width: 1100px) {
-            .main-layout { grid-template-columns: 200px 1fr; }
+            .main-layout { grid-template-columns: 220px minmax(0, 1fr); padding: 16px; }
             .right-sidebar { display: none; }
         }
 
@@ -1202,6 +1209,16 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
 <script>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     // Global variables (resortsMap, allResorts, allResortsList, selectedResort1/2 are declared in script.js)
 
     window.addEventListener('load', async function() {
@@ -1423,7 +1440,7 @@ async function loadReviews() {
         let html = '';
         for (const review of reviews) {
             const date = new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-            const resortName = resortsMap.get(review.resort_id) || review.resort_name || 'Unknown Resort';
+            const resortName = escapeHtml(resortsMap.get(review.resort_id) || review.resort_name) || 'Unknown Resort';
             let photosHtml = '';
             if (review.photo_urls && review.photo_urls !== '[]') {
                 try {
@@ -1444,12 +1461,12 @@ async function loadReviews() {
                 latestComments.forEach(comment => {
                     const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     const commentAuthor = comment.is_official ? 'Official Response' : 'Guest';
-                    commentsHtml += `<div class="comment-preview-item"><div class="comment-preview-avatar">${comment.is_official ? '🏨' : '👤'}</div><div class="comment-preview-content"><div class="comment-preview-header"><span class="comment-preview-author">${commentAuthor}</span>${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}<span class="comment-preview-date">${commentDate}</span></div><p class="comment-preview-text">${comment.comment_text}</p></div></div>`;
+                    commentsHtml += `<div class="comment-preview-item"><div class="comment-preview-avatar">${comment.is_official ? '🏨' : '👤'}</div><div class="comment-preview-content"><div class="comment-preview-header"><span class="comment-preview-author">${commentAuthor}</span>${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}<span class="comment-preview-date">${commentDate}</span></div><p class="comment-preview-text">${escapeHtml(comment.comment_text)}</p></div></div>`;
                 });
                 if (commentCount > 2) commentsHtml += `<div class="view-all-comments" onclick="openCommentModal(${review.id})">View all ${commentCount} comments</div>`;
                 commentsHtml += '</div>';
             }
-            html += `<div class="review-item"><div class="review-header"><h3><a href="resort.html?id=${review.resort_id}" class="resort-link">${resortName}</a></h3><div style="display:flex;align-items:center;gap:8px;"><span class="review-rating">${review.rating}/10</span><div class="post-menu-container"><button class="post-menu-btn" onclick="togglePostMenu(${review.id})"><i class="fas fa-ellipsis-h"></i></button><div class="post-menu-dropdown" id="post-menu-${review.id}"><div class="post-menu-item" onclick="reportReview(${review.id})"><i class="fas fa-flag"></i> Report post</div></div></div></div></div><p class="review-text">${review.review_text}</p>${photosHtml}<div class="review-actions"><button class="action-btn" onclick="openCommentModal(${review.id})"><i class="far fa-comment"></i> Comment (${commentCount})</button><button class="action-btn" onclick="shareReview(${review.id})"><i class="far fa-share-square"></i> Share</button></div>${commentsHtml}<div class="review-date"><i class="far fa-calendar"></i> ${date}</div></div>`;
+            html += `<div class="review-item"><div class="review-header"><h3><a href="resort.html?id=${review.resort_id}" class="resort-link">${resortName}</a></h3><div style="display:flex;align-items:center;gap:8px;"><span class="review-rating">${review.rating}/10</span><div class="post-menu-container"><button class="post-menu-btn" onclick="togglePostMenu(${review.id})"><i class="fas fa-ellipsis-h"></i></button><div class="post-menu-dropdown" id="post-menu-${review.id}"><div class="post-menu-item" onclick="reportReview(${review.id})"><i class="fas fa-flag"></i> Report post</div></div></div></div></div><p class="review-text">${escapeHtml(review.review_text)}</p>${photosHtml}<div class="review-actions"><button class="action-btn" onclick="openCommentModal(${review.id})"><i class="far fa-comment"></i> Comment (${commentCount})</button><button class="action-btn" onclick="shareReview(${review.id})"><i class="far fa-share-square"></i> Share</button></div>${commentsHtml}<div class="review-date"><i class="far fa-calendar"></i> ${date}</div></div>`;
         }
         reviewsFeed.innerHTML = html;
     } catch (error) {
@@ -1508,10 +1525,18 @@ async function loadTopResorts() {
         });
         const sorted = Object.entries(resortStats).map(([id, data]) => ({ id: parseInt(id), name: data.name, avg: (data.total / data.count).toFixed(1) })).sort((a, b) => b.avg - a.avg).slice(0, 3);
         if (sorted.length === 0) { document.getElementById('topResorts').innerHTML = ''; return; }
+        // Fetch profile photos for top resorts
+        const topIds = sorted.map(r => r.id);
+        const { data: topPhotos } = await supabaseClient.from('resorts').select('id, profile_photo').in('id', topIds);
+        const photoMap = {};
+        (topPhotos || []).forEach(r => { if (r.profile_photo) photoMap[r.id] = r.profile_photo; });
         let html = '';
         sorted.forEach(resort => {
             const initials = resort.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-            html += `<div class="resort-row" onclick="window.location.href='resort.html?id=${resort.id}'"><div class="resort-avatar top">${initials}</div><span class="resort-row-name">${resort.name}</span><span class="resort-row-rating"><i class="fas fa-star" style="color:#f59e0b;font-size:10px;"></i> ${resort.avg}</span></div>`;
+            const topPhoto = photoMap[resort.id];
+            const topAvatarStyle = topPhoto ? ` style="background-image:url('${topPhoto}')"` : '';
+            const topAvatarClass = topPhoto ? 'resort-avatar top has-photo' : 'resort-avatar top';
+            html += `<div class="resort-row" onclick="window.location.href='resort.html?id=${resort.id}'"><div class="${topAvatarClass}"${topAvatarStyle}>${initials}</div><span class="resort-row-name">${resort.name}</span><span class="resort-row-rating"><i class="fas fa-star" style="color:#f59e0b;font-size:10px;"></i> ${resort.avg}</span></div>`;
         });
         document.getElementById('topResorts').innerHTML = html;
     } catch (error) { console.error("Error in loadTopResorts:", error); document.getElementById('topResorts').innerHTML = ''; }
@@ -1519,12 +1544,14 @@ async function loadTopResorts() {
 
 async function loadAllResortsAZ() {
     try {
-        const { data: resorts } = await supabaseClient.from('resorts').select('id, name').order('name');
+        const { data: resorts } = await supabaseClient.from('resorts').select('id, name, profile_photo').order('name');
         const resortList = document.getElementById('resortRankings');
         let html = '';
         resorts.forEach(resort => {
             const initials = resort.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-            html += `<div class="resort-row" onclick="window.location.href='resort.html?id=${resort.id}'"><div class="resort-avatar regular">${initials}</div><span class="resort-row-name">${resort.name}</span></div>`;
+            const avatarStyle = resort.profile_photo ? ` style="background-image:url('${resort.profile_photo}')"` : '';
+            const avatarClass = resort.profile_photo ? 'resort-avatar regular has-photo' : 'resort-avatar regular';
+            html += `<div class="resort-row" onclick="window.location.href='resort.html?id=${resort.id}'"><div class="${avatarClass}"${avatarStyle}>${initials}</div><span class="resort-row-name">${resort.name}</span></div>`;
         });
         resortList.innerHTML = html;
     } catch (error) { console.error("Error loading resorts A-Z:", error); }
@@ -1591,10 +1618,10 @@ window.openCommentModal = async function(reviewId) {
     if (comments && comments.length > 0) {
         comments.forEach(comment => {
             const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            commentsHtml += `<div class="modal-comment-item"><div class="modal-comment-avatar">${comment.is_official ? '🏨' : '👤'}</div><div class="modal-comment-content"><div class="modal-comment-header"><span class="modal-comment-author">${comment.is_official ? 'Official Response' : 'Guest'}</span>${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}<span class="comment-date-small">${commentDate}</span></div><p class="modal-comment-text">${comment.comment_text}</p></div></div>`;
+            commentsHtml += `<div class="modal-comment-item"><div class="modal-comment-avatar">${comment.is_official ? '🏨' : '👤'}</div><div class="modal-comment-content"><div class="modal-comment-header"><span class="modal-comment-author">${comment.is_official ? 'Official Response' : 'Guest'}</span>${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}<span class="comment-date-small">${commentDate}</span></div><p class="modal-comment-text">${escapeHtml(comment.comment_text)}</p></div></div>`;
         });
     } else { commentsHtml = '<div class="no-comments-modal">No comments yet.</div>'; }
-    document.getElementById('commentModalContent').innerHTML = `<div class="modal-post"><div class="modal-post-header"><span class="modal-post-rating">${review.rating}/10</span><span class="modal-post-date">${date}</span></div><p class="modal-post-text">${review.review_text}</p>${photosHtml}</div><div class="modal-comments"><div class="comments-list">${commentsHtml}</div></div>`;
+    document.getElementById('commentModalContent').innerHTML = `<div class="modal-post"><div class="modal-post-header"><span class="modal-post-rating">${review.rating}/10</span><span class="modal-post-date">${date}</span></div><p class="modal-post-text">${escapeHtml(review.review_text)}</p>${photosHtml}</div><div class="modal-comments"><div class="comments-list">${commentsHtml}</div></div>`;
     document.getElementById('commentModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 };

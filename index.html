@@ -260,6 +260,18 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 28px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+            border-color: var(--blue);
+        }
+
+        .card-featured:hover {
+            box-shadow: 0 16px 40px rgba(24, 119, 242, 0.2);
         }
 
         .card-featured {

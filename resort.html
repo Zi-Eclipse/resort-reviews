@@ -746,6 +746,16 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
     const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
 
@@ -1056,7 +1066,7 @@
                         <span class="review-rating">${review.rating}/10</span>
                     </div>
                     <div class="review-date">${date}</div>
-                    <p class="review-text">${review.review_text}</p>
+                    <p class="review-text">${escapeHtml(review.review_text)}</p>
                 </div>
             `;
         });

@@ -359,6 +359,16 @@
         if (currentTab === 'rejected') document.getElementById('tabRejected').className = 'tab active';
     }
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     function displayReviews(reviews) {
         const container = document.getElementById('reviewsList');
         if (reviews.length === 0) { container.innerHTML = '<p style="text-align:center;padding:40px;color:var(--text-muted);">No reviews found</p>'; return; }
@@ -370,21 +380,21 @@
                     <div class="review-header">
                         <div style="display:flex;align-items:center;gap:10px;">
                             <span class="review-rating">${review.rating}/10</span>
-                            <strong style="font-size:15px;color:var(--text);">${review.resort_name || 'Unknown Resort'}</strong>
+                            <strong style="font-size:15px;color:var(--text);">${escapeHtml(review.resort_name) || 'Unknown Resort'}</strong>
                         </div>
                         <span class="review-date">${date}</span>
                     </div>
-                    <p class="review-text">${review.review_text}</p>
+                    <p class="review-text">${escapeHtml(review.review_text)}</p>
                     ${review.photo_urls && review.photo_urls !== '[]' ? `
                         <div style="margin:12px 0;">
                             <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;"><i class="fas fa-image"></i> Photos:</p>
                             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                ${(() => { try { return JSON.parse(review.photo_urls).map(url => `<div style="width:100px;height:100px;border-radius:8px;overflow:hidden;border:1px solid var(--border);cursor:pointer;" onclick="window.open('${url}','_blank')"><img src="${url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=padding:8px;>Error</span>';"></div>`).join(''); } catch(e){return '';} })()}
+                                ${(() => { try { const urls = Array.isArray(review.photo_urls) ? review.photo_urls : JSON.parse(review.photo_urls); return urls.map(url => `<div style="width:100px;height:100px;border-radius:8px;overflow:hidden;border:1px solid var(--border);cursor:pointer;" onclick="window.open('${url}','_blank')"><img src="${url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=padding:8px;font-size:11px;color:var(--text-muted)>No image</span>';"></div>`).join(''); } catch(e){ return ''; } })()}
                             </div>
                         </div>
                     ` : ''}
                     <div class="review-actions">
-                        ${currentTab === 'pending' ? `
+                        ${(currentTab === 'pending' || review.status === 'pending') ? `
                             <button class="action-btn approve" onclick="updateStatus(${review.id}, 'approved')"><i class="fas fa-check"></i> Approve</button>
                             <button class="action-btn reject" onclick="updateStatus(${review.id}, 'rejected')"><i class="fas fa-times"></i> Reject</button>
                         ` : ''}

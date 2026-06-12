@@ -1,3 +1,13 @@
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 // Your Supabase credentials
 const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
 const SUPABASE_KEY = "sb_publishable_syHNOYJ3kCbtLTwXI_wWiA_D-NYvwXl";
@@ -215,7 +225,7 @@ async function displayReviews(reviews) {
         });
         
         // Get resort name from map or use fallback
-        const resortName = resortsMap.get(review.resort_id) || review.resort_name || 'Unknown Resort';
+        const resortName = escapeHtml(resortsMap.get(review.resort_id) || review.resort_name) || 'Unknown Resort';
         
         // Handle photos
         let photosHtml = '';
@@ -269,7 +279,7 @@ async function displayReviews(reviews) {
                                 ${comment.is_official ? '<span class="official-badge-small">✓</span>' : ''}
                                 <span class="comment-preview-date">${commentDate}</span>
                             </div>
-                            <p class="comment-preview-text">${comment.comment_text}</p>
+                            <p class="comment-preview-text">${escapeHtml(comment.comment_text)}</p>
                         </div>
                     </div>
                 `;
@@ -311,9 +321,9 @@ html += `
                 </div>
             </div>
         </div>
-        <p class="review-text">${review.review_text}</p>
+        <p class="review-text">${escapeHtml(review.review_text)}</p>
         ${photosHtml}
-        
+
         <div class="review-actions">
             <button class="action-btn" onclick="openCommentModal(${review.id})">
                 <i class="far fa-comment"></i> Comment (${commentCount})
@@ -562,7 +572,7 @@ window.openCommentModal = async function(reviewId) {
                             ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
                             <span class="comment-date-small">${commentDate}</span>
                         </div>
-                        <p class="modal-comment-text">${comment.comment_text}</p>
+                        <p class="modal-comment-text">${escapeHtml(comment.comment_text)}</p>
                     </div>
                 </div>
             `;
@@ -577,7 +587,7 @@ window.openCommentModal = async function(reviewId) {
                 <span class="modal-post-rating">${review.rating}/10</span>
                 <span class="modal-post-date">${date}</span>
             </div>
-            <p class="modal-post-text">${review.review_text}</p>
+            <p class="modal-post-text">${escapeHtml(review.review_text)}</p>
             ${photosHtml}
         </div>
         <div class="modal-comments">
