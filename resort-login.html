@@ -1,267 +1,331 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})()</script>
     <title>Resort Login - ResortReviews Maldives</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #0a2540;
-            --primary-light: #1e3a5f;
-            --secondary: #0070f3;
-            --secondary-light: #4d9eff;
-            --text-light: #6b7280;
+            --blue: #1877f2;
+            --blue-light: #e8f1fd;
+            --text: #111827;
+            --text-muted: #6b7280;
             --border: #e5e7eb;
-            --bg-color: #f3f4f6;
-            --white: #ffffff;
-            --hover-bg: #f0f2f5;
+            --bg: #f7f6f3;
+            --bg-secondary: #f0efe9;
+            --card-bg: #ffffff;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        [data-theme="dark"] {
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #374151;
+            --bg: #111827;
+            --bg-secondary: #2b3648;
+            --card-bg: #1f2937;
+            --blue-light: #1e3a5f;
+            --red-light: #450a0a;
+            --green-light: #052e16;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 56px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .back-link {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-        }
+        .navbar-left { display: flex; align-items: center; }
+        .navbar-right { display: flex; align-items: center; gap: 8px; }
 
-        .back-link a {
-            color: white;
-            text-decoration: none;
+        .nav-brand {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 1rem;
-            opacity: 0.8;
-            transition: opacity 0.2s;
+            text-decoration: none;
+            color: var(--text);
         }
 
-        .back-link a:hover {
-            opacity: 1;
+        .brand-name { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+
+        .theme-btn {
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
         }
 
+        .theme-btn:hover { background: var(--border); }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--bg-secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-back:hover { background: var(--border); }
+
+        /* Page centering */
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 56px);
+            padding: 40px 20px;
+        }
+
+        /* Login card */
         .login-container {
             max-width: 420px;
             width: 100%;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
 
         .login-header .icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: rgba(255,255,255,0.2);
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
+            width: 64px;
+            height: 64px;
+            background: var(--blue-light);
             border-radius: 50%;
-            margin: 0 auto 20px;
-            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+            color: var(--blue);
         }
 
         .login-header h1 {
-            color: white;
-            font-size: 2rem;
-            margin-bottom: 10px;
+            color: var(--text);
+            font-size: 1.5rem;
+            margin-bottom: 6px;
         }
 
         .login-header p {
-            color: rgba(255,255,255,0.8);
-            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
 
         .badge {
             display: inline-block;
-            background: gold;
-            color: black;
+            background: #fef9c3;
+            color: #854d0e;
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 11px;
             font-weight: bold;
-            margin-left: 8px;
+            margin-left: 4px;
         }
 
-        .login-form .form-group {
-            margin-bottom: 20px;
-        }
+        [data-theme="dark"] .badge { background: #422006; color: #fde68a; }
+
+        /* Form */
+        .login-form .form-group { margin-bottom: 18px; }
 
         .login-form label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 500;
-            color: white;
-            font-size: 0.95rem;
+            color: var(--text);
+            font-size: 0.875rem;
         }
 
         .login-form input {
             width: 100%;
-            padding: 14px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            font-size: 1rem;
-            color: white;
-            transition: all 0.2s;
+            padding: 10px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--text);
+            transition: border-color 0.2s;
         }
 
-        .login-form input::placeholder {
-            color: rgba(255,255,255,0.5);
-        }
+        .login-form input::placeholder { color: var(--text-muted); }
 
         .login-form input:focus {
             outline: none;
-            border-color: rgba(255,255,255,0.5);
-            background: rgba(255,255,255,0.15);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(24,119,242,0.1);
         }
 
+        /* Password wrapper */
+        .password-wrapper { position: relative; }
+        .password-wrapper input { padding-right: 42px; }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password-btn:hover { color: var(--text); }
+
+        /* Login button */
         .login-btn {
             width: 100%;
-            padding: 14px;
-            background: rgba(255,255,255,0.2);
+            padding: 11px;
+            background: var(--blue);
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 12px;
-            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 10px;
+            transition: opacity 0.2s;
+            margin-top: 8px;
         }
 
-        .login-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
+        .login-btn:hover { opacity: 0.9; }
+
+        /* Forgot password */
+        .forgot-password { text-align: right; margin-top: 8px; }
+
+        .forgot-password a {
+            color: var(--blue);
+            font-size: 0.85rem;
+            text-decoration: none;
         }
 
+        .forgot-password a:hover { text-decoration: underline; }
+
+        /* Request link */
         .request-link {
             text-align: center;
-            margin-top: 25px;
+            margin-top: 20px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
         }
 
         .request-link a {
-            color: white;
+            color: var(--blue);
             text-decoration: none;
             font-weight: 500;
-            opacity: 0.9;
-            transition: opacity 0.2s;
         }
 
-        .request-link a:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
+        .request-link a:hover { text-decoration: underline; }
 
+        /* Error / Success */
         .error-message {
-            background: rgba(220, 38, 38, 0.2);
-            color: #fee2e2;
+            background: var(--red-light);
+            color: var(--red);
             padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
             display: none;
-            border: 1px solid rgba(220, 38, 38, 0.3);
+            border: 1px solid rgba(220,38,38,0.2);
+            font-size: 0.875rem;
         }
 
         .success-message {
-            background: rgba(16, 185, 129, 0.2);
-            color: #d1fae5;
+            background: var(--green-light);
+            color: var(--green);
             padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
             display: none;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(22,163,74,0.2);
+            font-size: 0.875rem;
         }
 
+        /* Demo credentials */
         .demo-credentials {
-            margin-top: 25px;
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.7);
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 20px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
         }
 
-        .demo-credentials p {
-            margin-bottom: 5px;
-        }
+        .demo-credentials p { margin-bottom: 4px; }
 
         .demo-credentials code {
-            background: rgba(0,0,0,0.3);
-            padding: 2px 6px;
+            background: var(--border);
+            padding: 1px 5px;
             border-radius: 4px;
-            color: #ffd700;
+            color: var(--blue);
         }
 
-        .forgot-password {
-            text-align: right;
-            margin-top: 10px;
-        }
-
-        .forgot-password a {
-            color: rgba(255,255,255,0.8);
-            font-size: 0.85rem;
-            text-decoration: none;
-        }
-
-        .forgot-password a:hover {
-            color: white;
-            text-decoration: underline;
-        }
-
-        /* Modal Styles */
+        /* Modals */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
             z-index: 2000;
             align-items: center;
             justify-content: center;
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-content {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             width: 90%;
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
-            color: white;
+            color: var(--text);
         }
 
         .modal-header {
@@ -269,101 +333,113 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 24px 24px 0 0;
+            background: var(--card-bg);
+            border-radius: 16px 16px 0 0;
         }
 
         .modal-header h3 {
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 1rem;
         }
 
         .modal-close {
-            font-size: 24px;
+            font-size: 18px;
             cursor: pointer;
+            color: var(--text-muted);
             padding: 4px;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.2s;
         }
 
-        .modal-close:hover {
-            background: rgba(255,255,255,0.2);
-        }
+        .modal-close:hover { background: var(--bg-secondary); color: var(--text); }
 
-        .modal-content form {
-            padding: 20px;
-        }
+        .modal-content form { padding: 20px; }
 
-        .modal-content .form-group {
-            margin-bottom: 15px;
-        }
+        .modal-content .form-group { margin-bottom: 14px; }
 
         .modal-content label {
             display: block;
             margin-bottom: 5px;
-            color: white;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 500;
         }
 
         .modal-content input,
         .modal-content textarea {
             width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            color: white;
+            color: var(--text);
+            font-size: 0.9rem;
         }
 
-        .modal-content textarea {
-            resize: vertical;
-            min-height: 80px;
+        .modal-content input:focus,
+        .modal-content textarea:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(24,119,242,0.1);
         }
+
+        .modal-content textarea { resize: vertical; min-height: 80px; }
 
         .post-btn {
             width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.2);
+            padding: 11px;
+            background: var(--blue);
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
         }
 
-        .post-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
+        .post-btn:hover { opacity: 0.9; }
 
-        @media (max-width: 768px) {
-            .back-link {
-                top: 20px;
-                left: 20px;
-            }
-            
-            .login-container {
-                padding: 30px 20px;
-            }
+        /* Reset content padding */
+        .reset-content { padding: 20px; }
+
+        @media (max-width: 640px) {
+            .login-container { padding: 28px 20px; }
+            .brand-name { display: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="back-link">
-    <a href="index.html">
-        <i class="fas fa-arrow-left"></i> Back to Home
-    </a>
-</div>
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="index.html" class="nav-brand">
+            <svg width="28" height="28" viewBox="0 0 32 32" style="flex-shrink:0;">
+              <rect width="32" height="32" rx="8" fill="#1877f2"/>
+              <circle cx="16" cy="11" r="4" fill="white"/>
+              <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+            <span class="brand-name">ResortReviews</span>
+        </a>
+    </div>
+    <div class="navbar-right">
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to site</a>
+    </div>
+</nav>
 
+<div class="login-page">
 <div class="login-container">
     <div class="login-header">
         <div class="icon">
@@ -382,13 +458,11 @@
             <input type="email" id="email" placeholder="resort@example.com" required autocomplete="username">
         </div>
         
-<div class="form-group" style="position: relative;">
+<div class="form-group">
     <label><i class="fas fa-lock"></i> Password</label>
-    <div style="position: relative;">
-        <input type="password" id="password" placeholder="••••••••" required 
-               style="width: 100%; padding: 14px; padding-right: 45px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white;">
-        <button type="button" id="togglePassword" 
-                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: rgba(255,255,255,0.6); cursor: pointer; padding: 5px;">
+    <div class="password-wrapper">
+        <input type="password" id="password" placeholder="••••••••" required>
+        <button type="button" id="togglePassword" class="toggle-password-btn">
             <i class="fas fa-eye" id="togglePasswordIcon"></i>
         </button>
     </div>
@@ -406,6 +480,8 @@
     <div class="request-link">
         <p>Not verified yet? <a href="#" onclick="showRequestForm()">Request resort verification</a></p>
     </div>
+</div>
+</div>
 
 <!-- Forgot Password Modal -->
 <div class="modal-overlay" id="forgotPasswordModal" onclick="closeForgotPassword()">
@@ -473,6 +549,21 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+    window.toggleTheme = function() {
+        const html = document.documentElement;
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        const icon = document.getElementById('themeIcon');
+        if (icon) icon.className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        const theme = localStorage.getItem('theme') || 'light';
+        const icon = document.getElementById('themeIcon');
+        if (icon) icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    });
+
     const SUPABASE_URL = "https://yaqtahzosvsrvbzurhgn.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhcXRhaHpvc3ZzcnZienVyaGduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxODE3MzMsImV4cCI6MjA4Nzc1NzczM30.x1dxVDvFuwrAXiOuqv-T6LtEP2IRXZAeSKQjIZjvbwk";
     

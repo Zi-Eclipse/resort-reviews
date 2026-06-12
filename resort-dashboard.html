@@ -1247,11 +1247,173 @@
             font-size: 16px;
         }
 
-        [data-theme="dark"] body { background: #18191a !important; }
-        [data-theme="dark"] .login-card, [data-theme="dark"] .login-box { background: #242526 !important; }
-        [data-theme="dark"] input { background: #3a3b3c !important; color: white !important; border-color: #555 !important; }
-        [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] p { color: #e4e6ea !important; }
     </style>
+<style>
+/* ══ NEW DESIGN SYSTEM — overrides old style.css ══ */
+:root {
+    --blue: #1877f2;
+    --blue-light: #e8f1fd;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --bg: #f7f6f3;
+    --bg-secondary: #f0efe9;
+    --card-bg: #ffffff;
+    --border: #e5e7eb;
+    /* Remap legacy variable names so old style.css rules adopt the new look */
+    --bg-color: #f7f6f3 !important;
+    --white: #ffffff !important;
+    --primary: #1877f2 !important;
+    --text-dark: #111827 !important;
+    --text-light: #6b7280 !important;
+    --shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+}
+
+[data-theme="dark"] {
+    --blue: #3b82f6;
+    --blue-light: rgba(59, 130, 246, 0.15);
+    --text: #f3f4f6;
+    --text-muted: #9ca3af;
+    --bg: #111827;
+    --bg-secondary: #2b3648;
+    --card-bg: #1f2937;
+    --border: #374151;
+    --bg-color: #111827 !important;
+    --white: #1f2937 !important;
+    --primary: #3b82f6 !important;
+    --text-dark: #f3f4f6 !important;
+    --text-light: #9ca3af !important;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+}
+
+body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    padding-top: 0 !important;
+}
+
+/* ── Navbar (matches guest-feed) ── */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 56px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    max-width: none !important;
+    box-sizing: border-box;
+}
+.navbar-left { display: flex; align-items: center; gap: 10px; }
+.navbar-right { display: flex; align-items: center; gap: 8px; }
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+.brand-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+.dashboard-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: 6px;
+}
+.theme-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-secondary);
+    color: var(--text);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+}
+.theme-btn:hover { background: var(--border); }
+
+/* ── Dashboard surface restyle ── */
+.dashboard-container { max-width: 1100px !important; }
+.profile-cover { border-radius: 16px !important; margin-top: 20px; }
+.profile-info h1 { font-weight: 600 !important; letter-spacing: -0.02em; }
+
+.profile-nav {
+    display: flex !important;
+    gap: 4px !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+    margin: 16px 0 24px !important;
+    box-shadow: none !important;
+    width: fit-content;
+}
+.profile-nav-item {
+    padding: 9px 18px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: var(--text-muted) !important;
+    cursor: pointer !important;
+    user-select: none;
+    border-bottom: none !important;
+    transition: background 0.15s, color 0.15s;
+}
+.profile-nav-item:hover {
+    background: var(--bg-secondary) !important;
+    color: var(--text) !important;
+}
+.profile-nav-item.active {
+    background: var(--blue-light) !important;
+    color: var(--blue) !important;
+    font-weight: 600 !important;
+}
+
+.stat-card, .review-card, .overview-section, .reviews-feed, .info-item {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+.stat-value { color: var(--blue) !important; font-weight: 600 !important; }
+.stat-label { color: var(--text-muted) !important; }
+
+.post-btn, .modal-content button[type="submit"], .submit-btn {
+    background: var(--blue) !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    border: none !important;
+}
+.action-btn { border-radius: 8px !important; color: var(--text-muted) !important; }
+.action-btn:hover { background: var(--bg-secondary) !important; color: var(--text) !important; }
+
+.modal-content { background: var(--card-bg) !important; border-radius: 16px !important; color: var(--text) !important; }
+.settings-item:hover { background: var(--bg-secondary) !important; border-radius: 8px; }
+.profile-dropdown { background: var(--card-bg) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important; }
+.dropdown-item:hover { background: var(--bg-secondary) !important; }
+
+input, textarea, select {
+    background: var(--card-bg) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+}
+input:focus, textarea:focus { border-color: var(--blue) !important; outline: none; }
+
+/* Navbar avatar: black circle/white icon in light mode, inverted in dark */
+.profile-avatar {
+    background: #111827 !important;
+    color: #ffffff !important;
+    font-size: 16px !important;
+    overflow: hidden;
+}
+[data-theme="dark"] .profile-avatar {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+}
+</style>
 </head>
 <body>
 
@@ -1279,52 +1441,49 @@
     </div>
 
     <!-- Top Navigation -->
-    <div class="top-nav">
-        <div class="nav-left">
-            <a href="guest-feed.html" class="home-btn" title="Home">
-                <i class="fas fa-home"></i>
+    <nav class="top-nav navbar">
+        <div class="navbar-left">
+            <a href="guest-feed.html" class="nav-brand">
+                <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
+                  <rect width="32" height="32" rx="8" fill="#1877f2"/>
+                  <circle cx="16" cy="11" r="4" fill="white"/>
+                  <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+                  <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+                </svg>
+                <span class="brand-name">ResortReviews</span>
             </a>
+            <span class="dashboard-tag">Dashboard</span>
         </div>
-        <div class="nav-center">
-            <a href="guest-feed.html" class="logo">
-                <i class="fas fa-umbrella-beach"></i>
-                <span>ResortReviews</span>
-            </a>
-        </div>
-        <div class="nav-right">
-            <div class="nav-icons">
-                <!-- Profile Dropdown Menu -->
-                <div class="profile-dropdown-container">
-                    <div class="profile-avatar" onclick="toggleProfileDropdown()" id="profileAvatar">
-                        🏨
+        <div class="navbar-right">
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <!-- Profile Dropdown Menu -->
+            <div class="profile-dropdown-container">
+                <div class="profile-avatar" onclick="toggleProfileDropdown()" id="profileAvatar">
+                    <i class="fas fa-hotel"></i>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <strong id="dropdownResortName">Resort Name</strong>
+                        <p style="color: var(--text-light); font-size: 12px;">Verified Resort</p>
                     </div>
-                    <div class="profile-dropdown" id="profileDropdown">
-                        <div class="dropdown-header">
-                            <strong id="dropdownResortName">Resort Name</strong>
-                            <p style="color: var(--text-light); font-size: 12px;">Verified Resort</p>
-                        </div>
 
-                        <div class="dropdown-item" onclick="openSettings()">
-                            <i class="fas fa-cog"></i>
-                            <span>Settings & privacy</span>
-                        </div>
+                    <div class="dropdown-item" onclick="openSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings & privacy</span>
+                    </div>
 
-                        <div class="dropdown-item" onclick="openSettings()">
-                            <i class="fas fa-moon"></i>
-                            <span>Display & accessibility</span>
-                        </div>
+                    <div class="dropdown-divider"></div>
 
-                        <div class="dropdown-divider"></div>
-
-                        <div class="dropdown-item" onclick="logout()">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Log out</span>
-                        </div>
+                    <div class="dropdown-item" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Log out</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
 
     <!-- Main Dashboard Content (will be populated by JavaScript) -->
     <div class="dashboard-container" id="dashboard">
@@ -3029,6 +3188,17 @@
                 document.documentElement.setAttribute('data-theme', 'light');
                 localStorage.setItem('theme', 'light');
             }
+        };
+
+        window.toggleTheme = function () {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const next = isDark ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            const toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = next === 'dark';
         };
 
         function logout() {
