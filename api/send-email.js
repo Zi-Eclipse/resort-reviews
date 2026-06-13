@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Secret');
 
     if (req.method === 'OPTIONS') {
         return res.status(204).end();
@@ -18,6 +18,11 @@ export default async function handler(req, res) {
 
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const authHeader = req.headers['x-admin-secret'];
+    if (authHeader !== process.env.ADMIN_API_SECRET) {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const { to, subject, html } = req.body;

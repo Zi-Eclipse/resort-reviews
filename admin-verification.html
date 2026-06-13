@@ -578,9 +578,18 @@ function displayResorts(resorts) {
                     .single();
                 
                 // Delete in correct order
+                // Delete auth user via server endpoint
                 if (resort?.auth_user_id) {
-                    // Delete auth user (this will cascade to resort_profiles)
-                    await supabaseClient.auth.admin.deleteUser(resort.auth_user_id);
+                    const delRes = await fetch('https://www.resortreviews.pro/api/delete-resort-user', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Admin-Secret': '68ddf10795a718ae308a026fa9b8a31ec4cb5026d0dd04d465951b2383723676'
+                        },
+                        body: JSON.stringify({ authUserId: resort.auth_user_id })
+                    });
+                    const delData = await delRes.json();
+                    if (!delRes.ok) console.warn('Auth user deletion failed:', delData.error);
                 }
                 
                 // Delete from resorts table
@@ -858,7 +867,10 @@ function displayResorts(resorts) {
     async function sendEmailViaAPI(to, subject, html) {
         const response = await fetch('https://www.resortreviews.pro/api/send-email', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-Secret': '68ddf10795a718ae308a026fa9b8a31ec4cb5026d0dd04d465951b2383723676'
+            },
             body: JSON.stringify({ to, subject, html })
         });
         const data = await response.json().catch(() => ({}));
@@ -928,7 +940,10 @@ function displayResorts(resorts) {
             // Create or update the Supabase Auth user with the same password
             const authRes = await fetch('https://www.resortreviews.pro/api/create-resort-user', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Admin-Secret': '68ddf10795a718ae308a026fa9b8a31ec4cb5026d0dd04d465951b2383723676'
+                },
                 body: JSON.stringify({
                     email: request.contact_email,
                     password: tempPassword,
@@ -1033,9 +1048,18 @@ window.confirmResetVerification = function(resortId, resortName) {
                 .eq('id', resortId)
                 .single();
             
-            // Delete auth user if exists
+            // Delete auth user via server endpoint (anon key can't do admin operations)
             if (resort?.auth_user_id) {
-                await supabaseClient.auth.admin.deleteUser(resort.auth_user_id);
+                const delRes = await fetch('https://www.resortreviews.pro/api/delete-resort-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Secret': '68ddf10795a718ae308a026fa9b8a31ec4cb5026d0dd04d465951b2383723676'
+                    },
+                    body: JSON.stringify({ authUserId: resort.auth_user_id })
+                });
+                const delData = await delRes.json();
+                if (!delRes.ok) console.warn('Auth user deletion failed:', delData.error);
             }
             
             // Reset the resort to unverified state

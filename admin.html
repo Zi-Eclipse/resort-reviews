@@ -100,14 +100,14 @@
         .review-rating { background: var(--blue); color: white; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
         .review-date { color: var(--text-muted); font-size: 12px; }
         .review-text { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 8px 0; }
-        .review-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+        .review-actions { display: flex !important; gap: 8px !important; justify-content: flex-end !important; padding-top: 14px; border-top: 1px solid var(--border); }
 
         /* ── ACTION BUTTONS ── */
-        .action-btn { padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; font-family: inherit; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; border: 1px solid transparent; }
+        .action-btn { padding: 8px 16px !important; border-radius: 8px !important; cursor: pointer; font-size: 13px !important; font-weight: 500; font-family: inherit; transition: all 0.15s; display: inline-flex !important; align-items: center; gap: 5px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); width: auto !important; flex: none !important; }
         .action-btn.approve { background: var(--blue); color: white; border-color: var(--blue); }
         .action-btn.approve:hover { opacity: 0.9; }
         .action-btn.reject { background: transparent; color: #ef4444; border-color: #ef4444; }
-        .action-btn.reject:hover { background: #fef2f2; }
+        .action-btn.reject:hover { background: rgba(239,68,68,0.08); }
         .action-btn:not(.approve):not(.reject) { background: transparent; color: var(--text-muted); border-color: var(--border); }
         .action-btn:not(.approve):not(.reject):hover { border-color: var(--text-muted); color: var(--text); }
 
@@ -386,11 +386,8 @@
                     </div>
                     <p class="review-text">${escapeHtml(review.review_text)}</p>
                     ${review.photo_urls && review.photo_urls !== '[]' ? `
-                        <div style="margin:12px 0;">
-                            <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;"><i class="fas fa-image"></i> Photos:</p>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                ${(() => { try { const urls = Array.isArray(review.photo_urls) ? review.photo_urls : JSON.parse(review.photo_urls); return urls.map(url => `<div style="width:100px;height:100px;border-radius:8px;overflow:hidden;border:1px solid var(--border);cursor:pointer;" onclick="window.open('${url}','_blank')"><img src="${url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=padding:8px;font-size:11px;color:var(--text-muted)>No image</span>';"></div>`).join(''); } catch(e){ return ''; } })()}
-                            </div>
+                        <div style="margin:14px 0 6px; display:flex; gap:10px; flex-wrap:wrap;">
+                            ${(() => { try { const urls = Array.isArray(review.photo_urls) ? review.photo_urls : JSON.parse(review.photo_urls); return urls.map(url => `<div style="flex:1; min-width:200px; max-height:360px; border-radius:10px; overflow:hidden; border:1px solid var(--border); cursor:pointer; background:var(--bg-secondary);" onclick="window.open('${url}','_blank')"><img src="${url}" style="width:100%; height:auto; max-height:360px; object-fit:contain; display:block;" onerror="this.parentElement.innerHTML='<span style=padding:20px;display:block;text-align:center;font-size:12px;color:var(--text-muted)>Failed to load</span>';"></div>`).join(''); } catch(e){ return ''; } })()}
                         </div>
                     ` : ''}
                     <div class="review-actions">
