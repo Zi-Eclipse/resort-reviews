@@ -1895,16 +1895,20 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                     .single();
 
                 if (profile) {
-                    if (profile.cover_photo) {
-                        document.getElementById('profileCover').style.backgroundImage = `url('${profile.cover_photo}')`;
-                        document.getElementById('profileCover').style.backgroundSize = 'cover';
-                        document.getElementById('profileCover').style.backgroundPosition = 'center';
+                    const cover = document.getElementById('profileCover');
+                    const picture = document.getElementById('profilePicture');
+                    const initial = document.getElementById('profileInitial');
+
+                    if (profile.cover_photo && cover) {
+                        cover.style.backgroundImage = `url('${profile.cover_photo}')`;
+                        cover.style.backgroundSize = 'cover';
+                        cover.style.backgroundPosition = 'center';
                     }
-                    if (profile.profile_photo) {
-                        document.getElementById('profilePicture').style.backgroundImage = `url('${profile.profile_photo}')`;
-                        document.getElementById('profilePicture').style.backgroundSize = 'cover';
-                        document.getElementById('profilePicture').style.backgroundPosition = 'center';
-                        document.getElementById('profileInitial').style.display = 'none';
+                    if (profile.profile_photo && picture) {
+                        picture.style.backgroundImage = `url('${profile.profile_photo}')`;
+                        picture.style.backgroundSize = 'cover';
+                        picture.style.backgroundPosition = 'center';
+                        if (initial) initial.style.display = 'none';
                     }
                 }
             } catch (error) {
@@ -2122,10 +2126,6 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                 await loadDashboard();
                 await loadResortPhotos();
                 initTheme();
-
-                // Attach file input listeners after dashboard loads
-                document.getElementById('coverUpload').addEventListener('change', handleCoverUpload);
-                document.getElementById('profileUpload').addEventListener('change', handleProfileUpload);
 
             } catch (error) {
                 console.error('Error during initialization:', error);

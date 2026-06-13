@@ -124,6 +124,9 @@
         .btn-small:hover { border-color: var(--blue); color: var(--blue); }
         .btn-danger-small { color: #ef4444; border-color: #ef4444; }
         .btn-danger-small:hover { background: rgba(239,68,68,0.08); border-color: #ef4444; color: #ef4444; }
+        .btn-small[title] { position: relative; }
+        .btn-wipe { background: #8b5cf6; color: white; border-color: #8b5cf6; }
+        .btn-wipe:hover { opacity: 0.9; background: #8b5cf6; color: white; border-color: #8b5cf6; }
 
         /* ── MODAL ── */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
@@ -280,6 +283,30 @@
             <div class="confirm-actions">
                 <button class="action-btn" onclick="closeDeleteModal()">Cancel</button>
                 <button class="action-btn btn-delete" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="wipeConfirmModal" onclick="closeWipeModal()">
+    <div class="modal-content confirm-modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-broom" style="color: #8b5cf6;"></i> Wipe Profile Data</h3>
+            <i class="fas fa-times modal-close" onclick="closeWipeModal()"></i>
+        </div>
+        <div class="confirm-content">
+            <p id="wipeMessage" style="font-weight: 600; margin-bottom: 12px;"></p>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 8px;">This will permanently remove:</p>
+            <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.8; margin: 0 0 12px 20px;">
+                <li>Profile photo and cover photo</li>
+                <li>Resort info (address, phone, hours, website)</li>
+                <li>All official responses to reviews</li>
+                <li>All job listings</li>
+            </ul>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Staff reviews about this resort will <strong>not</strong> be deleted. Login credentials are not affected.</p>
+            <div class="confirm-actions">
+                <button class="action-btn" onclick="closeWipeModal()">Cancel</button>
+                <button class="action-btn btn-wipe" id="confirmWipeBtn"><i class="fas fa-broom"></i> Wipe Everything</button>
             </div>
         </div>
     </div>
@@ -445,13 +472,16 @@ function displayResorts(resorts) {
                 <td style="text-align: center;">${resort.job_count}</td>
                 <td style="text-align: center;">${resort.review_count}</td>
                 <td class="action-cell">
-                    <button class="btn-small btn-view" onclick="window.open('resort.html?id=${resort.id}', '_blank')">
+                    <button class="btn-small btn-view" title="View public resort page" onclick="window.open('resort.html?id=${resort.id}', '_blank')">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-small" style="background: #f59e0b; color: white;" onclick="confirmResetVerification(${resort.id}, '${resort.name}')">
+                    <button class="btn-small btn-wipe" title="Wipe all profile data, photos, responses and jobs" onclick="confirmWipeResort(${resort.id}, '${resort.name.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-broom"></i>
+                    </button>
+                    <button class="btn-small" style="background: #f59e0b; color: white;" title="Reset login credentials (keeps profile data)" onclick="confirmResetVerification(${resort.id}, '${resort.name.replace(/'/g, "\\'")}')">
                         <i class="fas fa-undo-alt"></i> Reset
                     </button>
-                    <button class="btn-small btn-danger-small" onclick="confirmDeleteResort(${resort.id}, '${resort.name}')">
+                    <button class="btn-small btn-danger-small" title="Permanently delete resort from database" onclick="confirmDeleteResort(${resort.id}, '${resort.name.replace(/'/g, "\\'")}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -554,6 +584,87 @@ function displayResorts(resorts) {
         }
     }
     
+    // ===========================================
+    // WIPE RESORT PROFILE DATA
+    // ===========================================
+    window.confirmWipeResort = function(resortId, resortName) {
+        document.getElementById('wipeMessage').textContent = 'Wipe all profile data for ' + resortName + '?';
+        document.getElementById('confirmWipeBtn').onclick = function() { executeWipe(resortId, resortName); };
+        document.getElementById('wipeConfirmModal').classList.add('active');
+    };
+
+    window.closeWipeModal = function() {
+        document.getElementById('wipeConfirmModal').classList.remove('active');
+    };
+
+    async function executeWipe(resortId, resortName) {
+        try {
+            closeWipeModal();
+
+            // 1. Clear profile data in resorts table
+            const { error: resortError } = await supabaseClient
+                .from('resorts')
+                .update({
+                    profile_photo: null,
+                    cover_photo: null,
+                    address: null,
+                    phone: null,
+                    hours: null,
+                    website: null,
+                    google_rating: null,
+                    star_rating: null
+                })
+                .eq('id', resortId);
+
+            if (resortError) console.warn('Error wiping resorts:', resortError);
+
+            // 2. Clear profile data in resort_profiles (matched by name)
+            const { data: profileMatch } = await supabaseClient
+                .from('resort_profiles')
+                .select('id')
+                .eq('name', resortName)
+                .maybeSingle();
+
+            if (profileMatch) {
+                await supabaseClient
+                    .from('resort_profiles')
+                    .update({
+                        profile_photo: null,
+                        cover_photo: null,
+                        address: null,
+                        phone: null,
+                        hours: null,
+                        website: null,
+                        google_rating: null,
+                        star_rating: null
+                    })
+                    .eq('id', profileMatch.id);
+            }
+
+            // 3. Delete all official responses by this resort
+            const { error: commentError } = await supabaseClient
+                .from('resort_comments')
+                .delete()
+                .eq('resort_id', resortId);
+
+            if (commentError) console.warn('Error deleting comments:', commentError);
+
+            // 4. Delete all job listings by this resort
+            const { error: jobError } = await supabaseClient
+                .from('resort_jobs')
+                .delete()
+                .eq('resort_id', resortId);
+
+            if (jobError) console.warn('Error deleting jobs:', jobError);
+
+            alert('✅ Profile data wiped for ' + resortName + '.\n\nPhotos, info, responses, and jobs have been removed. Login credentials are unchanged.');
+            await loadAllResorts();
+
+        } catch (error) {
+            alert('Error wiping data: ' + error.message);
+        }
+    }
+
     // ===========================================
     // DELETE RESORT
     // ===========================================
