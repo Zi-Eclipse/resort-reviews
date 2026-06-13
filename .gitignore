@@ -2,6 +2,13 @@
 .env
 .env.local
 .env.production
+*.env
+
+# Sensitive documentation
+brief.txt
+history.txt
+how_to_create_a_new_resort.txt
+how_to_reset_a_resort.txt
 
 # Dependencies
 node_modules/
