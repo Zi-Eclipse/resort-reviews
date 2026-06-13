@@ -1413,6 +1413,10 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
     background: #f3f4f6 !important;
     color: #111827 !important;
 }
+.password-wrapper { position: relative; }
+.password-wrapper input { padding-right: 44px; }
+.toggle-password-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; font-size: 14px; }
+.toggle-password-btn:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -1718,17 +1722,32 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                 <div class="settings-section">
                     <div class="form-group">
                         <label>Current Password</label>
-                        <input type="password" id="currentPassword" class="form-input">
+                        <div class="password-wrapper">
+                            <input type="password" id="currentPassword" class="form-input">
+                            <button type="button" class="toggle-password-btn" onclick="togglePassField('currentPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>New Password</label>
-                        <input type="password" id="newPassword" class="form-input">
+                        <div class="password-wrapper">
+                            <input type="password" id="newPassword" class="form-input">
+                            <button type="button" class="toggle-password-btn" onclick="togglePassField('newPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>Confirm New Password</label>
-                        <input type="password" id="confirmPassword" class="form-input">
+                        <div class="password-wrapper">
+                            <input type="password" id="confirmPassword" class="form-input">
+                            <button type="button" class="toggle-password-btn" onclick="togglePassField('confirmPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <button class="post-btn" onclick="updatePassword()" style="width: 100%;">
@@ -3139,9 +3158,16 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
             }
 
             try {
+                // Get the logged-in user's email from the auth session
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user?.email) {
+                    alert('Could not verify your session. Please log out and log back in.');
+                    return;
+                }
+
                 // Verify current password by attempting a sign-in
                 const { error: signInError } = await supabaseClient.auth.signInWithPassword({
-                    email: currentResort?.email || currentResort?.login_email,
+                    email: user.email,
                     password: current
                 });
 
@@ -3177,6 +3203,18 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                 if (toggle) toggle.checked = true;
             }
         }
+
+        window.togglePassField = function(fieldId, btn) {
+            const input = document.getElementById(fieldId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        };
 
         window.toggleDarkMode = function () {
             const toggle = document.getElementById('darkModeToggle');
