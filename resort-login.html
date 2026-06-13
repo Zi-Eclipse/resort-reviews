@@ -734,30 +734,74 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             alert('Please enter your email');
             return;
         }
-        
+
         const { data: resort } = await supabaseClient
             .from('resorts')
             .select('id, name')
             .eq('login_email', email)
             .maybeSingle();
-        
+
         if (!resort) {
             alert('No account found with this email');
             return;
         }
-        
-        // Generate reset token
-        const token = Math.random().toString(36).slice(-32);
-        const expires = new Date();
-        expires.setHours(expires.getHours() + 24);
-        
-        // In production, you'd have a password_resets table
-        // For now, we'll just show the link
-        const resetLink = `https://resort-reviews.vercel.app/reset-password.html?token=${token}`;
-        console.log(`Reset link: ${resetLink}`);
-        
-        alert(`Demo: Reset link sent to ${email}\n\nCheck console for the link.`);
-        closeForgotPassword();
+
+        try {
+            // Generate a new temporary password
+            const tempPassword = Array.from(crypto.getRandomValues(new Uint8Array(12)))
+                .map(b => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[b % 62])
+                .join('');
+
+            // Update the auth user's password via server endpoint
+            const authRes = await fetch('https://www.resortreviews.pro/api/create-resort-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Reset-Password': 'true' },
+                body: JSON.stringify({
+                    email: email,
+                    password: tempPassword,
+                    resortName: resort.name
+                })
+            });
+
+            if (!authRes.ok) {
+                const errData = await authRes.json().catch(() => ({}));
+                throw new Error(errData.error || 'Failed to reset password');
+            }
+
+            // Send the new password via email
+            const emailRes = await fetch('https://www.resortreviews.pro/api/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Reset-Password': 'true' },
+                body: JSON.stringify({
+                    to: email,
+                    subject: 'ResortReviews - Password Reset',
+                    html: `
+                        <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+                            <h2 style="color: #111827;">Password Reset</h2>
+                            <p>Hi <strong>${resort.name}</strong>,</p>
+                            <p>Your password has been reset. Here are your new login credentials:</p>
+                            <div style="background: #f7f6f3; border-radius: 8px; padding: 16px; margin: 20px 0;">
+                                <p style="margin: 0;"><strong>Email:</strong> ${email}</p>
+                                <p style="margin: 8px 0 0;"><strong>New Password:</strong> ${tempPassword}</p>
+                            </div>
+                            <p>Please log in and change your password in Settings.</p>
+                            <p style="color: #6b7280; font-size: 13px;">— ResortReviews</p>
+                        </div>
+                    `
+                })
+            });
+
+            if (!emailRes.ok) {
+                alert('Password was reset but email failed to send.\n\nNew password: ' + tempPassword + '\n\nPlease save this now.');
+            } else {
+                alert('✅ New password sent to ' + email + '.\nCheck your inbox.');
+            }
+
+            closeForgotPassword();
+
+        } catch (error) {
+            alert('Error resetting password: ' + error.message);
+        }
     }
 // ===========================================
 // TOGGLE PASSWORD VISIBILITY

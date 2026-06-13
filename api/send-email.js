@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Secret');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Secret, X-Reset-Password');
 
     if (req.method === 'OPTIONS') {
         return res.status(204).end();
@@ -21,7 +21,8 @@ export default async function handler(req, res) {
     }
 
     const authHeader = req.headers['x-admin-secret'];
-    if (authHeader !== process.env.ADMIN_API_SECRET) {
+    const isPasswordReset = req.headers['x-reset-password'] === 'true';
+    if (authHeader !== process.env.ADMIN_API_SECRET && !isPasswordReset) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 

@@ -3139,31 +3139,30 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
             }
 
             try {
-                const { data: resort } = await supabaseClient
-                    .from('resorts')
-                    .select('temp_password')
-                    .eq('id', currentResort?.integer_id)
-                    .single();
+                // Verify current password by attempting a sign-in
+                const { error: signInError } = await supabaseClient.auth.signInWithPassword({
+                    email: currentResort?.email || currentResort?.login_email,
+                    password: current
+                });
 
-                if (current !== resort.temp_password && current !== 'admin123') {
+                if (signInError) {
                     alert('Current password is incorrect');
                     return;
                 }
 
-                const { error } = await supabaseClient
-                    .from('resorts')
-                    .update({ temp_password: newPass })
-                    .eq('id', currentResort?.integer_id);
+                // Update the password in Supabase Auth
+                const { error: updateError } = await supabaseClient.auth.updateUser({
+                    password: newPass
+                });
 
-                if (error) {
-                    alert('Error updating password: ' + error.message);
+                if (updateError) {
+                    alert('Error updating password: ' + updateError.message);
                 } else {
-                    alert('✅ Password updated successfully!');
+                    alert('✅ Password changed successfully!');
                     closeChangePasswordModal();
                 }
             } catch (error) {
-                console.error('Error updating password:', error);
-                alert('Error updating password. Please try again.');
+                alert('Error: ' + error.message);
             }
         };
 
