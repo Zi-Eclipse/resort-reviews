@@ -796,23 +796,32 @@
         let resort = null;
         let resortId = urlParams.get('id');
 
-        const { data: profileData } = await supabaseClient
-            .from('resort_profiles')
+        // Always load base data from resorts table (integer ID from URL)
+        const { data: resortData } = await supabaseClient
+            .from('resorts')
             .select('*')
             .eq('id', resortId)
-            .maybeSingle();
+            .single();
 
-        if (profileData) {
-            resort = profileData;
-        } else {
-            const { data: resortData } = await supabaseClient
-                .from('resorts')
-                .select('*')
-                .eq('id', resortId)
-                .single();
+        if (resortData) {
+            resort = resortData;
 
-            if (resortData) {
-                resort = resortData;
+            // If this resort has an auth user, overlay with resort_profiles data
+            if (resortData.auth_user_id) {
+                const { data: profileData } = await supabaseClient
+                    .from('resort_profiles')
+                    .select('*')
+                    .eq('id', resortData.auth_user_id)
+                    .maybeSingle();
+
+                if (profileData) {
+                    // Overlay: profile data wins for any non-null field
+                    for (const key of Object.keys(profileData)) {
+                        if (profileData[key] !== null && profileData[key] !== undefined) {
+                            resort[key] = profileData[key];
+                        }
+                    }
+                }
             }
         }
 

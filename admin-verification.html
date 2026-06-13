@@ -299,7 +299,6 @@
             <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 8px;">This will permanently remove:</p>
             <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.8; margin: 0 0 12px 20px;">
                 <li>Profile photo and cover photo</li>
-                <li>Resort info (address, phone, hours, website)</li>
                 <li>All official responses to reviews</li>
                 <li>All job listings</li>
             </ul>
@@ -606,13 +605,7 @@ function displayResorts(resorts) {
                 .from('resorts')
                 .update({
                     profile_photo: null,
-                    cover_photo: null,
-                    address: null,
-                    phone: null,
-                    hours: null,
-                    website: null,
-                    google_rating: null,
-                    star_rating: null
+                    cover_photo: null
                 })
                 .eq('id', resortId);
 
@@ -630,13 +623,7 @@ function displayResorts(resorts) {
                     .from('resort_profiles')
                     .update({
                         profile_photo: null,
-                        cover_photo: null,
-                        address: null,
-                        phone: null,
-                        hours: null,
-                        website: null,
-                        google_rating: null,
-                        star_rating: null
+                        cover_photo: null
                     })
                     .eq('id', profileMatch.id);
             }
