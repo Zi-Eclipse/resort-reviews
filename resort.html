@@ -641,6 +641,19 @@
             font-size: 14px;
         }
 
+        .info-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .info-stats-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+        }
+
         /* ── RESPONSIVE ── */
         @media (max-width: 700px) {
             .overview-grid { grid-template-columns: 1fr; }
@@ -996,7 +1009,7 @@
                 };
 
                 const html = `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="info-stats-grid">
                         <div style="background: var(--white); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
                             <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--text-dark);">
                                 <i class="fas fa-map-marker-alt" style="color: var(--primary); margin-right: 8px;"></i> Location & Contact
