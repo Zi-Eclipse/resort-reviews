@@ -314,18 +314,31 @@
 
         .review-item {
             background: var(--card-bg) !important;
-            border: 1px solid var(--border) !important;
+            border: 0.5px solid var(--border) !important;
             border-radius: 12px !important;
-            padding: 18px !important;
+            padding: 0 !important;
             margin: 0 0 14px 0 !important;
             box-shadow: none !important;
+            overflow: hidden;
+        }
+
+        .review-item-header {
+            padding: 12px 14px 6px;
+        }
+
+        .review-item-text {
+            padding: 0 14px 4px;
+        }
+
+        .review-item-footer {
+            padding: 0;
         }
 
         .review-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            align-items: center;
+            margin-bottom: 0;
         }
 
         .review-header h3 { font-size: 15px; font-weight: 600; }
@@ -353,35 +366,36 @@
 
         .review-text {
             font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.65;
-            margin-bottom: 12px;
+            color: var(--text);
+            line-height: 1.5;
+            margin-bottom: 0;
         }
 
         .review-date {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            margin-top: 10px;
+            margin-top: 1px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            line-height: 1;
         }
 
         /* Action buttons */
         .review-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            padding-top: 12px;
+            gap: 0;
+            margin: 0;
+            padding: 0;
             border-top: 1px solid var(--border);
         }
 
         .action-btn {
             flex: 1;
-            padding: 7px 12px;
+            padding: 10px 12px;
             background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            border: none;
+            border-radius: 0;
             cursor: pointer;
             font-size: 13px;
             color: var(--text-muted);
@@ -389,14 +403,20 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: all 0.15s;
+            transition: background 0.15s, color 0.15s;
             font-family: inherit;
+            outline: none;
+            margin-bottom: 0;
         }
 
         .action-btn:hover {
-            border-color: var(--blue);
-            color: var(--blue);
-            background: var(--blue-light);
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        .action-btn:focus {
+            outline: none;
+            box-shadow: none;
         }
 
         /* Photos */
@@ -413,6 +433,9 @@
             overflow: hidden;
             cursor: pointer;
             border: 1px solid var(--border);
+            border-radius: 0 !important;
+            border-left: none !important;
+            border-right: none !important;
         }
 
         .photo-thumbnail img {
@@ -423,6 +446,7 @@
             object-position: center;
             display: block;
             background: var(--bg-secondary);
+            border-radius: 0 !important;
         }
 
         .photo-thumbnail:only-child img {
@@ -668,100 +692,172 @@
 
         .comment-modal {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 8px;
             width: 90%;
-            max-width: 900px;
-            max-height: 90vh;
+            max-width: 1000px;
+            height: 85vh;
+            max-height: 700px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        /* LEFT: photo viewer (Instagram-style) */
+        .modal-photo-side {
+            flex: 1;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            min-width: 0;
+            position: relative;
+        }
+
+        .modal-photo-side img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .modal-photo-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.85);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            z-index: 2;
+            transition: background 0.15s;
+        }
+
+        .modal-photo-nav:hover { background: rgba(255,255,255,1); }
+        .modal-photo-nav.prev { left: 12px; }
+        .modal-photo-nav.next { right: 12px; }
+
+        .modal-photo-counter {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 2;
+        }
+
+        /* RIGHT: info + comments column */
+        .modal-info-side {
+            width: 360px;
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
         }
 
-        .comment-modal-header {
+        .modal-info-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            justify-content: space-between;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            gap: 10px;
         }
 
-        .comment-modal-header h3 { font-size: 18px; color: var(--text); display: flex; align-items: center; gap: 8px; }
-
-        .comment-modal-close { font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 4px 8px; border-radius: 6px; }
-        .comment-modal-close:hover { background: var(--bg-secondary); }
-
-        .comment-modal-content {
+        .modal-info-resort {
             display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
             flex: 1;
-            overflow-y: auto;
-            min-height: 500px;
-            max-height: 70vh;
         }
 
-        .modal-post {
-            flex: 1;
-            padding: 20px;
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-            background: var(--bg-secondary);
-        }
-
-        .modal-post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-
-        .modal-post-rating {
-            background: var(--blue);
-            color: white;
-            padding: 5px 14px;
-            border-radius: 99px;
+        .modal-info-resort-name {
             font-size: 15px;
             font-weight: 600;
-        }
-
-        .modal-post-date { color: var(--text-muted); font-size: 13px; }
-        .modal-post-text { font-size: 16px; line-height: 1.6; color: var(--text); margin-bottom: 16px; }
-
-        .modal-post-photos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .modal-post-photo {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border-radius: 10px;
+            color: var(--text);
+            text-decoration: none;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-info-resort-name:hover { color: var(--blue); }
+
+        .modal-info-rating {
+            background: var(--blue);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .modal-info-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
             cursor: pointer;
-            border: 1px solid var(--border);
+            padding: 4px 8px;
+            border-radius: 6px;
+            flex-shrink: 0;
         }
 
-        .modal-post-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-info-close:hover { background: var(--bg-secondary); color: var(--text); }
 
-        .modal-comments {
+        .modal-info-body {
             flex: 1;
-            padding: 20px;
             overflow-y: auto;
-            background: var(--card-bg);
-            display: flex;
-            flex-direction: column;
+            padding: 16px;
         }
 
-        .comments-list { flex: 1; overflow-y: auto; }
+        .modal-review-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text);
+            margin-bottom: 6px;
+            word-wrap: break-word;
+        }
+
+        .modal-review-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .modal-comments-divider {
+            border-top: 1px solid var(--border);
+            margin: 0 -16px 14px;
+        }
 
         .modal-comment-item {
             display: flex;
             gap: 10px;
-            margin-bottom: 16px;
-            padding: 12px;
-            border-radius: 10px;
-            background: var(--bg-secondary);
+            margin-bottom: 14px;
         }
 
         .modal-comment-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: var(--blue);
             color: white;
@@ -772,12 +868,31 @@
             flex-shrink: 0;
         }
 
-        .modal-comment-content { flex: 1; }
-        .modal-comment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; flex-wrap: wrap; }
+        .modal-comment-content { flex: 1; min-width: 0; }
+        .modal-comment-header { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 3px; }
         .modal-comment-author { font-weight: 600; font-size: 13px; color: var(--text); }
-        .modal-comment-text { font-size: 14px; color: var(--text); line-height: 1.5; }
-        .comment-date-small { color: var(--text-muted); font-size: 11px; margin-left: auto; }
-        .no-comments-modal { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+        .modal-comment-text { font-size: 13px; color: var(--text); line-height: 1.4; word-wrap: break-word; }
+        .comment-date-small { color: var(--text-muted); font-size: 11px; }
+        .no-comments-modal { text-align: center; padding: 30px 0; color: var(--text-muted); font-size: 13px; font-style: italic; }
+
+        /* Mobile: stack vertical */
+        @media (max-width: 768px) {
+            .comment-modal {
+                width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+                flex-direction: column;
+            }
+            .modal-photo-side { flex: none; height: 50vh; }
+            .modal-info-side {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--border);
+                flex: 1;
+                min-height: 0;
+            }
+        }
 
         /* ── RIGHT SIDEBAR ── */
         .right-sidebar {
@@ -1099,13 +1214,7 @@
 
 <!-- Comment Modal -->
 <div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal()">
-    <div class="comment-modal" onclick="event.stopPropagation()">
-        <div class="comment-modal-header">
-            <h3><i class="far fa-comments"></i> Comments</h3>
-            <i class="fas fa-times comment-modal-close" onclick="closeCommentModal()"></i>
-        </div>
-        <div class="comment-modal-content" id="commentModalContent"></div>
-    </div>
+    <div class="comment-modal" id="commentModalContent" onclick="event.stopPropagation()"></div>
 </div>
 
 <!-- Settings Modal -->
@@ -1467,7 +1576,38 @@ async function loadReviews() {
                 if (commentCount > 2) commentsHtml += `<div class="view-all-comments" onclick="openCommentModal(${review.id})">View all ${commentCount} comments</div>`;
                 commentsHtml += '</div>';
             }
-            html += `<div class="review-item"><div class="review-header"><h3><a href="resort.html?id=${review.resort_id}" class="resort-link">${resortName}</a></h3><div style="display:flex;align-items:center;gap:8px;"><span class="review-rating">${review.rating}/10</span><div class="post-menu-container"><button class="post-menu-btn" onclick="togglePostMenu(${review.id})"><i class="fas fa-ellipsis-h"></i></button><div class="post-menu-dropdown" id="post-menu-${review.id}"><div class="post-menu-item" onclick="reportReview(${review.id})"><i class="fas fa-flag"></i> Report post</div></div></div></div></div><p class="review-text">${escapeHtml(review.review_text)}</p>${photosHtml}<div class="review-actions"><button class="action-btn" onclick="openCommentModal(${review.id})"><i class="far fa-comment"></i> Comment (${commentCount})</button><button class="action-btn" onclick="shareReview(${review.id})"><i class="far fa-share-square"></i> Share</button></div>${commentsHtml}<div class="review-date"><i class="far fa-calendar"></i> ${date}</div></div>`;
+            html += `
+                <div class="review-item">
+                    <div class="review-item-header">
+                        <div class="review-header">
+                            <div>
+                                <h3><a href="resort.html?id=${review.resort_id}" class="resort-link">${escapeHtml(resortName)}</a></h3>
+                                <span class="review-date" style="margin-top:3px;"><i class="far fa-calendar"></i> ${date}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span class="review-rating">${review.rating}/10</span>
+                                <div class="post-menu-container">
+                                    <button class="post-menu-btn" onclick="togglePostMenu(${review.id})"><i class="fas fa-ellipsis-h"></i></button>
+                                    <div class="post-menu-dropdown" id="post-menu-${review.id}">
+                                        <div class="post-menu-item" onclick="reportReview(${review.id})"><i class="fas fa-flag"></i> Report post</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-item-text">
+                        <p class="review-text" style="margin-bottom:0;">${escapeHtml(review.review_text)}</p>
+                    </div>
+                    ${photosHtml ? `<div class="photo-grid">${photosHtml}</div>` : ''}
+                    <div class="review-item-footer">
+                        <div class="review-actions">
+                            <button class="action-btn" onclick="openCommentModal(${review.id})"><i class="far fa-comment"></i> Comment (${commentCount})</button>
+                            <button class="action-btn" onclick="shareReview(${review.id})"><i class="far fa-share-square"></i> Share</button>
+                        </div>
+                        ${commentsHtml}
+                    </div>
+                </div>
+            `;
         }
         reviewsFeed.innerHTML = html;
     } catch (error) {
@@ -1601,30 +1741,100 @@ window.closeJobDetailModal = function() {
 };
 
 window.openCommentModal = async function(reviewId) {
-    const { data: review } = await supabaseClient.from('reviews').select('*').eq('id', reviewId).single();
-    const { data: comments } = await supabaseClient.from('resort_comments').select('*').eq('review_id', reviewId).order('created_at', { ascending: false });
+    const { data: review } = await supabaseClient
+        .from('reviews')
+        .select('*, resorts(id, name)')
+        .eq('id', reviewId)
+        .single();
+    const { data: comments } = await supabaseClient
+        .from('resort_comments')
+        .select('*')
+        .eq('review_id', reviewId)
+        .order('created_at', { ascending: false });
+
+    const resortName = review.resorts?.name || 'Resort';
+    const resortId = review.resort_id;
     const date = new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    let photosHtml = '';
+
+    // Parse photos
+    let photoUrls = [];
     if (review.photo_urls && review.photo_urls !== '[]') {
         try {
-            const photoUrls = JSON.parse(review.photo_urls);
-            if (photoUrls.length > 0) {
-                photosHtml = '<div class="modal-post-photos">';
-                photoUrls.forEach(url => { photosHtml += `<div class="modal-post-photo" onclick="window.open('${url}')"><img src="${url}" loading="lazy"></div>`; });
-                photosHtml += '</div>';
-            }
+            const parsed = JSON.parse(review.photo_urls);
+            if (Array.isArray(parsed)) photoUrls = parsed;
         } catch (e) {}
     }
+
+    // Build photo side (only if there are photos)
+    let photoSideHtml = '';
+    if (photoUrls.length > 0) {
+        const counter = photoUrls.length > 1
+            ? `<div class="modal-photo-counter"><span id="modalPhotoIdx">1</span>/${photoUrls.length}</div>`
+            : '';
+        const navButtons = photoUrls.length > 1
+            ? `<button class="modal-photo-nav prev" onclick="modalPhotoNav(-1)"><i class="fas fa-chevron-left"></i></button>
+               <button class="modal-photo-nav next" onclick="modalPhotoNav(1)"><i class="fas fa-chevron-right"></i></button>`
+            : '';
+        photoSideHtml = `<div class="modal-photo-side">
+            ${counter}
+            <img id="modalPhotoImg" src="${photoUrls[0]}">
+            ${navButtons}
+        </div>`;
+        window._modalPhotos = photoUrls;
+        window._modalPhotoIdx = 0;
+    } else {
+        window._modalPhotos = null;
+    }
+
+    // Build comments
     let commentsHtml = '';
     if (comments && comments.length > 0) {
         comments.forEach(comment => {
-            const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            commentsHtml += `<div class="modal-comment-item"><div class="modal-comment-avatar">${comment.is_official ? '🏨' : '👤'}</div><div class="modal-comment-content"><div class="modal-comment-header"><span class="modal-comment-author">${comment.is_official ? 'Official Response' : 'Guest'}</span>${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}<span class="comment-date-small">${commentDate}</span></div><p class="modal-comment-text">${escapeHtml(comment.comment_text)}</p></div></div>`;
+            const cd = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            commentsHtml += `<div class="modal-comment-item">
+                <div class="modal-comment-avatar">${comment.is_official ? '🏨' : '👤'}</div>
+                <div class="modal-comment-content">
+                    <div class="modal-comment-header">
+                        <span class="modal-comment-author">${comment.is_official ? 'Official Response' : 'Guest'}</span>
+                        ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                        <span class="comment-date-small">${cd}</span>
+                    </div>
+                    <p class="modal-comment-text">${escapeHtml(comment.comment_text)}</p>
+                </div>
+            </div>`;
         });
-    } else { commentsHtml = '<div class="no-comments-modal">No comments yet.</div>'; }
-    document.getElementById('commentModalContent').innerHTML = `<div class="modal-post"><div class="modal-post-header"><span class="modal-post-rating">${review.rating}/10</span><span class="modal-post-date">${date}</span></div><p class="modal-post-text">${escapeHtml(review.review_text)}</p>${photosHtml}</div><div class="modal-comments"><div class="comments-list">${commentsHtml}</div></div>`;
+    } else {
+        commentsHtml = '<div class="no-comments-modal">No comments yet.</div>';
+    }
+
+    const infoSideHtml = `<div class="modal-info-side">
+        <div class="modal-info-header">
+            <div class="modal-info-resort">
+                <a href="resort.html?id=${resortId}" class="modal-info-resort-name">${escapeHtml(resortName)}</a>
+                <span class="modal-info-rating">${review.rating}/10</span>
+            </div>
+            <button class="modal-info-close" onclick="closeCommentModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-info-body">
+            <p class="modal-review-text">${escapeHtml(review.review_text)}</p>
+            <div class="modal-review-date"><i class="far fa-calendar"></i> ${date}</div>
+            <div class="modal-comments-divider"></div>
+            ${commentsHtml}
+        </div>
+    </div>`;
+
+    document.getElementById('commentModalContent').innerHTML = photoSideHtml + infoSideHtml;
     document.getElementById('commentModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+};
+
+window.modalPhotoNav = function(delta) {
+    if (!window._modalPhotos) return;
+    const total = window._modalPhotos.length;
+    window._modalPhotoIdx = (window._modalPhotoIdx + delta + total) % total;
+    document.getElementById('modalPhotoImg').src = window._modalPhotos[window._modalPhotoIdx];
+    const idxEl = document.getElementById('modalPhotoIdx');
+    if (idxEl) idxEl.textContent = window._modalPhotoIdx + 1;
 };
 
 window.closeCommentModal = function() { document.getElementById('commentModal').classList.remove('active'); document.body.style.overflow = ''; };

@@ -21,6 +21,11 @@
             --bg: #f7f6f3;
             --bg-secondary: #f0efe9;
             --card-bg: #ffffff;
+            --accent-dark: #1a1a1a;
+            --lavender: #e8def8;
+            --lavender-text: #5b3e8a;
+            --teal: #14b8a6;
+            --pink: #ec4899;
         }
 
         [data-theme="dark"] {
@@ -103,8 +108,8 @@
             height: 40px;
             border-radius: 50%;
             border: none;
-            background: var(--bg-secondary);
-            color: var(--text-muted);
+            background: var(--lavender);
+            color: var(--lavender-text);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -113,13 +118,13 @@
             transition: background 0.2s;
         }
 
-        .theme-btn:hover { background: var(--border); }
+        .theme-btn:hover { background: #d9c5f0; }
 
         .btn-resort-login {
             padding: 8px 16px;
-            background: var(--bg-secondary);
-            color: var(--text) !important;
-            border: 1px solid var(--border);
+            background: var(--lavender);
+            color: var(--lavender-text) !important;
+            border: 1px solid var(--lavender);
             border-radius: 8px;
             font-size: 13px;
             font-weight: 500;
@@ -128,7 +133,7 @@
             transition: background 0.2s;
         }
 
-        .btn-resort-login:hover { background: var(--border); }
+        .btn-resort-login:hover { background: #d9c5f0; }
 
         /* HERO */
         .hero {
@@ -142,8 +147,8 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--blue-light);
-            color: var(--blue);
+            background: var(--lavender);
+            color: var(--lavender-text);
             font-size: 12px;
             font-weight: 500;
             padding: 5px 14px;
@@ -182,7 +187,7 @@
             align-items: center;
             gap: 8px;
             padding: 12px 24px;
-            background: var(--blue);
+            background: var(--accent-dark);
             color: white;
             border: none;
             border-radius: 10px;
@@ -217,8 +222,8 @@
         .stats {
             display: flex;
             justify-content: center;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+            border-top: 1px solid var(--teal);
+            border-bottom: 1px solid var(--teal);
             margin: 60px 0 0;
         }
 
@@ -227,7 +232,7 @@
             max-width: 200px;
             text-align: center;
             padding: 28px 20px;
-            border-right: 1px solid var(--border);
+            border-right: 1px solid var(--teal);
         }
 
         .stat:last-child { border-right: none; }
@@ -236,13 +241,13 @@
             display: block;
             font-size: 28px;
             font-weight: 600;
-            color: var(--blue);
+            color: var(--text);
             margin-bottom: 4px;
         }
 
         .stat-label {
             font-size: 13px;
-            color: var(--text-muted);
+            color: var(--teal);
         }
 
         /* CARDS */
@@ -271,17 +276,18 @@
         }
 
         .card-featured:hover {
-            box-shadow: 0 16px 40px rgba(24, 119, 242, 0.2);
+            box-shadow: 0 16px 40px rgba(236, 72, 153, 0.2);
+            border-color: var(--pink);
         }
 
         .card-featured {
-            border: 1.5px solid var(--blue);
+            border: 1.5px solid var(--pink);
         }
 
         .most-popular {
             display: inline-block;
-            background: var(--blue-light);
-            color: var(--blue);
+            background: var(--lavender);
+            color: var(--lavender-text);
             font-size: 11px;
             font-weight: 500;
             padding: 4px 12px;
@@ -398,7 +404,7 @@
 <nav>
     <a href="index.html" class="nav-logo">
         <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
-          <rect width="32" height="32" rx="8" fill="#1877f2"/>
+          <rect width="32" height="32" rx="8" fill="#1a1a1a"/>
           <circle cx="16" cy="11" r="4" fill="white"/>
           <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
           <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
@@ -482,7 +488,7 @@
     <div class="footer-right">
         <a href="about.html">About</a>
         <a href="about.html#verification">Verification</a>
-        <span><i class="fas fa-heart" style="color:#ef4444;"></i> Built for resort staff</span>
+        <span><i class="fas fa-heart" style="color:#ec4899;"></i> Built for resort staff</span>
     </div>
 </footer>
 
