@@ -109,7 +109,7 @@
             border-radius: 50%;
             border: none;
             background: var(--lavender);
-            color: var(--lavender-text);
+            color: var(--accent-dark);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -123,7 +123,7 @@
         .btn-resort-login {
             padding: 8px 16px;
             background: var(--lavender);
-            color: var(--lavender-text) !important;
+            color: var(--accent-dark) !important;
             border: 1px solid var(--lavender);
             border-radius: 8px;
             font-size: 13px;
@@ -147,8 +147,8 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--lavender);
-            color: var(--lavender-text);
+            background: linear-gradient(100deg, #5b21b6 0%, #1e3a8a 30%, #0f766e 60%, #9d174d 100%);
+            color: #fff;
             font-size: 12px;
             font-weight: 500;
             padding: 5px 14px;
@@ -185,38 +185,69 @@
         .btn-primary {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             padding: 12px 24px;
-            background: var(--accent-dark);
-            color: white;
-            border: none;
-            border-radius: 10px;
+            min-height: 44px;
+            box-sizing: border-box;
+            background: #2E1745;
+            color: #fff;
+            border: 1px solid #2E1745;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             text-decoration: none;
+            white-space: nowrap;
             transition: opacity 0.2s;
         }
 
         .btn-primary:hover { opacity: 0.9; }
 
+        [data-theme="dark"] .btn-primary {
+            background: var(--lavender);
+            border-color: var(--lavender);
+            color: #2E1745;
+        }
+
+        @keyframes rrRainbowShift {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
         .btn-outline {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             padding: 12px 24px;
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 10px;
+            min-height: 44px;
+            box-sizing: border-box;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            background: linear-gradient(var(--bg), var(--bg)) padding-box,
+                        linear-gradient(100deg, #4a3410 0%, #9a7415 25%, #c9971f 45%, #b8860b 60%, #8a6d1a 80%, #4a3410 100%) border-box;
+            background-size: auto, 200% 100%;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             text-decoration: none;
-            transition: background 0.2s;
+            white-space: nowrap;
         }
 
-        .btn-outline:hover { background: var(--bg-secondary); }
+        .btn-outline:hover { animation: rrRainbowShift 2s linear infinite; }
+
+        .btn-outline span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(100deg, #4a3410 0%, #9a7415 25%, #c9971f 45%, #b8860b 60%, #8a6d1a 80%, #4a3410 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-outline:hover span { animation: rrRainbowShift 2s linear infinite; }
 
         /* STATS */
         .stats {
@@ -287,7 +318,7 @@
         .most-popular {
             display: inline-block;
             background: var(--lavender);
-            color: var(--lavender-text);
+            color: var(--accent-dark);
             font-size: 11px;
             font-weight: 500;
             padding: 4px 12px;
@@ -298,7 +329,7 @@
         .card-icon {
             width: 46px;
             height: 46px;
-            background: var(--blue-light);
+            background: #2E1745;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -307,8 +338,20 @@
         }
 
         .card-icon i {
-            color: var(--blue);
+            color: #fff;
             font-size: 20px;
+        }
+
+        [data-theme="dark"] .card-icon {
+            background: var(--lavender);
+        }
+
+        [data-theme="dark"] .card-icon i {
+            color: #2E1745;
+        }
+
+        [data-theme="dark"] .nav-logo svg rect {
+            stroke: var(--lavender);
         }
 
         .card h2 {
@@ -404,7 +447,7 @@
 <nav>
     <a href="index.html" class="nav-logo">
         <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
-          <rect width="32" height="32" rx="8" fill="#1a1a1a"/>
+          <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.5" fill="#2E1745" stroke="transparent" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
           <circle cx="16" cy="11" r="4" fill="white"/>
           <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
           <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
@@ -431,7 +474,7 @@
             <i class="fas fa-eye"></i> Browse reviews
         </a>
         <a href="guest-feed.html" class="btn-outline">
-            <i class="fas fa-pencil-alt"></i> Share your experience
+            <span><i class="fas fa-pencil-alt" aria-hidden="true"></i> Share your experience</span>
         </a>
     </div>
 

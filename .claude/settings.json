@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git checkout *)",
+      "Bash(node -e \"const crypto = require\\('crypto'\\); console.log\\(crypto.randomBytes\\(32\\).toString\\('hex'\\)\\);\")",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" status)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" diff --stat)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add guest-feed.html index.html)",
+      "Bash(git -C c:/Users/ziyer/OneDrive/Desktop/resort-reviews commit -m ' *)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" push)"
     ]
   }
 }
