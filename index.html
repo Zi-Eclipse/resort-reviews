@@ -105,22 +105,43 @@
             gap: 12px;
         }
 
-        .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            background: var(--lavender);
-            color: var(--accent-dark);
-            display: flex;
+        .theme-toggle {
+            position: relative;
+            width: 58px;
+            height: 30px;
+            min-width: 58px;
+            padding: 3px;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
+            border-radius: 999px;
+            border: none;
             cursor: pointer;
-            font-size: 16px;
-            transition: background 0.2s;
+            background: #d7c9f3;
+            transition: background 0.25s ease;
         }
 
-        .theme-btn:hover { background: #d9c5f0; }
+        [data-theme="dark"] .theme-toggle { background: #3a3a3a; }
+
+        .theme-knob {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+            background: #ffffff;
+            color: #f5a623;
+            transform: translateX(0);
+            transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+        }
+
+        [data-theme="dark"] .theme-knob {
+            background: #1a1a1a;
+            color: #e8def8;
+            transform: translateX(28px);
+        }
 
         .btn-resort-login {
             padding: 8px 16px;
@@ -466,8 +487,8 @@
         ResortReviews
     </a>
 <div class="nav-right">
-        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
-            <i class="fas fa-moon" id="themeIcon"></i>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+            <span class="theme-knob"><i class="fas fa-sun" id="themeIcon"></i></span>
         </button>
         <a href="resort-login.html" class="btn-resort-login">Resort login</a>
     </div>
@@ -567,10 +588,10 @@
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('themeIcon').className = 'fas fa-sun';
+            document.getElementById('themeIcon').className = 'fas fa-moon';
         } else {
             document.documentElement.removeAttribute('data-theme');
-            document.getElementById('themeIcon').className = 'fas fa-moon';
+            document.getElementById('themeIcon').className = 'fas fa-sun';
         }
     }
 
