@@ -37,8 +37,6 @@
         /* ── BASE ── */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html, body { background: var(--bg); }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
@@ -62,6 +60,7 @@
             z-index: 100;
             width: 100%;
             box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
         }
 
         .navbar-left { display: flex; align-items: center; gap: 10px; }
@@ -197,6 +196,42 @@
 
         .theme-btn:hover { background: #ddd0f5; }
 
+        /* Dark/light toggle switch */
+        .theme-toggle {
+            position: relative;
+            width: 58px;
+            height: 30px;
+            border-radius: 999px;
+            border: none;
+            background: #d7c9f3;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.25s ease;
+        }
+
+        .theme-toggle-knob {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #f5a623;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+            transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+        }
+
+        [data-theme="dark"] .theme-toggle { background: #3a3a3a; }
+        [data-theme="dark"] .theme-toggle-knob {
+            transform: translateX(28px);
+            background: #1a1a1a;
+            color: #e8def8;
+        }
+
         /* ── MAIN LAYOUT ── */
         .main-layout {
             max-width: 100%;
@@ -248,6 +283,72 @@
 
         .stats-mini { display: flex; flex-direction: column; }
 
+        /* Left rail: flush cards + consistent headers (landing + FB look) */
+        .sidebar-card.flush { padding: 0 !important; overflow: hidden; }
+
+        .sidebar-head {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 12px 14px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+        }
+
+        .sidebar-head .gold-star {
+            font-size: 12px;
+            background: linear-gradient(100deg, #9a7415 0%, #c9971f 45%, #b8860b 70%, #8a6d1a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .rank-num {
+            width: 16px;
+            flex-shrink: 0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 14px;
+        }
+
+        .stat-row + .stat-row { border-top: 1px solid var(--border); }
+
+        .stat-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2E1745;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        [data-theme="dark"] .stat-icon { background: var(--blue-light); color: var(--blue); }
+
+        .stat-text { display: flex; flex-direction: column; line-height: 1.15; }
+        .stat-num { font-size: 17px; font-weight: 700; color: var(--text); }
+        .stat-cap {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 1px;
+        }
+
         .stat-mini-item {
             display: flex;
             justify-content: space-between;
@@ -273,41 +374,121 @@
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 16px;
+            padding: 8px 12px 0;
+            margin-bottom: 12px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: border-color 0.15s, box-shadow 0.15s;
         }
 
         .share-box:hover {
-            border-color: var(--blue);
-            box-shadow: 0 2px 8px rgba(24, 119, 242, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .share-input {
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1;
+            min-width: 0;
+            height: 40px;
+            padding: 0 14px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 15px;
         }
 
-        .share-input i { color: var(--text); font-size: 16px; }
+        .share-input i { color: var(--text-muted); font-size: 15px; }
 
         .share-actions {
             display: flex;
-            gap: 16px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border);
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
         }
 
         .share-action {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--text-muted);
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 23px;
+            line-height: 1;
+            transition: background 0.15s;
+        }
+
+        .share-action:hover { background: var(--bg-secondary); }
+
+        #shareModal .modal-header h3 { color: #1a1a1a; }
+        [data-theme="dark"] #shareModal .modal-header h3 { color: #ffffff; }
+
+        /* Resort search input — match the "Share your experience" pill */
+        #resort_search {
+            border-radius: 20px !important;
+            background: var(--bg-secondary) !important;
+            border: 1px solid transparent !important;
+            padding: 12px 16px !important;
+        }
+        #resort_search:focus {
+            border-color: var(--blue) !important;
+            box-shadow: none !important;
+        }
+
+        /* Post Review button — lavender fill, black text + icon */
+        .post-btn {
+            background: #e8def8 !important;
+            color: #1a1a1a !important;
+        }
+        .post-btn:hover { background: #ddd0f5 !important; }
+
+        /* Add Photos label — grey to match the resort search pill */
+        .photo-label { background: var(--bg-secondary) !important; }
+        .photo-label:hover { background: var(--border) !important; }
+
+        /* Rating slider — red→yellow gradient track, theme-flipping thumb */
+        #modal_rating {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #e11d48 0%, #f97316 45%, #f59e0b 70%, #facc15 100%) !important;
+            outline: none;
+            margin-top: 8px;
+        }
+        #modal_rating::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid rgba(0,0,0,0.25);
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        #modal_rating::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid rgba(0,0,0,0.25);
+            cursor: pointer;
+        }
+        [data-theme="dark"] #modal_rating::-webkit-slider-thumb {
+            background: #374151;
+            border-color: rgba(255,255,255,0.45);
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.35);
+        }
+        [data-theme="dark"] #modal_rating::-moz-range-thumb {
+            background: #374151;
+            border-color: rgba(255,255,255,0.45);
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.35);
         }
 
         /* Feed header */
@@ -359,16 +540,16 @@
             border-radius: 12px !important;
             padding: 0 !important;
             margin: 0 0 14px 0 !important;
-            box-shadow: none !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06) !important;
             overflow: hidden;
         }
 
         .review-item-header {
-            padding: 12px 14px 6px;
+            padding: 12px 16px 0;
         }
 
         .review-item-text {
-            padding: 0 14px 4px;
+            padding: 4px 16px 12px;
         }
 
         .review-item-footer {
@@ -386,10 +567,12 @@
 
         .review-header h3 a, .resort-link {
             color: var(--text);
-            text-decoration: none;
+            text-decoration: none !important;
         }
 
-        .review-header h3 a:hover, .resort-link:hover { color: var(--blue); }
+        .review-header h3 a:hover, .resort-link:hover { color: var(--blue); text-decoration: none !important; }
+        .review-header h3 a, .review-header h3 a:hover, .review-header h3 a:visited,
+        .resort-link, .resort-link:hover, [data-theme="dark"] .resort-link:hover { text-decoration: none !important; }
 
         [data-theme="dark"] .resort-link { color: var(--text); }
         [data-theme="dark"] .resort-link:hover { color: var(--blue); }
@@ -397,8 +580,8 @@
         [data-theme="dark"] .review-header h3 a:hover { color: var(--blue); }
 
         .review-rating {
-            background: var(--blue) !important;
-            color: white !important;
+            background: #e8def8 !important;
+            color: #1a1a1a !important;
             padding: 3px 10px !important;
             border-radius: 99px !important;
             font-size: 12px !important;
@@ -413,37 +596,41 @@
         }
 
         .review-date {
-            font-size: 11px;
+            font-size: 13px;
             color: var(--text-muted);
-            margin-top: 1px;
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
             display: flex;
             align-items: center;
             gap: 4px;
-            line-height: 1;
+            line-height: 1.2;
         }
 
-        /* Action buttons */
+        /* Action buttons — Facebook style */
         .review-actions {
             display: flex;
-            gap: 0;
-            margin: 0;
-            padding: 0;
+            gap: 4px;
+            margin: 0 12px;
+            padding: 4px 0;
             border-top: 1px solid var(--border);
         }
 
         .action-btn {
             flex: 1;
-            padding: 10px 12px;
+            height: 38px;
+            padding: 0 8px;
             background: transparent;
             border: none;
-            border-radius: 0;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 15px;
+            font-weight: 600;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             transition: background 0.15s, color 0.15s;
             font-family: inherit;
             outline: none;
@@ -464,34 +651,43 @@
         .photo-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-            gap: 8px;
-            margin: 10px 0;
+            gap: 2px;
+            margin: 8px 0 0;
         }
 
         .photo-thumbnail {
+            position: static !important;
+            padding-bottom: 0 !important;
             width: 100%;
-            border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            border: 1px solid var(--border);
-            border-radius: 0 !important;
-            border-left: none !important;
-            border-right: none !important;
-        }
-
-        .photo-thumbnail img {
-            width: 100%;
-            height: auto;
-            max-height: 480px;
-            object-fit: contain;
-            object-position: center;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: var(--bg-secondary);
             border-radius: 0 !important;
         }
 
+        .photo-thumbnail img {
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            width: auto !important;
+            height: auto !important;
+            max-width: 100% !important;
+            max-height: 600px !important;
+            object-fit: contain !important;
+            object-position: center;
+            margin: 0 auto;
+            display: block;
+            border-radius: 0 !important;
+        }
+
+        .photo-thumbnail:hover img { transform: none !important; }
+
+        /* Single photo — taller frame, full image centered, no crop */
         .photo-thumbnail:only-child img {
-            max-height: 560px;
+            max-height: 640px !important;
         }
 
         /* Loading */
@@ -1080,8 +1276,8 @@
     </div>
 
     <div class="navbar-right">
-        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
-            <i class="fas fa-moon" id="themeIcon"></i>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" role="switch" aria-label="Toggle dark mode">
+            <span class="theme-toggle-knob"><i class="fas fa-sun" id="themeIcon"></i></span>
         </button>
         <a href="resort-login.html" class="btn-resort-login">Resort login</a>
     </div>
@@ -1092,12 +1288,12 @@
 
     <!-- LEFT SIDEBAR -->
     <div class="left-sidebar">
-        <div class="sidebar-card" id="topResortsCard">
+        <div class="sidebar-card" id="topResortsCard" style="border-color: rgb(228, 230, 235); border-style: none">
             <div class="resort-section-label" style="padding: 12px 16px 6px;">⭐ Top rated</div>
             <div id="topResorts"></div>
         </div>
 
-        <div class="sidebar-card">
+        <div class="sidebar-card" style="border-style: none">
             <div class="stats-mini">
                 <div class="stat-mini-item">
                     <span class="stat-mini-label">Total Reviews</span>
@@ -1119,22 +1315,23 @@
     <div class="main-content">
 
         <!-- Share Box (home only) -->
-        <div class="share-box" id="shareBox" onclick="openModal()">
+        <div class="share-box" id="shareBox" onclick="openModal()" style="margin: 0px; padding: 8px 12px 0px">
             <div class="share-input">
-                <i class="fas fa-pen"></i>
                 <span>Share your experience...</span>
             </div>
             <div class="share-actions">
-                <div class="share-action">
+                <div class="share-action" title="Choose from saved photos" onclick="shareWithGallery(event)">
+                    <i class="fas fa-images" style="color: #1877f2;"></i>
+                </div>
+                <div class="share-action" title="Take a live photo" onclick="shareWithCamera(event)">
                     <i class="fas fa-camera" style="color: #4caf50;"></i>
-                    <span>Photo</span>
                 </div>
             </div>
         </div>
 
         <!-- Home Feed -->
         <div id="home-content">
-            <div class="feed-header">
+            <div class="feed-header" style="padding: 8px 4px 0px">
                 <h3><i class="fas fa-newspaper"></i> Recent Reviews</h3>
                 <span id="review-count">0 reviews</span>
             </div>
@@ -1238,14 +1435,13 @@
 
     <!-- RIGHT SIDEBAR -->
     <div class="right-sidebar">
-        <div class="resort-panel">
+        <div class="resort-panel" style="border-color: rgb(63, 62, 62); border-style: none">
             <div class="resort-panel-header">
                 <span>All Resorts</span>
             </div>
             <div class="resort-search-wrap" id="sidebarSearchWrap">
                 <input class="resort-search-input" type="text" placeholder="Search resorts..." id="sidebarSearchInput" oninput="filterSidebarResorts(this.value)">
             </div>
-            <div class="resort-section-label" id="allResortsLabel">Directory</div>
             <div id="resortRankings"></div>
         </div>
     </div>
@@ -1303,20 +1499,20 @@
 <!-- Share Post Modal -->
 <div class="modal-overlay" id="shareModal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <div class="modal-header">
-            <h3><i class="fas fa-pen-fancy"></i> Create Post</h3>
+        <div class="modal-header" style="padding: 15px; height: 73px">
+            <h3 style="font-size: 20px">Create Post</h3>
             <i class="fas fa-times modal-close" onclick="closeModal()"></i>
         </div>
 
-        <div class="searchable-dropdown" style="padding: 20px 20px 0;">
-            <input type="text" id="resort_search" placeholder="Search for a resort..." autocomplete="off">
+        <div class="searchable-dropdown" style="padding: 10px 15px; margin: 0px 0px 15px; text-align: center">
+            <input type="text" id="resort_search" placeholder="Search for a resort..." autocomplete="off" style="padding: 100px 16px 12px">
             <input type="hidden" id="modal_resort_id">
             <div id="resort_suggestions" class="suggestions-box"></div>
         </div>
 
-        <form id="modalReviewForm">
+        <form id="modalReviewForm" style="padding: 0px 20px 20px">
             <select id="review_category"
-                    style="width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text-dark); font-size: 15px; margin-bottom: 15px;">
+                    style="width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-secondary); color: var(--text-dark); font-size: 15px; margin-bottom: 15px; margin: 15px 0px">
                 <option value="">Select a category</option>
                 <option value="1">🛏️ Accommodation</option>
                 <option value="2">🍽️ Cafeteria</option>
@@ -1336,13 +1532,11 @@
 
             <textarea id="modal_review_text"
                       placeholder="Describe staff accommodation, food, facilities, working conditions, management style, etc..."
-                      style="width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text-dark); font-size: 15px; min-height: 150px; resize: vertical; font-family: inherit;"
+                      style="width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text-dark); font-size: 15px; min-height: 150px; resize: vertical; font-family: inherit;"
                       required></textarea>
 
             <div class="photo-upload">
-                <label for="modal_photos" class="photo-label">
-                    <i class="fas fa-camera"></i> Add Photos (max 3)
-                </label>
+                <label for="modal_photos" class="photo-label"> Photos (max 3)</label>
                 <input type="file" id="modal_photos" accept="image/*" multiple style="display: none;">
                 <div class="photo-preview" id="modalPhotoPreview"></div>
             </div>
@@ -1589,7 +1783,7 @@ async function loadReviews() {
         let html = '';
         for (const review of reviews) {
             const date = new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-            const resortName = escapeHtml(resortsMap.get(review.resort_id) || review.resort_name) || 'Unknown Resort';
+            const resortName = (resortsMap.get(review.resort_id) || review.resort_name) || 'Unknown Resort';
             let photosHtml = '';
             if (review.photo_urls && review.photo_urls !== '[]') {
                 try {
@@ -1621,7 +1815,7 @@ async function loadReviews() {
                         <div class="review-header">
                             <div>
                                 <h3><a href="resort.html?id=${review.resort_id}" class="resort-link">${escapeHtml(resortName)}</a></h3>
-                                <span class="review-date" style="margin-top:3px;"><i class="far fa-calendar"></i> ${date}</span>
+                                <span class="review-date">${date}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;">
                                 <span class="review-rating">${review.rating}/10</span>
@@ -1640,8 +1834,8 @@ async function loadReviews() {
                     ${photosHtml ? `<div class="photo-grid">${photosHtml}</div>` : ''}
                     <div class="review-item-footer">
                         <div class="review-actions">
-                            <button class="action-btn" onclick="openCommentModal(${review.id})"><i class="far fa-comment"></i> Comment (${commentCount})</button>
-                            <button class="action-btn" onclick="shareReview(${review.id})"><i class="far fa-share-square"></i> Share</button>
+                            <button class="action-btn" onclick="openCommentModal(${review.id})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:-3px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 11.25A7.75 7.75 0 0 1 10 3.5h4a7.75 7.75 0 0 1 .063 15.5l-.084.04a4 4 0 0 0-.438.29c-.358.263-.782.624-1.198.996-.414.37-.805.74-1.097 1.018l-.146.14-.206.196a5.317 5.317 0 0 1-.18.16l-.001.001c-.009.007-.055.043-.118.075l-.002.001a.756.756 0 0 1-.875-.137.75.75 0 0 1-.22-.53v-2.266A7.75 7.75 0 0 1 2.25 11.25zm8.748 8.27c.112-.102.227-.206.344-.31.428-.384.894-.782 1.31-1.088.207-.153.417-.294.614-.4.166-.09.438-.222.734-.222A6.25 6.25 0 1 0 14 5h-4a6.25 6.25 0 1 0 0 12.5h.998v2.02z" fill="currentColor"></path></svg> Comment</button>
+                            <button class="action-btn" onclick="shareReview(${review.id})"><svg width="18" height="18" viewBox="94 926 14 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="vertical-align:-3px;"><path fill-rule="nonzero" d="m101.352 937.011-.293.015c-1.954.125-3 .734-4.258 2.755l-.182.299c-.318.539-1.136.291-1.119-.324.096-3.613 1.284-5.962 3.22-7.246a6.126 6.126 0 0 1 2.136-.888c.235-.05.452-.082.644-.1v-2.272c0-.673.751-.733 1.113-.377l4.7 4.966a.625.625 0 0 1 .009.884l-4.722 4.888c-.385.378-1.1.127-1.1-.447v-2.157l-.148.004zm-4.637 1.151c1.39-1.738 2.83-2.162 5.285-2.162h.5v2.276l3.857-3.993-3.857-4.075v2.315l-.521-.023-.08-.001a5.134 5.134 0 0 0-2.627.845c-1.345.891-2.28 2.412-2.628 4.728l-.03.22.1-.13z"></path></svg> Share</button>
                         </div>
                         ${commentsHtml}
                     </div>
@@ -1751,7 +1945,8 @@ window.filterSidebarResorts = function(query) {
         const name = row.querySelector('.resort-row-name').textContent.toLowerCase();
         row.style.display = name.includes(q) ? 'flex' : 'none';
     });
-    document.getElementById('allResortsLabel').style.display = q ? 'none' : '';
+    const lbl = document.getElementById('allResortsLabel');
+    if (lbl) lbl.style.display = q ? 'none' : '';
 
     // Also drive the main reviews feed: show that resort's reviews, latest to oldest
     if (typeof allReviews !== 'undefined' && typeof displayReviews === 'function') {
@@ -1919,6 +2114,24 @@ window.reportReview = async function(reviewId) {
 };
 
 function openModal() { document.getElementById('shareModal').classList.add('active'); document.body.style.overflow = 'hidden'; setupResortSearch(); }
+
+window.shareWithGallery = function(e) {
+    if (e) e.stopPropagation();
+    openModal();
+    const inp = document.getElementById('modal_photos');
+    if (!inp) return;
+    inp.removeAttribute('capture');
+    setTimeout(() => inp.click(), 120);
+};
+
+window.shareWithCamera = function(e) {
+    if (e) e.stopPropagation();
+    openModal();
+    const inp = document.getElementById('modal_photos');
+    if (!inp) return;
+    inp.setAttribute('capture', 'environment');
+    setTimeout(() => inp.click(), 120);
+};
 function closeModal() { document.getElementById('shareModal').classList.remove('active'); document.body.style.overflow = ''; }
 
 async function loadResortsForComparison() {
@@ -2033,7 +2246,7 @@ document.addEventListener('keydown', function(e) {
 function applyTheme() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const icon = document.getElementById('themeIcon');
-    if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    if (icon) icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
 }
 
 function toggleTheme() {
@@ -2058,3 +2271,29 @@ document.addEventListener('DOMContentLoaded', applyTheme);
 </body>
 </html>
 
+<style id="__om-edit-overrides">
+#reviews-feed >div:nth-child(1) >.review-header [href="resort.html?id=169"] { color: rgb(171, 178, 189) !important }
+#reviews-feed >div:nth-child(1) >.review-header [href="resort.html?id=169"] { text-align: center !important }
+#reviews-feed >div:nth-child(1) >.review-header [href="resort.html?id=169"] { text-align: left !important }
+#reviews-feed >div:nth-child(1) >.review-header [href="resort.html?id=169"] { font-family: BlinkMacSystemFont !important }
+#reviews-feed >div:nth-child(1) >.review-header [href="resort.html?id=169"] { font-family: -apple-system !important }
+#reviews-feed >div:nth-child(2) >.review-date { font-weight: 200 !important }
+#reviews-feed >div:nth-child(2) >.review-date { font-weight: 600 !important }
+#reviews-feed >div:nth-child(2) >.review-date { height: 30px !important }
+#reviews-feed >div:nth-child(2) >.review-date { height: 40px !important }
+#reviews-feed >div:nth-child(2) >.review-date { height: 24px !important }
+#reviews-feed >div:nth-child(2) >.review-date { gap: 1px !important }
+#reviews-feed >div:nth-child(2) >.review-date { gap: 1px !important }
+#reviews-feed >div:nth-child(2) >.review-date { align-items: stretch !important }
+#reviews-feed >div:nth-child(2) >.review-date { align-items: center !important }
+#reviews-feed >div:nth-child(2) >.review-date { padding: 0px !important }
+#reviews-feed >div:nth-child(1) { margin: 0px 0px 10px !important }
+#reviews-feed >div:nth-child(1) { margin: 0px !important }
+#reviews-feed >div:nth-child(1) { margin: 0px 0px 14px !important }
+#modal_review_text { border-radius: 0px 8px 8px !important }
+#modal_review_text { padding: 10px !important }
+#modal_review_text { padding: 10px !important }
+#modal_review_text { padding: 10px !important }
+#modal_review_text { padding: 15px !important }
+#modal_review_text { padding: 15px !important }
+</style>
