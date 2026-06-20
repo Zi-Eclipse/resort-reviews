@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <script>
@@ -29,13 +29,15 @@
             --blue-light: rgba(59, 130, 246, 0.15);
             --text: #f3f4f6;
             --text-muted: #9ca3af;
-            --bg: #111827;
-            --bg-secondary: #2b3648;
-            --card-bg: #1f2937;
+            --bg: #1a1a1a;
+            --bg-secondary: #353535;
+            --card-bg: #2d2d2d;
         }
 
         /* ── BASE ── */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { background: var(--bg); }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -53,7 +55,7 @@
             justify-content: space-between;
             padding: 0 24px;
             height: 56px;
-            background: var(--card-bg);
+            background: var(--bg);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
@@ -63,6 +65,9 @@
         }
 
         .navbar-left { display: flex; align-items: center; gap: 10px; }
+
+        .logo-square { stroke: transparent; stroke-width: 1.5; }
+        [data-theme="dark"] .logo-square { stroke: #e8def8; }
 
         .nav-brand {
             display: flex;
@@ -86,7 +91,7 @@
             border-radius: 8px;
             border: none;
             background: transparent;
-            color: #9ca3af;
+            color: var(--text);
             font-size: 20px;
             cursor: pointer;
             display: flex;
@@ -106,6 +111,41 @@
             border-bottom: 3px solid #1877f2;
             border-radius: 0;
         }
+
+        /* Home icon — pink gradient when selected (darker in light mode) */
+        #navReviews.active i {
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #navReviews.active { border-bottom-color: #ec4899; }
+
+        /* Jobs icon — light blue gradient when selected (darker in light mode) */
+        #navJobs.active i {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #navJobs.active { border-bottom-color: #2563eb; }
+
+        /* Compare icon — goldish gradient when selected (darker in light mode) */
+        #navCompare.active i {
+            background: linear-gradient(135deg, #b8860b 0%, #7a5c0a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #navCompare.active { border-bottom-color: #b8860b; }
+
+        /* Lighter gradients in dark mode */
+        [data-theme="dark"] #navReviews.active i { background: linear-gradient(135deg, #fbb6ce 0%, #ec4899 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        [data-theme="dark"] #navReviews.active { border-bottom-color: #ec4899; }
+        [data-theme="dark"] #navJobs.active i { background: linear-gradient(135deg, #a5d8ff 0%, #38bdf8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        [data-theme="dark"] #navJobs.active { border-bottom-color: #38bdf8; }
+        [data-theme="dark"] #navCompare.active i { background: linear-gradient(135deg, #e3c04b 0%, #b8860b 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        [data-theme="dark"] #navCompare.active { border-bottom-color: #c9971f; }
 
         .nav-icon-btn[title]:hover::after {
             content: attr(title);
@@ -127,9 +167,9 @@
 
         .btn-resort-login {
             padding: 8px 16px;
-            background: var(--bg-secondary);
-            color: var(--text) !important;
-            border: 1px solid var(--border);
+            background: #e8def8;
+            color: #1a1a1a !important;
+            border: 1px solid #e8def8;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 500;
@@ -138,15 +178,15 @@
             transition: background 0.2s;
         }
 
-        .btn-resort-login:hover { background: var(--border); }
+        .btn-resort-login:hover { background: #ddd0f5; }
 
         .theme-btn {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             border: none;
-            background: var(--bg-secondary);
-            color: var(--text-muted);
+            background: #e8def8;
+            color: #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -155,7 +195,7 @@
             transition: background 0.2s;
         }
 
-        .theme-btn:hover { background: var(--border); }
+        .theme-btn:hover { background: #ddd0f5; }
 
         /* ── MAIN LAYOUT ── */
         .main-layout {
@@ -252,7 +292,7 @@
             font-size: 14px;
         }
 
-        .share-input i { color: var(--blue); font-size: 16px; }
+        .share-input i { color: var(--text); font-size: 16px; }
 
         .share-actions {
             display: flex;
@@ -288,6 +328,7 @@
         }
 
         .feed-header h3 i { color: var(--blue); }
+        .feed-header h3 i.fa-newspaper { color: var(--text); }
 
         #review-count, #jobs-count { font-size: 13px; color: var(--text-muted); }
 
@@ -1018,12 +1059,11 @@
     <div class="navbar-left">
         <a href="index.html" class="nav-brand">
             <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
-              <rect width="32" height="32" rx="8" fill="#1877f2"/>
+              <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.5" fill="#2E1745" class="logo-square"/>
               <circle cx="16" cy="11" r="4" fill="white"/>
               <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
               <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
             </svg>
-            <span class="brand-name">ResortReviews</span>
         </a>
     </div>
 
@@ -1098,7 +1138,6 @@
                 <h3><i class="fas fa-newspaper"></i> Recent Reviews</h3>
                 <span id="review-count">0 reviews</span>
             </div>
-            <input type="text" id="searchInput" class="feed-search" placeholder="Search resorts...">
             <div class="feed" id="reviews-feed">
                 <div class="loading-spinner">Loading reviews...</div>
             </div>
@@ -1707,12 +1746,29 @@ window.toggleSidebarSearch = function() {
 
 window.filterSidebarResorts = function(query) {
     const rows = document.querySelectorAll('#resortRankings .resort-row');
-    const q = query.toLowerCase();
+    const q = query.toLowerCase().trim();
     rows.forEach(row => {
         const name = row.querySelector('.resort-row-name').textContent.toLowerCase();
         row.style.display = name.includes(q) ? 'flex' : 'none';
     });
     document.getElementById('allResortsLabel').style.display = q ? 'none' : '';
+
+    // Also drive the main reviews feed: show that resort's reviews, latest to oldest
+    if (typeof allReviews !== 'undefined' && typeof displayReviews === 'function') {
+        const countEl = document.getElementById('review-count');
+        if (!q) {
+            displayReviews(allReviews);
+            if (countEl) countEl.textContent = `${allReviews.length} reviews`;
+        } else {
+            if (typeof switchMainContent === 'function') switchMainContent('feed');
+            const filtered = allReviews.filter(r => {
+                const rn = (r.resort_name || (typeof resortsMap !== 'undefined' ? (resortsMap.get(r.resort_id) || '') : '')).toLowerCase();
+                return rn.includes(q);
+            });
+            displayReviews(filtered);
+            if (countEl) countEl.textContent = `${filtered.length} review${filtered.length === 1 ? '' : 's'}`;
+        }
+    }
 }
 
 window.scrollToLetter = function(letter) {
@@ -2001,3 +2057,4 @@ document.addEventListener('DOMContentLoaded', applyTheme);
 </script>
 </body>
 </html>
+
