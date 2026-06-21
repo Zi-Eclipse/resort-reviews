@@ -31,8 +31,8 @@
             --text: #f3f4f6;
             --text-muted: #9ca3af;
             --bg: #1a1a1a;
-            --bg-secondary: #353535;
-            --card-bg: #2d2d2d;
+            --bg-secondary: #2b2b2b;
+            --card-bg: #232323;
         }
 
         /* ── BASE ── */
@@ -147,8 +147,8 @@
         [data-theme="dark"] #navCompare.active i { background: linear-gradient(135deg, #e3c04b 0%, #b8860b 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
         [data-theme="dark"] #navCompare.active { border-bottom-color: #c9971f; }
 
-        .nav-icon-btn[title]:hover::after {
-            content: attr(title);
+        .nav-icon-btn[data-label]:hover::after {
+            content: attr(data-label);
             position: absolute;
             bottom: -32px;
             left: 50%;
@@ -255,10 +255,10 @@
 
         .sidebar-card {
             background: var(--card-bg) !important;
-            border: 1px solid var(--border) !important;
+            border: none !important;
             border-radius: 12px !important;
             padding: 12px !important;
-            box-shadow: none !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06) !important;
         }
 
         .nav-menu { display: flex; flex-direction: column; gap: 2px; }
@@ -360,7 +360,7 @@
 
         .stat-mini-item:last-child { border-bottom: none; }
         .stat-mini-label { color: var(--text-muted); font-size: 13px; }
-        .stat-mini-value { font-weight: 700; color: var(--blue); font-size: 15px; }
+        .stat-mini-value { font-weight: 700; color: var(--text); font-size: 15px; }
 
         /* ── MAIN CONTENT ── */
         .main-content {
@@ -373,7 +373,7 @@
         /* Share box */
         .share-box {
             background: var(--card-bg);
-            border: 1px solid var(--border);
+            border: none;
             border-radius: 12px;
             padding: 8px 12px 0;
             margin-bottom: 12px;
@@ -424,6 +424,11 @@
         }
 
         .share-action:hover { background: var(--bg-secondary); }
+        .share-action-icon { color: #2E1745; }
+        [data-theme="dark"] .share-action-icon { color: #e8def8; }
+
+        [data-theme="dark"] .photo-thumbnail { background: #000000 !important; }
+        .photo-thumbnail, .photo-gallery .photo-thumbnail { border: none !important; outline: none !important; }
 
         #shareModal .modal-header h3 { color: #1a1a1a; }
         [data-theme="dark"] #shareModal .modal-header h3 { color: #ffffff; }
@@ -440,6 +445,13 @@
             box-shadow: none !important;
         }
 
+        #modal_review_text:focus,
+        #review_category:focus {
+            outline: none !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
         /* Post Review button — lavender fill, black text + icon */
         .post-btn {
             background: #e8def8 !important;
@@ -450,6 +462,43 @@
         /* Add Photos label — grey to match the resort search pill */
         .photo-label { background: var(--bg-secondary) !important; }
         .photo-label:hover { background: var(--border) !important; }
+
+        /* Compare Now — browse-reviews concept: dark blue/white (light), light blue/black (dark) */
+        .compare-btn {
+            background: #2E1745 !important;
+            color: #ffffff !important;
+        }
+        .compare-btn:hover:not(:disabled) { background: #3d1f5c !important; }
+        .vs-divider span {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            color: #1a1a1a !important;
+        }
+        [data-theme="dark"] .vs-divider span { color: #ffffff !important; }
+        .vs-divider::before { display: none !important; }
+        .resort-badge { color: #1a1a1a !important; }
+        [data-theme="dark"] .resort-badge { color: #ffffff !important; }
+
+        /* Compare metrics — monochrome icons + larger labels */
+        .metric, .category-name { font-size: 15px !important; }
+        .metric i, .category-name i, .comparison-row .value i {
+            color: #1a1a1a !important;
+            width: 16px;
+            text-align: center;
+        }
+        [data-theme="dark"] .metric i,
+        [data-theme="dark"] .category-name i,
+        [data-theme="dark"] .comparison-row .value i { color: #ffffff !important; }
+
+        /* Comparison results values — force black/white (category breakdown unaffected) */
+        .comparison-col .value { color: #1a1a1a !important; }
+        [data-theme="dark"] .comparison-col .value { color: #ffffff !important; }
+        [data-theme="dark"] .compare-btn {
+            background: #e8def8 !important;
+            color: #1a1a1a !important;
+        }
+        [data-theme="dark"] .compare-btn:hover:not(:disabled) { background: #ddd0f5 !important; }
 
         /* Rating slider — red→yellow gradient track, theme-flipping thumb */
         #modal_rating {
@@ -537,7 +586,7 @@
 
         .review-item {
             background: var(--card-bg) !important;
-            border: 0.5px solid var(--border) !important;
+            border: none !important;
             border-radius: 12px !important;
             padding: 0 !important;
             margin: 0 0 14px 0 !important;
@@ -1196,10 +1245,24 @@
             padding: 10px 14px 4px;
         }
 
+        #topResortsCard .resort-section-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            text-transform: none;
+            letter-spacing: -0.01em;
+        }
+        #topResortsCard .resort-section-label i,
+        .resort-row-rating i { color: #1a1a1a; }
+        [data-theme="dark"] #topResortsCard .resort-section-label i,
+        [data-theme="dark"] .resort-row-rating i { color: var(--text); }
+
         .resort-row {
             display: flex;
             align-items: center;
             gap: 10px;
+            position: relative;
+            overflow: hidden;
             padding: 7px 14px;
             border-top: 1px solid var(--border);
             cursor: pointer;
@@ -1207,6 +1270,32 @@
         }
 
         .resort-row:hover { background: var(--bg-secondary); }
+
+        /* ── TOP-3 MEDAL SYSTEM (solid metallic colors, glow on hover) ── */
+        .resort-row.rank-1 { --medal: #d4af37; }  /* gold */
+        .resort-row.rank-2 { --medal: #9aa0a6; }  /* silver */
+        .resort-row.rank-3 { --medal: #c17f43; }  /* bronze */
+
+        .resort-row.rank-1 .resort-row-name, .resort-row.rank-1 .resort-row-rating, .resort-row.rank-1 .resort-row-rating i,
+        .resort-row.rank-2 .resort-row-name, .resort-row.rank-2 .resort-row-rating, .resort-row.rank-2 .resort-row-rating i,
+        .resort-row.rank-3 .resort-row-name, .resort-row.rank-3 .resort-row-rating, .resort-row.rank-3 .resort-row-rating i {
+            color: var(--medal) !important;
+            font-weight: 600;
+        }
+
+        /* On hover: glow on the letters/stars themselves — no box/shading */
+        .resort-row.rank-1:hover, .resort-row.rank-2:hover, .resort-row.rank-3:hover {
+            background: transparent !important;
+        }
+        .resort-row.rank-1:hover .resort-row-name, .resort-row.rank-1:hover .resort-row-rating, .resort-row.rank-1:hover .resort-row-rating i,
+        .resort-row.rank-2:hover .resort-row-name, .resort-row.rank-2:hover .resort-row-rating, .resort-row.rank-2:hover .resort-row-rating i,
+        .resort-row.rank-3:hover .resort-row-name, .resort-row.rank-3:hover .resort-row-rating, .resort-row.rank-3:hover .resort-row-rating i {
+            filter: drop-shadow(0 0 5px var(--medal));
+        }
+        @keyframes rrRainbowShift {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
 
         .resort-row-name {
             flex: 1;
@@ -1220,7 +1309,7 @@
         .resort-row-rating {
             font-size: 12px;
             font-weight: 500;
-            color: var(--blue);
+            color: var(--text);
             white-space: nowrap;
             display: flex;
             align-items: center;
@@ -1265,13 +1354,13 @@
     </div>
 
     <div class="navbar-center">
-        <button class="nav-icon-btn active" onclick="switchMainContent('feed')" id="navReviews" title="Reviews">
+        <button class="nav-icon-btn active" onclick="switchMainContent('feed')" id="navReviews" data-label="Reviews">
             <i class="fas fa-home"></i>
         </button>
-        <button class="nav-icon-btn" onclick="switchMainContent('jobs')" id="navJobs" title="Jobs">
+        <button class="nav-icon-btn" onclick="switchMainContent('jobs')" id="navJobs" data-label="Jobs">
             <i class="fas fa-briefcase"></i>
         </button>
-        <button class="nav-icon-btn" onclick="switchMainContent('compare')" id="navCompare" title="Compare">
+        <button class="nav-icon-btn" onclick="switchMainContent('compare')" id="navCompare" data-label="Compare">
             <i class="fas fa-balance-scale"></i>
         </button>
     </div>
@@ -1290,7 +1379,7 @@
     <!-- LEFT SIDEBAR -->
     <div class="left-sidebar">
         <div class="sidebar-card" id="topResortsCard" style="border-color: rgb(228, 230, 235); border-style: none">
-            <div class="resort-section-label" style="padding: 12px 16px 6px;">⭐ Top rated</div>
+            <div class="resort-section-label" style="padding: 12px 16px 6px;"><i class="fas fa-star"></i> Top rated</div>
             <div id="topResorts"></div>
         </div>
 
@@ -1322,10 +1411,10 @@
             </div>
             <div class="share-actions">
                 <div class="share-action" title="Choose from saved photos" onclick="shareWithGallery(event)">
-                    <i class="fas fa-images" style="color: #1877f2;"></i>
+                    <i class="fas fa-images share-action-icon"></i>
                 </div>
                 <div class="share-action" title="Take a live photo" onclick="shareWithCamera(event)">
-                    <i class="fas fa-camera" style="color: #4caf50;"></i>
+                    <i class="fas fa-camera share-action-icon"></i>
                 </div>
             </div>
         </div>
@@ -1368,12 +1457,12 @@
         <!-- Compare Content -->
         <div id="compare-content" style="display: none;">
             <div class="feed-header">
-                <h3><i class="fas fa-scale-balanced"></i> Compare Resorts</h3>
+                <h3>Compare Resorts</h3>
             </div>
             <div class="comparison-container" style="background: var(--white); border-radius: 16px; padding: 24px; box-shadow: var(--shadow);">
                 <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center;">
                     <div>
-                        <label class="comparison-label">Resort A</label>
+                        <label class="comparison-label" style="font-size: 12px; text-align: left">Resort A</label>
                         <div class="search-box">
                             <i class="fas fa-search"></i>
                             <input type="text" id="compareSearch1" placeholder="Search resort..." autocomplete="off">
@@ -1399,7 +1488,7 @@
                     </div>
                 </div>
 
-                <button class="compare-btn" onclick="compareResorts()" id="compareBtn" disabled style="margin-top: 20px;">
+                <button class="compare-btn" onclick="compareResorts()" id="compareBtn" disabled style="margin-top: 20px; width: 482px; text-align: center; font-family: sans-serif">
                     <i class="fas fa-chart-simple"></i> Compare Now
                 </button>
 
@@ -1411,17 +1500,17 @@
                     <div class="comparison-grid">
                         <div class="comparison-col" id="compareCol1">
                             <div class="resort-badge" id="badge1"></div>
-                            <div class="comparison-row"><span class="metric">⭐ Rating</span><span class="value" id="rating1">-</span></div>
-                            <div class="comparison-row"><span class="metric">📝 Reviews</span><span class="value" id="reviews1">-</span></div>
-                            <div class="comparison-row"><span class="metric">📸 Photos</span><span class="value" id="photos1">-</span></div>
-                            <div class="comparison-row highlight"><span class="metric">🏆 Wins</span><span class="value" id="wins1">0</span></div>
+                            <div class="comparison-row"><span class="metric"><i class="fas fa-star"></i> Rating</span><span class="value" id="rating1">-</span></div>
+                            <div class="comparison-row"><span class="metric"><i class="fas fa-comment-dots"></i> Reviews</span><span class="value" id="reviews1">-</span></div>
+                            <div class="comparison-row"><span class="metric"><i class="fas fa-image"></i> Photos</span><span class="value" id="photos1">-</span></div>
+                            <div class="comparison-row highlight"><span class="metric"><i class="fas fa-trophy"></i> Wins</span><span class="value" id="wins1">0</span></div>
                         </div>
                         <div class="comparison-col" id="compareCol2">
                             <div class="resort-badge" id="badge2"></div>
-                            <div class="comparison-row"><span class="metric">⭐ Rating</span><span class="value" id="rating2">-</span></div>
-                            <div class="comparison-row"><span class="metric">📝 Reviews</span><span class="value" id="reviews2">-</span></div>
-                            <div class="comparison-row"><span class="metric">📸 Photos</span><span class="value" id="photos2">-</span></div>
-                            <div class="comparison-row highlight"><span class="metric">🏆 Wins</span><span class="value" id="wins2">0</span></div>
+                            <div class="comparison-row"><span class="metric"><i class="fas fa-star"></i> Rating</span><span class="value" id="rating2">-</span></div>
+                            <div class="comparison-row"><span class="metric"><i class="fas fa-comment-dots"></i> Reviews</span><span class="value" id="reviews2">-</span></div>
+                            <div class="comparison-row"><span class="metric"><i class="fas fa-image"></i> Photos</span><span class="value" id="photos2">-</span></div>
+                            <div class="comparison-row highlight"><span class="metric"><i class="fas fa-trophy"></i> Wins</span><span class="value" id="wins2">0</span></div>
                         </div>
                     </div>
                     <div class="category-comparison">
@@ -1906,12 +1995,12 @@ async function loadTopResorts() {
         const photoMap = {};
         (topPhotos || []).forEach(r => { if (r.profile_photo) photoMap[r.id] = r.profile_photo; });
         let html = '';
-        sorted.forEach(resort => {
-            const initials = resort.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+        sorted.forEach((resort, i) => {
+            const rankClass = i < 3 ? ` rank-${i + 1}` : '';
             const topPhoto = photoMap[resort.id];
             const topAvatarStyle = topPhoto ? ` style="background-image:url('${topPhoto}')"` : '';
             const topAvatarClass = topPhoto ? 'resort-avatar top has-photo' : 'resort-avatar top';
-            html += `<div class="resort-row" onclick="window.location.href='resort.html?id=${resort.id}'"><div class="${topAvatarClass}"${topAvatarStyle}>${initials}</div><span class="resort-row-name">${resort.name}</span><span class="resort-row-rating"><i class="fas fa-star" style="color:#f59e0b;font-size:10px;"></i> ${resort.avg}</span></div>`;
+            html += `<div class="resort-row${rankClass}" onclick="window.location.href='resort.html?id=${resort.id}'"><span class="resort-row-name">${resort.name}</span><span class="resort-row-rating"><i class="fas fa-star" style="font-size:10px;"></i> ${resort.avg}</span></div>`;
         });
         document.getElementById('topResorts').innerHTML = html;
     } catch (error) { console.error("Error in loadTopResorts:", error); document.getElementById('topResorts').innerHTML = ''; }
@@ -2185,17 +2274,17 @@ window.compareResorts = async function() {
         if (parseFloat(avgRating1) > parseFloat(avgRating2)) wins1++; else if (parseFloat(avgRating2) > parseFloat(avgRating1)) wins2++;
         if ((reviews1.data?.length || 0) > (reviews2.data?.length || 0)) wins1++; else if ((reviews2.data?.length || 0) > (reviews1.data?.length || 0)) wins2++;
         if (photoCount1 > photoCount2) wins1++; else if (photoCount2 > photoCount1) wins2++;
-        document.getElementById('badge1').innerHTML = `<i class="fas fa-hotel"></i> ${selectedResort1.name}`;
-        document.getElementById('badge2').innerHTML = `<i class="fas fa-hotel"></i> ${selectedResort2.name}`;
-        document.getElementById('rating1').textContent = `⭐ ${avgRating1}`;
-        document.getElementById('rating2').textContent = `⭐ ${avgRating2}`;
+        document.getElementById('badge1').innerHTML = `${selectedResort1.name}`;
+        document.getElementById('badge2').innerHTML = `${selectedResort2.name}`;
+        document.getElementById('rating1').innerHTML = `<i class="fas fa-star"></i> ${avgRating1}`;
+        document.getElementById('rating2').innerHTML = `<i class="fas fa-star"></i> ${avgRating2}`;
         document.getElementById('reviews1').textContent = reviews1.data?.length || 0;
         document.getElementById('reviews2').textContent = reviews2.data?.length || 0;
         document.getElementById('photos1').textContent = photoCount1;
         document.getElementById('photos2').textContent = photoCount2;
         document.getElementById('wins1').textContent = wins1;
         document.getElementById('wins2').textContent = wins2;
-        document.getElementById('categoryBreakdown').innerHTML = `<div class="category-row"><span class="category-name">⭐ Average Rating</span><div class="category-values"><span style="color:${parseFloat(avgRating1)>parseFloat(avgRating2)?'#10b981':'inherit'}">${avgRating1}</span><span style="color:var(--text-light);">vs</span><span style="color:${parseFloat(avgRating2)>parseFloat(avgRating1)?'#10b981':'inherit'}">${avgRating2}</span></div></div><div class="category-row"><span class="category-name">📝 Total Reviews</span><div class="category-values"><span style="color:${(reviews1.data?.length||0)>(reviews2.data?.length||0)?'#10b981':'inherit'}">${reviews1.data?.length||0}</span><span style="color:var(--text-light);">vs</span><span style="color:${(reviews2.data?.length||0)>(reviews1.data?.length||0)?'#10b981':'inherit'}">${reviews2.data?.length||0}</span></div></div><div class="category-row"><span class="category-name">📸 Total Photos</span><div class="category-values"><span style="color:${photoCount1>photoCount2?'#10b981':'inherit'}">${photoCount1}</span><span style="color:var(--text-light);">vs</span><span style="color:${photoCount2>photoCount1?'#10b981':'inherit'}">${photoCount2}</span></div></div>`;
+        document.getElementById('categoryBreakdown').innerHTML = `<div class="category-row"><span class="category-name"><i class="fas fa-star"></i> Average Rating</span><div class="category-values"><span style="color:${parseFloat(avgRating1)>parseFloat(avgRating2)?'#10b981':'inherit'}">${avgRating1}</span><span style="color:var(--text-light);">vs</span><span style="color:${parseFloat(avgRating2)>parseFloat(avgRating1)?'#10b981':'inherit'}">${avgRating2}</span></div></div><div class="category-row"><span class="category-name"><i class="fas fa-comment-dots"></i> Total Reviews</span><div class="category-values"><span style="color:${(reviews1.data?.length||0)>(reviews2.data?.length||0)?'#10b981':'inherit'}">${reviews1.data?.length||0}</span><span style="color:var(--text-light);">vs</span><span style="color:${(reviews2.data?.length||0)>(reviews1.data?.length||0)?'#10b981':'inherit'}">${reviews2.data?.length||0}</span></div></div><div class="category-row"><span class="category-name"><i class="fas fa-images"></i> Total Photos</span><div class="category-values"><span style="color:${photoCount1>photoCount2?'#10b981':'inherit'}">${photoCount1}</span><span style="color:var(--text-light);">vs</span><span style="color:${photoCount2>photoCount1?'#10b981':'inherit'}">${photoCount2}</span></div></div>`;
         const winnerMsg = document.getElementById('winnerMessage');
         if (wins1 > wins2) { winnerMsg.className = 'winner-message winner-a'; winnerMsg.innerHTML = `<i class="fas fa-trophy"></i> ${selectedResort1.name} wins!`; }
         else if (wins2 > wins1) { winnerMsg.className = 'winner-message winner-b'; winnerMsg.innerHTML = `<i class="fas fa-trophy"></i> ${selectedResort2.name} wins!`; }
