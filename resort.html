@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <script>
@@ -24,6 +24,10 @@
             --bg: #f7f6f3;
             --bg-secondary: #f0efe9;
             --card-bg: #ffffff;
+            --ink: #2E1745;
+            --ink-hover: #3d1f5c;
+            --lavender: #e8def8;
+            --lavender-hover: #ddd0f5;
         }
 
         [data-theme="dark"] {
@@ -32,9 +36,9 @@
             --text: #f3f4f6;
             --text-muted: #9ca3af;
             --border: #374151;
-            --bg: #111827;
-            --bg-secondary: #1f2937;
-            --card-bg: #1f2937;
+            --bg: #1a1a1a;
+            --bg-secondary: #2b2b2b;
+            --card-bg: #232323;
         }
 
         [data-theme="dark"] body { background: var(--bg); color: var(--text); }
@@ -91,6 +95,9 @@
             font-size: 15px;
         }
 
+        .logo-square { stroke: transparent; stroke-width: 1.5; }
+        [data-theme="dark"] .logo-square { stroke: var(--lavender); }
+
         .brand-name {
             font-size: 16px;
             font-weight: 700;
@@ -104,26 +111,45 @@
         }
 
         .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            position: relative;
+            width: 58px;
+            height: 30px;
+            border-radius: 999px;
             border: none;
-            background: var(--bg-secondary);
-            color: var(--text-muted);
+            background: #d7c9f3;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.25s ease;
+        }
+
+        .theme-btn .theme-toggle-knob {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #f5a623;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.2s;
+            font-size: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+            transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
         }
-        .theme-btn:hover { background: var(--border); }
+
+        [data-theme="dark"] .theme-btn { background: #3a3a3a; }
+        [data-theme="dark"] .theme-btn .theme-toggle-knob {
+            transform: translateX(28px);
+            background: #1a1a1a;
+            color: var(--lavender);
+        }
 
         .btn-resort-login {
-            padding: 7px 16px;
-            border: 1px solid var(--blue);
-            color: var(--blue);
-            background: transparent;
+            padding: 8px 16px;
+            border: 1px solid var(--lavender);
+            color: #1a1a1a;
+            background: var(--lavender);
             border-radius: 8px;
             font-size: 13px;
             font-weight: 500;
@@ -131,7 +157,7 @@
             transition: background 0.15s;
         }
 
-        .btn-resort-login:hover { background: var(--blue-light); }
+        .btn-resort-login:hover { background: var(--lavender-hover); }
 
         /* ── PROFILE PAGE CONTAINER ── */
         .profile-page {
@@ -690,7 +716,7 @@
     <div class="resort-navbar-inner">
         <a href="index.html" class="nav-brand">
             <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
-              <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.5" fill="#2E1745" stroke="transparent" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+              <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.5" fill="#2E1745" class="logo-square" vector-effect="non-scaling-stroke"/>
               <circle cx="16" cy="11" r="4" fill="white"/>
               <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
               <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
@@ -698,8 +724,8 @@
             <span class="brand-name">ResortReviews</span>
         </a>
         <div class="navbar-right">
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
-                <i class="fas fa-moon" id="themeIcon"></i>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" role="switch" aria-label="Toggle dark mode">
+                <span class="theme-toggle-knob"><i class="fas fa-moon" id="themeIcon"></i></span>
             </button>
             <a href="resort-dashboard.html" class="btn-resort-login">Resort login</a>
         </div>
