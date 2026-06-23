@@ -1257,6 +1257,12 @@
         [data-theme="dark"] #topResortsCard .resort-section-label i,
         [data-theme="dark"] .resort-row-rating i { color: var(--text); }
 
+        /* "Top rated" label + star: darkish gold (light) / light yellow (dark) */
+        #topResortsCard .resort-section-label,
+        #topResortsCard .resort-section-label i { color: #b8860b !important; }
+        [data-theme="dark"] #topResortsCard .resort-section-label,
+        [data-theme="dark"] #topResortsCard .resort-section-label i { color: #ffe082 !important; }
+
         .resort-row {
             display: flex;
             align-items: center;
@@ -1272,9 +1278,14 @@
         .resort-row:hover { background: var(--bg-secondary); }
 
         /* ── TOP-3 MEDAL SYSTEM (solid metallic colors, glow on hover) ── */
-        .resort-row.rank-1 { --medal: #d4af37; }  /* gold */
-        .resort-row.rank-2 { --medal: #9aa0a6; }  /* silver */
-        .resort-row.rank-3 { --medal: #c17f43; }  /* bronze */
+        /* Light mode: darker, higher-contrast medals so names don't look faint */
+        .resort-row.rank-1 { --medal: #a37f12; }  /* gold */
+        .resort-row.rank-2 { --medal: #6b7177; }  /* silver */
+        .resort-row.rank-3 { --medal: #9c5d2a; }  /* bronze */
+        /* Dark mode: brighter metallics that pop on the dark canvas */
+        [data-theme="dark"] .resort-row.rank-1 { --medal: #d4af37; }
+        [data-theme="dark"] .resort-row.rank-2 { --medal: #b3b8bd; }
+        [data-theme="dark"] .resort-row.rank-3 { --medal: #c17f43; }
 
         .resort-row.rank-1 .resort-row-name, .resort-row.rank-1 .resort-row-rating, .resort-row.rank-1 .resort-row-rating i,
         .resort-row.rank-2 .resort-row-name, .resort-row.rank-2 .resort-row-rating, .resort-row.rank-2 .resort-row-rating i,
@@ -1283,14 +1294,21 @@
             font-weight: 600;
         }
 
-        /* On hover: glow on the letters/stars themselves — no box/shading */
+        /* On hover: clean nudge + bolder weight, no blur */
         .resort-row.rank-1:hover, .resort-row.rank-2:hover, .resort-row.rank-3:hover {
             background: transparent !important;
         }
         .resort-row.rank-1:hover .resort-row-name, .resort-row.rank-1:hover .resort-row-rating, .resort-row.rank-1:hover .resort-row-rating i,
         .resort-row.rank-2:hover .resort-row-name, .resort-row.rank-2:hover .resort-row-rating, .resort-row.rank-2:hover .resort-row-rating i,
         .resort-row.rank-3:hover .resort-row-name, .resort-row.rank-3:hover .resort-row-rating, .resort-row.rank-3:hover .resort-row-rating i {
-            filter: drop-shadow(0 0 5px var(--medal));
+            color: var(--medal) !important;
+            font-weight: 700;
+        }
+        .resort-row.rank-1 .resort-row-name, .resort-row.rank-2 .resort-row-name, .resort-row.rank-3 .resort-row-name {
+            transition: transform 0.18s ease, font-weight 0.18s ease;
+        }
+        .resort-row.rank-1:hover .resort-row-name, .resort-row.rank-2:hover .resort-row-name, .resort-row.rank-3:hover .resort-row-name {
+            transform: translateX(4px);
         }
         @keyframes rrRainbowShift {
             0%   { background-position: 0% 50%; }
@@ -1488,7 +1506,7 @@
                     </div>
                 </div>
 
-                <button class="compare-btn" onclick="compareResorts()" id="compareBtn" disabled style="margin-top: 20px; width: 482px; text-align: center; font-family: sans-serif">
+                <button class="compare-btn" onclick="compareResorts()" id="compareBtn" disabled style="margin-top: 20px; width: 100%; text-align: center; font-family: sans-serif">
                     <i class="fas fa-chart-simple"></i> Compare Now
                 </button>
 
@@ -1869,7 +1887,22 @@ async function loadReviews() {
     reviewsFeed.innerHTML = '<div class="loading-spinner">Loading reviews...</div>';
     try {
         const { data: reviews } = await supabaseClient.from('reviews').select('*').eq('status', 'approved').order('created_at', { ascending: false });
-        if (!reviews || reviews.length === 0) { reviewsFeed.innerHTML = '<div class="loading-spinner">No reviews yet. Be the first to share!</div>'; return; }
+        allReviews = reviews || [];
+        await displayReviews(allReviews);
+        const countEl = document.getElementById('review-count');
+        if (countEl) countEl.textContent = `${allReviews.length} review${allReviews.length === 1 ? '' : 's'}`;
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        reviewsFeed.innerHTML = '<div class="loading-spinner">Error loading reviews</div>';
+    }
+}
+
+// Render reviews in the CURRENT feed design — overrides the legacy displayReviews() in script.js
+// so the sidebar/inline search shows the same card layout as the initial feed.
+window.displayReviews = async function(reviews) {
+    const reviewsFeed = document.getElementById('reviews-feed');
+    if (!reviewsFeed) return;
+    if (!reviews || reviews.length === 0) { reviewsFeed.innerHTML = '<div class="loading-spinner">No reviews yet. Be the first to share!</div>'; return; }
         let html = '';
         for (const review of reviews) {
             const date = new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -1933,11 +1966,7 @@ async function loadReviews() {
             `;
         }
         reviewsFeed.innerHTML = html;
-    } catch (error) {
-        console.error('Error loading reviews:', error);
-        reviewsFeed.innerHTML = '<div class="loading-spinner">Error loading reviews</div>';
-    }
-}
+};
 
 async function loadJobs() {
     const jobsFeed = document.getElementById('jobs-feed');
