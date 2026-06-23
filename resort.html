@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <script>
@@ -14,7 +14,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* ── DESIGN VARIABLES ── */
+        /* â”€â”€ DESIGN VARIABLES â”€â”€ */
         :root {
             --blue: #2E1745;
             --blue-light: #e8def8;
@@ -34,7 +34,7 @@
         [data-theme="dark"] {
             --blue: #3b82f6;
             --blue-light: rgba(59, 130, 246, 0.15);
-            --link: #5b9bf3;
+            --link: #1877f2;
             --text: #f3f4f6;
             --text-muted: #9ca3af;
             --border: #374151;
@@ -58,7 +58,7 @@
             line-height: 1.6;
         }
 
-        /* ── NAVBAR ── */
+        /* â”€â”€ NAVBAR â”€â”€ */
         .resort-navbar {
             position: sticky;
             top: 0;
@@ -161,20 +161,20 @@
 
         .btn-resort-login:hover { background: var(--lavender-hover); }
 
-        /* ── PROFILE PAGE CONTAINER ── */
+        /* â”€â”€ PROFILE PAGE CONTAINER â”€â”€ */
         .profile-page {
             max-width: 900px;
             margin: 0 auto;
             padding: 28px 20px 60px;
         }
 
-        /* ── PROFILE TOP (cover + avatar wrapper) ── */
+        /* â”€â”€ PROFILE TOP (cover + avatar wrapper) â”€â”€ */
         .profile-top {
             position: relative;
             margin-bottom: 52px;
         }
 
-        /* ── COVER PHOTO ── */
+        /* â”€â”€ COVER PHOTO â”€â”€ */
         .profile-cover {
             position: relative;
             height: 220px;
@@ -185,7 +185,7 @@
             overflow: hidden;
         }
 
-        /* ── PROFILE PICTURE ── */
+        /* â”€â”€ PROFILE PICTURE â”€â”€ */
         .profile-picture {
             position: absolute;
             bottom: -36px;
@@ -206,7 +206,7 @@
             z-index: 2;
         }
 
-        /* ── PROFILE INFO ── */
+        /* â”€â”€ PROFILE INFO â”€â”€ */
         .profile-info {
             margin-left: 24px;
             margin-bottom: 20px;
@@ -240,7 +240,7 @@
             gap: 4px;
         }
 
-        /* ── PROFILE NAV (underline tabs) ── */
+        /* â”€â”€ PROFILE NAV (underline tabs) â”€â”€ */
         .profile-nav {
             display: flex;
             gap: 0;
@@ -268,7 +268,7 @@
             border-bottom-color: var(--blue);
         }
 
-        /* ── STATS BAR ── */
+        /* â”€â”€ STATS BAR â”€â”€ */
         .stats-bar {
             display: flex;
             border: 1px solid var(--border);
@@ -297,7 +297,7 @@
             display: block;
             font-size: 42px;
             font-weight: 800;
-            color: var(--blue);
+            color: var(--blue) !important;
             letter-spacing: -0.03em;
             line-height: 1;
             margin-bottom: 0;
@@ -309,7 +309,7 @@
             color: var(--text-muted);
         }
 
-        /* ── OVERVIEW GRID ── */
+        /* â”€â”€ OVERVIEW GRID â”€â”€ */
         .overview-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -369,7 +369,7 @@
         .info-value a { color: var(--link); text-decoration: none; word-break: break-all; }
         .info-value a:hover { text-decoration: underline; }
 
-        /* ── REVIEWS TAB ── */
+        /* â”€â”€ REVIEWS TAB â”€â”€ */
         .reviews-feed { display: flex; flex-direction: column; gap: 14px; }
 
         .review-card {
@@ -415,7 +415,7 @@
             margin: 8px 0;
         }
 
-        /* ── PHOTOS TAB ── */
+        /* â”€â”€ PHOTOS TAB â”€â”€ */
         .photos-header {
             display: flex;
             justify-content: space-between;
@@ -488,7 +488,7 @@
         .category-name { font-size: 14px; font-weight: 600; color: var(--text); }
         .category-count { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-        /* ── CATEGORY MODAL ── */
+        /* â”€â”€ CATEGORY MODAL â”€â”€ */
         .category-modal-overlay {
             display: none;
             position: fixed;
@@ -555,7 +555,7 @@
             background: var(--card-bg);
         }
 
-        /* ── JOBS TAB ── */
+        /* â”€â”€ JOBS TAB â”€â”€ */
         .jobs-header {
             display: flex;
             justify-content: space-between;
@@ -675,7 +675,7 @@
             border-radius: 12px;
         }
 
-        /* ── LOADING ── */
+        /* â”€â”€ LOADING â”€â”€ */
         .loading-spinner {
             text-align: center;
             padding: 60px;
@@ -696,7 +696,7 @@
             }
         }
 
-        /* ── RESPONSIVE ── */
+        /* â”€â”€ RESPONSIVE â”€â”€ */
         @media (max-width: 700px) {
             .overview-grid { grid-template-columns: 1fr; }
 
@@ -889,7 +889,7 @@
             <div class="profile-top">
                 <div class="profile-cover" style="background-image: url('${resort.cover_photo || ''}'); background-size: cover; background-position: center;"></div>
                 <div class="profile-picture" style="background-image: url('${resort.profile_photo || ''}'); background-size: cover; background-position: center;">
-                    ${!resort.profile_photo ? '🏨' : ''}
+                    ${!resort.profile_photo ? 'ðŸ¨' : ''}
                 </div>
             </div>
 
@@ -1084,7 +1084,7 @@
 
                             <div style="margin-bottom: 20px;">
                                 <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Google Rating</div>
-                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">⭐ ${resort.google_rating || 'N/A'}</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">â­ ${resort.google_rating || 'N/A'}</div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
@@ -1118,7 +1118,7 @@
         allReviews.forEach(review => {
             const date = new Date(review.created_at).toLocaleDateString();
             const category = review.categories?.name || 'General';
-            const categoryIcon = review.categories?.icon || '📌';
+            const categoryIcon = review.categories?.icon || 'ðŸ“Œ';
 
             html += `
                 <div class="review-card">
@@ -1347,13 +1347,13 @@
         allPhotos.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(photo => {
             const date = new Date(photo.date).toLocaleDateString();
             const categoryName = photo.category?.name || 'Other';
-            const categoryIcon = photo.category?.icon || '📌';
+            const categoryIcon = photo.category?.icon || 'ðŸ“Œ';
             html += `
                 <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
                     <img src="${photo.url}" loading="lazy">
                     <div class="photo-info">
                         <div class="photo-category">${categoryIcon} ${categoryName}</div>
-                        <div class="photo-review">⭐ ${photo.rating}/10 • ${date}</div>
+                        <div class="photo-review">â­ ${photo.rating}/10 â€¢ ${date}</div>
                     </div>
                 </div>
             `;
@@ -1367,7 +1367,7 @@
         allPhotos.forEach(photo => {
             const categoryId = photo.categoryId || 'uncategorized';
             const categoryName = photo.category?.name || 'Other';
-            const categoryIcon = photo.category?.icon || '📌';
+            const categoryIcon = photo.category?.icon || 'ðŸ“Œ';
 
             if (!photosByCategory[categoryId]) {
                 photosByCategory[categoryId] = { name: categoryName, icon: categoryIcon, photos: [] };
@@ -1402,7 +1402,7 @@
             html += `
                 <div class="category-photo-card" onclick="openCommentModal(${photo.reviewId})">
                     <img src="${photo.url}" loading="lazy">
-                    <div class="photo-review-preview">⭐ ${photo.rating}/10 • ${date}</div>
+                    <div class="photo-review-preview">â­ ${photo.rating}/10 â€¢ ${date}</div>
                 </div>
             `;
         });
