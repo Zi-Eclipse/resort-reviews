@@ -16,8 +16,9 @@
     <style>
         /* ── DESIGN VARIABLES ── */
         :root {
-            --blue: #1877f2;
-            --blue-light: #e8f1fd;
+            --blue: #2E1745;
+            --blue-light: #e8def8;
+            --link: #1877f2;
             --text: #111827;
             --text-muted: #6b7280;
             --border: #e5e7eb;
@@ -33,6 +34,7 @@
         [data-theme="dark"] {
             --blue: #3b82f6;
             --blue-light: rgba(59, 130, 246, 0.15);
+            --link: #5b9bf3;
             --text: #f3f4f6;
             --text-muted: #9ca3af;
             --border: #374151;
@@ -166,15 +168,20 @@
             padding: 28px 20px 60px;
         }
 
+        /* ── PROFILE TOP (cover + avatar wrapper) ── */
+        .profile-top {
+            position: relative;
+            margin-bottom: 52px;
+        }
+
         /* ── COVER PHOTO ── */
         .profile-cover {
             position: relative;
             height: 220px;
-            background: linear-gradient(135deg, #1877f2, #0a4b8a);
+            background: linear-gradient(135deg, #2E1745, #1a0d2b);
             background-size: cover !important;
             background-position: center !important;
             border-radius: 12px;
-            margin-bottom: 52px;
             overflow: hidden;
         }
 
@@ -183,26 +190,27 @@
             position: absolute;
             bottom: -36px;
             left: 24px;
-            width: 80px;
-            height: 80px;
+            width: 88px;
+            height: 88px;
             border-radius: 50%;
             border: 3px solid var(--bg);
-            background-color: var(--blue);
+            background-color: var(--ink);
             background-size: cover !important;
             background-position: center !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 30px;
             color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 2;
         }
 
         /* ── PROFILE INFO ── */
         .profile-info {
-            margin-left: 118px;
+            margin-left: 24px;
             margin-bottom: 20px;
-            min-height: 50px;
+            min-height: 40px;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
@@ -272,25 +280,32 @@
 
         .stat-item {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             text-align: center;
-            padding: 20px 16px;
+            padding: 30px 16px;
             border-right: 1px solid var(--border);
+            border-bottom: none;
         }
 
-        .stat-item:last-child { border-right: none; }
+        .stat-item:last-child { border-right: none; border-bottom: none; }
 
         .stat-value {
             display: block;
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 42px;
+            font-weight: 800;
             color: var(--blue);
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            margin-bottom: 4px;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 0;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 15px;
+            font-weight: 600;
             color: var(--text-muted);
         }
 
@@ -351,7 +366,7 @@
             word-break: break-word;
         }
 
-        .info-value a { color: var(--blue); text-decoration: none; word-break: break-all; }
+        .info-value a { color: var(--link); text-decoration: none; word-break: break-all; }
         .info-value a:hover { text-decoration: underline; }
 
         /* ── REVIEWS TAB ── */
@@ -871,7 +886,8 @@
         }
 
         document.getElementById('mainContent').innerHTML = `
-            <div class="profile-cover" style="background-image: url('${resort.cover_photo || ''}'); background-size: cover; background-position: center;">
+            <div class="profile-top">
+                <div class="profile-cover" style="background-image: url('${resort.cover_photo || ''}'); background-size: cover; background-position: center;"></div>
                 <div class="profile-picture" style="background-image: url('${resort.profile_photo || ''}'); background-size: cover; background-position: center;">
                     ${!resort.profile_photo ? '🏨' : ''}
                 </div>
@@ -1037,57 +1053,53 @@
 
                 const html = `
                     <div class="info-stats-grid">
-                        <div style="background: var(--white); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
-                            <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--text-dark);">
-                                <i class="fas fa-map-marker-alt" style="color: var(--primary); margin-right: 8px;"></i> Location & Contact
-                            </h3>
+                        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px;">
+                            <h3 style="margin-bottom: 20px; font-size: 20px; font-weight: 700; color: var(--text);">Location &amp; Contact</h3>
 
                             <div style="margin-bottom: 20px;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Address</div>
-                                <div style="color: var(--text-dark); font-size: 14px; line-height: 1.5;">${clean(resort.address)}</div>
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Address</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600; line-height: 1.45;">${clean(resort.address)}</div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Phone</div>
-                                <div style="color: var(--text-dark); font-size: 14px;">${clean(resort.phone)}</div>
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Phone</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">${clean(resort.phone)}</div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Hours</div>
-                                <div style="color: var(--text-dark); font-size: 14px;">${clean(resort.hours)}</div>
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Hours</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">${clean(resort.hours)}</div>
                             </div>
 
                             <div style="margin-bottom: 0;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Website</div>
-                                <div style="color: var(--text-dark); font-size: 14px; word-break: break-all;">
-                                    ${resort.website ? `<a href="${clean(resort.website)}" target="_blank" style="color: var(--primary); text-decoration: none;">${clean(resort.website).replace(/^https?:\/\//, '')}</a>` : 'Not available'}
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Website</div>
+                                <div style="font-size: 17px; font-weight: 600; word-break: break-all;">
+                                    ${resort.website ? `<a href="${clean(resort.website)}" target="_blank" style="color: #1877f2; text-decoration: none;">${clean(resort.website).replace(/^https?:\/\//, '')}</a>` : '<span style="color: var(--text);">Not available</span>'}
                                 </div>
                             </div>
                         </div>
 
-                        <div style="background: var(--white); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
-                            <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--text-dark);">
-                                <i class="fas fa-chart-simple" style="color: var(--primary); margin-right: 8px;"></i> Quick Stats
-                            </h3>
+                        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px;">
+                            <h3 style="margin-bottom: 20px; font-size: 20px; font-weight: 700; color: var(--text);">Quick Stats</h3>
 
                             <div style="margin-bottom: 20px;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Google Rating</div>
-                                <div style="color: var(--text-dark); font-size: 14px;">⭐ ${resort.google_rating || 'N/A'}</div>
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Google Rating</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">⭐ ${resort.google_rating || 'N/A'}</div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Star Rating</div>
-                                <div style="color: var(--text-dark); font-size: 14px;">${resort.star_rating || 'N/A'} stars</div>
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Star Rating</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">${resort.star_rating || 'N/A'} stars</div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Total Photos</div>
-                                <div style="color: var(--text-dark); font-size: 14px;">${allPhotos.length}</div>
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Total Photos</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">${allPhotos.length}</div>
                             </div>
 
                             <div style="margin-bottom: 0;">
-                                <div style="color: var(--text-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Total Reviews</div>
-                                <div style="color: var(--text-dark); font-size: 14px;">${allReviews.length}</div>
+                                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Total Reviews</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">${allReviews.length}</div>
                             </div>
                         </div>
                     </div>
