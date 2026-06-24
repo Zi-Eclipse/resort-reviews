@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <script>
         (function() {
             if (localStorage.getItem('theme') === 'dark') {
@@ -32,8 +33,8 @@
         }
 
         [data-theme="dark"] {
-            --blue: #3b82f6;
-            --blue-light: rgba(59, 130, 246, 0.15);
+            --blue: #60a5fa;
+            --blue-light: rgba(96, 165, 250, 0.15);
             --link: #1877f2;
             --text: #f3f4f6;
             --text-muted: #9ca3af;
@@ -178,12 +179,26 @@
         .profile-cover {
             position: relative;
             height: 220px;
-            background: linear-gradient(135deg, #2E1745, #1a0d2b);
+            background: var(--bg-secondary);
             background-size: cover !important;
             background-position: center !important;
             border-radius: 12px;
             overflow: hidden;
         }
+
+        .cover-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            opacity: 0.55;
+        }
+        .cover-placeholder i { font-size: 30px; }
+        .cover-placeholder span { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
 
         /* â”€â”€ PROFILE PICTURE â”€â”€ */
         .profile-picture {
@@ -295,18 +310,18 @@
 
         .stat-value {
             display: block;
-            font-size: 42px;
+            font-size: 32px;
             font-weight: 800;
             color: var(--blue) !important;
-            letter-spacing: -0.03em;
+            letter-spacing: -0.02em;
             line-height: 1;
             margin-bottom: 0;
         }
 
         .stat-label {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text);
         }
 
         /* â”€â”€ OVERVIEW GRID â”€â”€ */
@@ -887,9 +902,11 @@
 
         document.getElementById('mainContent').innerHTML = `
             <div class="profile-top">
-                <div class="profile-cover" style="background-image: url('${resort.cover_photo || ''}'); background-size: cover; background-position: center;"></div>
-                <div class="profile-picture" style="background-image: url('${resort.profile_photo || ''}'); background-size: cover; background-position: center;">
-                    ${!resort.profile_photo ? 'ðŸ¨' : ''}
+                <div class="profile-cover" style="${resort.cover_photo ? `background-image: url('${resort.cover_photo}'); background-size: cover; background-position: center;` : ''}">
+                    ${resort.cover_photo ? '' : '<div class="cover-placeholder"><i class="fas fa-image"></i><span>No cover photo</span></div>'}
+                </div>
+                <div class="profile-picture" style="${resort.profile_photo ? `background-image: url('${resort.profile_photo}'); background-size: cover; background-position: center;` : ''}">
+                    ${!resort.profile_photo ? '<i class="fas fa-hotel"></i>' : ''}
                 </div>
             </div>
 
@@ -1084,7 +1101,7 @@
 
                             <div style="margin-bottom: 20px;">
                                 <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px;">Google Rating</div>
-                                <div style="color: var(--text); font-size: 17px; font-weight: 600;">â­ ${resort.google_rating || 'N/A'}</div>
+                                <div style="color: var(--text); font-size: 17px; font-weight: 600;"><i class="fas fa-star" style="color: #f5b400;"></i> ${resort.google_rating || 'N/A'}</div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
