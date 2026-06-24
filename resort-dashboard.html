@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="modal-protection.js"></script>
     <style>
         /* Dashboard Layout */
         .dashboard-container {
@@ -2024,69 +2025,6 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
 
             return storedId;
         }
-
-        window.handleLogin = async function() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            const btn = document.getElementById('loginBtn');
-
-            errorDiv.style.display = 'none';
-
-            if (!email || !password) {
-                errorDiv.textContent = 'Please enter your email and password.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            btn.textContent = 'Signing in...';
-            btn.disabled = true;
-
-            try {
-                const { data: resort } = await supabaseClient
-                    .from('resorts')
-                    .select('id, name, temp_password, auth_user_id')
-                    .eq('login_email', email)
-                    .maybeSingle();
-
-                if (!resort) {
-                    errorDiv.textContent = 'No account found with that email address.';
-                    errorDiv.style.display = 'block';
-                    btn.textContent = 'Sign In';
-                    btn.disabled = false;
-                    return;
-                }
-
-                if (resort.temp_password !== password) {
-                    errorDiv.textContent = 'Incorrect password.';
-                    errorDiv.style.display = 'block';
-                    btn.textContent = 'Sign In';
-                    btn.disabled = false;
-                    return;
-                }
-
-                resortId = resort.auth_user_id || String(resort.id);
-                localStorage.setItem('resort_id', resortId);
-                localStorage.setItem('resort_name', resort.name);
-                localStorage.setItem('login_timestamp', new Date().getTime().toString());
-
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                document.querySelector('.top-nav').style.display = 'flex';
-
-                await loadResortData();
-                await loadDashboard();
-                await loadResortPhotos();
-                initTheme();
-
-            } catch (err) {
-                console.error('Login error:', err);
-                errorDiv.textContent = 'Error signing in. Please try again.';
-                errorDiv.style.display = 'block';
-                btn.textContent = 'Sign In';
-                btn.disabled = false;
-            }
-        };
 
         let resortId = checkSession();
 
