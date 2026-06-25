@@ -2460,7 +2460,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                                             <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
                                                 <img src="${photo.url}" loading="lazy">
                                                 <div class="review-preview">
-                                                    â­ ${photo.rating || 0}/10 â€¢ ${previewText}...
+                                                    <i class="fas fa-star" style="color:#f5b400; font-size:11px;"></i> ${photo.rating || 0}/10 &middot; ${previewText}...
                                                 </div>
                                             </div>
                                         `;
@@ -2615,7 +2615,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                         <div class="job-card">
                             <div class="job-status ${statusClass}">${status}</div>
                             <h4>${job.title}</h4>
-                            <div class="job-department">${job.department} â€¢ ${job.job_type}</div>
+                            <div class="job-department">${job.department} &middot; ${job.job_type}</div>
                             <div class="job-expires">Expires: ${expires}</div>
                             <div class="job-actions">
                                 <button class="action-btn small" onclick="editJob(${job.id})">
@@ -3002,7 +3002,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                     const cd = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     const safeEdit = (comment.comment_text || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
                     commentsHtml += `<div class="modal-comment-item" id="modal-comment-${comment.id}">
-                        <div class="modal-comment-avatar${comment.is_official ? ' official' : ''}">${comment.is_official ? '<i class="fas fa-hotel"></i>' : 'ðŸ‘¤'}</div>
+                        <div class="modal-comment-avatar${comment.is_official ? ' official' : ''}">${comment.is_official ? '<i class="fas fa-hotel"></i>' : '<i class="fas fa-user"></i>'}</div>
                         <div class="modal-comment-content">
                             <div class="modal-comment-header">
                                 <span class="modal-comment-author">${comment.is_official ? 'Your Response' : 'Guest'}</span>
