@@ -1,6 +1,7 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <script>
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -1251,36 +1252,41 @@
 
     </style>
 <style>
-/* ══ NEW DESIGN SYSTEM — overrides old style.css ══ */
+/* â•â• NEW DESIGN SYSTEM â€” overrides old style.css â•â• */
 :root {
-    --blue: #1877f2;
-    --blue-light: #e8f1fd;
+    --blue: #2E1745;
+    --blue-light: #e8def8;
+    --link: #1877f2;
     --text: #111827;
     --text-muted: #6b7280;
     --bg: #f7f6f3;
     --bg-secondary: #f0efe9;
     --card-bg: #ffffff;
     --border: #e5e7eb;
+    --ink: #2E1745;
+    --lavender: #e8def8;
+    --lavender-hover: #ddd0f5;
     /* Remap legacy variable names so old style.css rules adopt the new look */
     --bg-color: #f7f6f3 !important;
     --white: #ffffff !important;
-    --primary: #1877f2 !important;
+    --primary: #2E1745 !important;
     --text-dark: #111827 !important;
     --text-light: #6b7280 !important;
     --shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
 }
 
 [data-theme="dark"] {
-    --blue: #3b82f6;
-    --blue-light: rgba(59, 130, 246, 0.15);
+    --blue: #60a5fa;
+    --blue-light: rgba(96, 165, 250, 0.15);
+    --link: #1877f2;
     --text: #f3f4f6;
     --text-muted: #9ca3af;
-    --bg: #111827;
-    --bg-secondary: #2b3648;
-    --card-bg: #1f2937;
+    --bg: #1a1a1a;
+    --bg-secondary: #2b2b2b;
+    --card-bg: #232323;
     --border: #374151;
-    --bg-color: #111827 !important;
-    --white: #1f2937 !important;
+    --bg-color: #1a1a1a !important;
+    --white: #232323 !important;
     --primary: #3b82f6 !important;
     --text-dark: #f3f4f6 !important;
     --text-light: #9ca3af !important;
@@ -1294,7 +1300,7 @@ body {
     padding-top: 0 !important;
 }
 
-/* ── Navbar (matches guest-feed) ── */
+/* â”€â”€ Navbar (matches guest-feed) â”€â”€ */
 .navbar {
     display: flex;
     align-items: center;
@@ -1324,22 +1330,249 @@ body {
     margin-left: 6px;
 }
 .theme-btn {
-    width: 40px; height: 40px;
-    border-radius: 50%;
+    position: relative;
+    width: 58px;
+    height: 30px;
+    border-radius: 999px;
     border: none;
-    background: var(--bg-secondary);
-    color: var(--text);
-    font-size: 16px;
+    background: #d7c9f3;
+    padding: 3px;
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s;
+    display: flex; align-items: center;
+    transition: background 0.25s ease;
 }
-.theme-btn:hover { background: var(--border); }
+.theme-btn .theme-toggle-knob {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #f5a623;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+[data-theme="dark"] .theme-btn { background: #3a3a3a; }
+[data-theme="dark"] .theme-btn .theme-toggle-knob {
+    transform: translateX(28px);
+    background: #1a1a1a;
+    color: var(--lavender);
+}
 
-/* ── Dashboard surface restyle ── */
+/* Logo ring in dark mode so the mark reads on the charcoal canvas */
+.logo-square { stroke: transparent; stroke-width: 1.5; }
+[data-theme="dark"] .logo-square { stroke: var(--lavender); }
+
+/* Links stay classic blue (exception to the aubergine/light-blue accent) */
+.info-item a { color: var(--link) !important; }
+
+/* â”€â”€ Compact review cards (grid like Photos; click opens the comment popup) â”€â”€ */
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+.review-mini {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 150px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.review-mini:hover {
+    transform: translateY(-3px);
+    border-color: var(--blue);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+}
+.review-mini-top { display: flex; align-items: center; gap: 8px; }
+.review-mini-text {
+    flex: 1;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.review-mini-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+.review-mini-meta { display: flex; align-items: center; gap: 12px; }
+.review-mini-meta i { margin-right: 3px; }
+.rm-responded { color: #16a34a; font-weight: 600; }
+[data-theme="dark"] .rm-responded { color: #4ade80; }
+.rm-reply { color: var(--blue); font-weight: 600; }
+.review-mini-flag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: background 0.15s, color 0.15s;
+}
+.review-mini-flag:hover { background: var(--bg-secondary); color: #ef4444; }
+
+/* â”€â”€ Comment popup â€” guest-feed two-pane design â”€â”€ */
+.comment-modal {
+    background: var(--card-bg) !important;
+    border-radius: 8px !important;
+    width: 90% !important;
+    max-width: 1000px !important;
+    height: 85vh !important;
+    max-height: 700px !important;
+    display: flex !important;
+    overflow: hidden !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+}
+.comment-modal.narrow { max-width: 600px !important; }
+.comment-modal-content {
+    display: flex !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+}
+.modal-photo-side {
+    flex: 1; background: #000;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; min-width: 0; position: relative;
+}
+.modal-photo-side img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
+.modal-photo-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.85); color: #000;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none; z-index: 2; transition: background 0.15s;
+}
+.modal-photo-nav:hover { background: rgba(255,255,255,1); }
+.modal-photo-nav.prev { left: 12px; }
+.modal-photo-nav.next { right: 12px; }
+.modal-photo-counter {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(0,0,0,0.6); color: white;
+    padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; z-index: 2;
+}
+.modal-info-side {
+    width: 360px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+    background: var(--card-bg); border-left: 1px solid var(--border);
+}
+.modal-info-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 10px;
+}
+.modal-info-resort { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.modal-info-resort-name {
+    font-size: 15px; font-weight: 600; color: var(--text); text-decoration: none;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.modal-info-resort-name:hover { color: var(--blue); }
+.modal-info-rating {
+    background: var(--primary); color: white; padding: 3px 10px; border-radius: 99px;
+    font-size: 12px; font-weight: 600; flex-shrink: 0;
+}
+.modal-info-close {
+    background: transparent; border: none; color: var(--text-muted);
+    font-size: 18px; cursor: pointer; padding: 4px 8px; border-radius: 6px; flex-shrink: 0;
+}
+.modal-info-close:hover { background: var(--bg-secondary); color: var(--text); }
+.modal-info-body { flex: 1; overflow-y: auto; padding: 16px; }
+.modal-review-text { font-size: 14px; line-height: 1.5; color: var(--text); margin-bottom: 6px; word-wrap: break-word; }
+.modal-review-date { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 4px; }
+.modal-comments-divider { border-top: 1px solid var(--border); margin: 0 -16px 14px; }
+.modal-comment-item { display: flex; gap: 10px; margin-bottom: 14px; padding: 0; background: transparent; }
+.modal-comment-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--primary); color: white;
+    display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; font-weight: 400;
+}
+.modal-comment-avatar.official { background: #2E1745 !important; color: #fff !important; }
+[data-theme="dark"] .modal-comment-avatar.official { background: #fff !important; color: #2E1745 !important; }
+
+/* Settings popup icons: dark blue in light mode, white in dark mode */
+#settingsModal .modal-header h3,
+#settingsModal .modal-header h3 i,
+#settingsModal .settings-item .settings-info i { color: #2E1745 !important; }
+[data-theme="dark"] #settingsModal .modal-header h3,
+[data-theme="dark"] #settingsModal .modal-header h3 i,
+[data-theme="dark"] #settingsModal .settings-item .settings-info i { color: #fff !important; }
+
+/* Profile dropdown (hotel-icon menu) icons: dark blue in light, white in dark */
+#profileDropdown .dropdown-item i { color: #2E1745 !important; }
+[data-theme="dark"] #profileDropdown .dropdown-item i { color: #fff !important; }
+
+/* Keep settings content inside the rounded box (scroll instead of overflowing) */
+#settingsModal .modal-content { display: flex !important; flex-direction: column; overflow: hidden !important; }
+#settingsModal .modal-header { flex-shrink: 0; }
+#settingsModal .settings-content { flex: 1; min-height: 0; overflow-y: auto; }
+.modal-comment-content { flex: 1; min-width: 0; }
+.modal-comment-header { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 3px; }
+.modal-comment-author { font-weight: 600; font-size: 13px; color: var(--text); }
+.modal-comment-text { font-size: 13px; color: var(--text); line-height: 1.4; word-wrap: break-word; margin: 0; }
+.modal-comment-actions { display: flex; gap: 10px; margin-top: 6px; }
+.modal-comment-actions button {
+    background: transparent; border: 1px solid var(--border); padding: 3px 12px;
+    border-radius: 20px; cursor: pointer; font-size: 12px; color: var(--text-muted);
+}
+.modal-comment-actions button:hover { background: var(--bg-secondary); color: var(--blue); }
+.comment-date-small { color: var(--text-muted); font-size: 11px; }
+.no-comments-modal { text-align: center; padding: 30px 0; color: var(--text-muted); font-size: 13px; font-style: italic; }
+.verified-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #1877f2; color: #fff;
+    width: 15px; height: 15px; border-radius: 50%; font-size: 8px; padding: 0; line-height: 1;
+}
+.modal-response-bar {
+    flex-shrink: 0; display: flex; gap: 8px; align-items: flex-end;
+    padding: 12px 16px; border-top: 1px solid var(--border); background: var(--card-bg);
+}
+.modal-response-bar textarea {
+    flex: 1; resize: none; max-height: 110px; min-height: 38px;
+    padding: 9px 12px; border: 1px solid var(--border) !important; border-radius: 20px !important;
+    background: var(--bg-secondary) !important; color: var(--text) !important; font-size: 13px; line-height: 1.4; font-family: inherit;
+}
+.modal-response-bar textarea:focus { border-color: var(--blue) !important; }
+.modal-response-bar button {
+    flex-shrink: 0; background: var(--primary); color: #fff; border: none;
+    border-radius: 20px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.modal-response-bar button:hover { opacity: 0.9; }
+@media (max-width: 768px) {
+    .comment-modal { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; flex-direction: column; }
+    .modal-photo-side { flex: none; height: 45vh; }
+    .modal-info-side { width: 100% !important; border-left: none; border-top: 1px solid var(--border); flex: 1; min-height: 0; }
+}
+
+/* â”€â”€ Dashboard surface restyle â”€â”€ */
 .dashboard-container { max-width: 1100px !important; }
-.profile-cover { border-radius: 16px !important; margin-top: 20px; }
-.profile-info h1 { font-weight: 600 !important; letter-spacing: -0.02em; }
+.profile-cover { border-radius: 16px !important; margin-top: 20px; overflow: visible !important; }
+.profile-info { margin-left: 30px !important; margin-bottom: 20px !important; display: flex !important; align-items: center; flex-wrap: wrap; gap: 10px; }
+.profile-info h1 { font-size: 22px !important; font-weight: 700 !important; letter-spacing: -0.02em; color: var(--text) !important; display: flex !important; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 !important; }
+.verified-badge-large { background: #1877f2 !important; color: #fff !important; padding: 0 !important; width: 19px; height: 19px; border-radius: 50% !important; font-size: 10px !important; font-weight: 500 !important; display: inline-flex !important; align-items: center; justify-content: center; }
 
 .profile-nav {
     display: flex !important;
@@ -1428,7 +1661,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
         <div class="navbar-left">
             <a href="guest-feed.html" class="nav-brand">
                 <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink:0;">
-                  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.5" fill="#2E1745" stroke="transparent" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+                  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.5" fill="#2E1745" class="logo-square" vector-effect="non-scaling-stroke"/>
                   <circle cx="16" cy="11" r="4" fill="white"/>
                   <path d="M10 24 Q16 18 22 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
                   <path d="M7 24 Q16 14 25 24" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
@@ -1438,8 +1671,8 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
             <span class="dashboard-tag">Dashboard</span>
         </div>
         <div class="navbar-right">
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode">
-                <i class="fas fa-moon" id="themeIcon"></i>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" role="switch" aria-label="Toggle dark mode">
+                <span class="theme-toggle-knob"><i class="fas fa-moon" id="themeIcon"></i></span>
             </button>
             <!-- Profile Dropdown Menu -->
             <div class="profile-dropdown-container">
@@ -1550,21 +1783,6 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                     </div>
                 </div>
 
-                <!-- Appearance -->
-                <div class="settings-section">
-                    <h4>Appearance</h4>
-                    <div class="settings-item">
-                        <div class="settings-info">
-                            <i class="fas fa-moon"></i>
-                            <span>Dark Mode</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-
                 <!-- About -->
                 <div class="settings-section">
                     <h4>About</h4>
@@ -1600,20 +1818,20 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                     <label>Department *</label>
                     <select id="job_department" class="form-input" required>
                         <option value="">Select department</option>
-                        <option value="Housekeeping">🧹 Housekeeping</option>
-                        <option value="Food & Beverage">🍽️ Food & Beverage</option>
-                        <option value="Kitchen">👨‍🍳 Kitchen</option>
-                        <option value="Front Office">🛎️ Front Office</option>
-                        <option value="Reservations">📞 Reservations</option>
-                        <option value="Engineering">🔧 Engineering</option>
-                        <option value="Spa & Wellness">💆 Spa & Wellness</option>
-                        <option value="Recreation">🏊 Recreation</option>
-                        <option value="Management">👔 Management</option>
-                        <option value="Sales & Marketing">📊 Sales & Marketing</option>
-                        <option value="Human Resources">👥 Human Resources</option>
-                        <option value="Finance">💰 Finance</option>
-                        <option value="Security">🛡️ Security</option>
-                        <option value="Other">📌 Other</option>
+                        <option value="Housekeeping">ðŸ§¹ Housekeeping</option>
+                        <option value="Food & Beverage">ðŸ½ï¸ Food & Beverage</option>
+                        <option value="Kitchen">ðŸ‘¨â€ðŸ³ Kitchen</option>
+                        <option value="Front Office">ðŸ›Žï¸ Front Office</option>
+                        <option value="Reservations">ðŸ“ž Reservations</option>
+                        <option value="Engineering">ðŸ”§ Engineering</option>
+                        <option value="Spa & Wellness">ðŸ’† Spa & Wellness</option>
+                        <option value="Recreation">ðŸŠ Recreation</option>
+                        <option value="Management">ðŸ‘” Management</option>
+                        <option value="Sales & Marketing">ðŸ“Š Sales & Marketing</option>
+                        <option value="Human Resources">ðŸ‘¥ Human Resources</option>
+                        <option value="Finance">ðŸ’° Finance</option>
+                        <option value="Security">ðŸ›¡ï¸ Security</option>
+                        <option value="Other">ðŸ“Œ Other</option>
                     </select>
                 </div>
 
@@ -1784,10 +2002,6 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
     <!-- Comment Modal -->
     <div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal()">
         <div class="comment-modal" onclick="event.stopPropagation()">
-            <div class="comment-modal-header">
-                <h3><i class="far fa-comments"></i> Review & Comments</h3>
-                <i class="fas fa-times comment-modal-close" onclick="closeCommentModal()"></i>
-            </div>
             <div class="comment-modal-content" id="commentModalContent">
                 <!-- Populated by JavaScript -->
             </div>
@@ -1931,7 +2145,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                 coverDiv.style.backgroundPosition = 'center';
                 coverDiv.style.opacity = '1';
 
-                alert('✅ Cover photo updated!');
+                alert('âœ… Cover photo updated!');
 
             } catch (error) {
                 console.error('Error uploading cover:', error);
@@ -1978,7 +2192,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                 profileDiv.style.opacity = '1';
                 if (initialSpan) initialSpan.style.display = 'none';
 
-                alert('✅ Profile picture updated!');
+                alert('âœ… Profile picture updated!');
 
             } catch (error) {
                 console.error('Error uploading profile:', error);
@@ -2169,7 +2383,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                         </div>
                         
                         <div class="profile-picture" id="profilePicture" onclick="event.stopPropagation(); openProfileModal()" style="background-image: ${currentResort?.profile_photo ? `url('${currentResort.profile_photo}')` : 'none'}; background-size: cover; background-position: center;">
-                            ${!currentResort?.profile_photo ? '<span id="profileInitial">🏨</span>' : ''}
+                            ${!currentResort?.profile_photo ? '<span id="profileInitial">ðŸ¨</span>' : ''}
                             <div class="profile-picture-overlay">
                                 <i class="fas fa-image"></i>
                                 <span>View</span>
@@ -2178,7 +2392,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                     </div>
 
                     <div class="profile-info">
-                        <h1>${currentResort?.name || 'Resort'} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
+                        <h1>${currentResort?.name || 'Resort'} <span class="verified-badge-large" title="Verified"><i class="fas fa-check"></i></span></h1>
                     </div>
 
                     <div class="profile-nav">
@@ -2246,7 +2460,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                                             <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
                                                 <img src="${photo.url}" loading="lazy">
                                                 <div class="review-preview">
-                                                    ⭐ ${photo.rating || 0}/10 • ${previewText}...
+                                                    â­ ${photo.rating || 0}/10 â€¢ ${previewText}...
                                                 </div>
                                             </div>
                                         `;
@@ -2335,62 +2549,35 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
 
                     const existingComment = commentMap[review.id];
 
-                    let photosHtml = '';
+                    let photoCount = 0;
                     if (review.photo_urls && review.photo_urls !== '[]') {
-                        try {
-                            const photoUrls = JSON.parse(review.photo_urls);
-                            if (photoUrls.length > 0) {
-                                photosHtml = '<div class="photo-gallery">';
-                                photoUrls.forEach(url => {
-                                    photosHtml += `
-                                        <div class="photo-thumbnail" onclick="openCommentModal(${review.id})">
-                                            <img src="${url}" loading="lazy">
-                                        </div>
-                                    `;
-                                });
-                                photosHtml += '</div>';
-                            }
-                        } catch (e) { }
+                        try { photoCount = JSON.parse(review.photo_urls).length; } catch (e) { }
                     }
+                    const snippet = (review.review_text || '').replace(/</g, '&lt;');
 
                     html += `
-                        <div class="review-card">
-                            <div class="review-menu-container">
-                                <div class="menu-trigger" onclick="toggleReviewMenu(${review.id})">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </div>
-                                <div class="review-menu" id="menu-${review.id}">
-                                    <div class="menu-item report" onclick="openReportModal(${review.id})">
-                                        <i class="fas fa-flag"></i>
-                                        <span>Report</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="review-header">
+                        <div class="review-mini" onclick="openCommentModal(${review.id})">
+                            <button class="review-mini-flag" onclick="event.stopPropagation(); openReportModal(${review.id})" title="Report review">
+                                <i class="fas fa-flag"></i>
+                            </button>
+                            <div class="review-mini-top">
                                 <span class="review-rating">${review.rating}/10</span>
-                                <span class="review-date">${date}</span>
                             </div>
-                            <p class="review-text">${review.review_text}</p>
-                            ${photosHtml}
-                            
-                            <div class="review-actions">
-                                <button class="action-btn" onclick="openCommentModal(${review.id})">
-                                    <i class="far fa-comment"></i> ${existingComment ? 'View/Edit Response' : 'Add Response'}
-                                </button>
-                                <button class="action-btn" onclick="shareReview(${review.id})">
-                                    <i class="far fa-share-square"></i> Share
-                                </button>
-                            </div>
-                            
-                            <div id="response-container-${review.id}">
-                                ${existingComment ? renderExistingResponse(existingComment) : renderResponseInput(review.id)}
+                            <p class="review-mini-text">${snippet}</p>
+                            <div class="review-mini-foot">
+                                <span class="review-mini-date">${date}</span>
+                                <span class="review-mini-meta">
+                                    ${photoCount ? `<span><i class="fas fa-image"></i> ${photoCount}</span>` : ''}
+                                    ${existingComment
+                                        ? '<span class="rm-responded"><i class="fas fa-check-circle"></i> Responded</span>'
+                                        : '<span class="rm-reply"><i class="far fa-comment"></i> Reply</span>'}
+                                </span>
                             </div>
                         </div>
                     `;
                 }
 
-                reviewsList.innerHTML = html || '<p style="text-align: center; padding: 40px;">No reviews yet</p>';
+                reviewsList.innerHTML = html ? '<div class="reviews-grid">' + html + '</div>' : '<p style="text-align: center; padding: 40px;">No reviews yet</p>';
             } catch (error) {
                 console.error('Error loading reviews list:', error);
             }
@@ -2428,7 +2615,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                         <div class="job-card">
                             <div class="job-status ${statusClass}">${status}</div>
                             <h4>${job.title}</h4>
-                            <div class="job-department">${job.department} • ${job.job_type}</div>
+                            <div class="job-department">${job.department} â€¢ ${job.job_type}</div>
                             <div class="job-expires">Expires: ${expires}</div>
                             <div class="job-actions">
                                 <button class="action-btn small" onclick="editJob(${job.id})">
@@ -2786,103 +2973,94 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
         window.openCommentModal = async function (reviewId) {
             currentReviewId = reviewId;
 
-            const { data: review } = await supabaseClient
-                .from('reviews')
-                .select('*')
-                .eq('id', reviewId)
-                .single();
+            const { data: review } = await supabaseClient.from('reviews').select('*').eq('id', reviewId).single();
+            const { data: comments } = await supabaseClient.from('resort_comments').select('*').eq('review_id', reviewId).order('created_at', { ascending: false });
 
-            const { data: comments } = await supabaseClient
-                .from('resort_comments')
-                .select('*')
-                .eq('review_id', reviewId)
-                .order('created_at', { ascending: false });
+            const resortName = currentResort?.name || 'Resort';
+            const resortId = currentResort?.integer_id;
+            const date = new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            const date = new Date(review.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-
-            let photosHtml = '';
+            // Parse photos
+            let photoUrls = [];
             if (review.photo_urls && review.photo_urls !== '[]') {
-                try {
-                    const photoUrls = JSON.parse(review.photo_urls);
-                    if (photoUrls.length > 0) {
-                        photosHtml = '<div class="modal-post-photos">';
-                        photoUrls.forEach(url => {
-                            photosHtml += `
-                                <div class="modal-post-photo" onclick="window.open('${url}')">
-                                    <img src="${url}" loading="lazy">
-                                </div>
-                            `;
-                        });
-                        photosHtml += '</div>';
-                    }
-                } catch (e) { }
+                try { const parsed = JSON.parse(review.photo_urls); if (Array.isArray(parsed)) photoUrls = parsed; } catch (e) {}
             }
 
-            let commentsHtml = '<div class="comments-list">';
+            // LEFT: photo viewer (only when there are photos)
+            let photoSideHtml = '';
+            if (photoUrls.length > 0) {
+                const counter = photoUrls.length > 1 ? `<div class="modal-photo-counter"><span id="modalPhotoIdx">1</span>/${photoUrls.length}</div>` : '';
+                const navButtons = photoUrls.length > 1 ? `<button class="modal-photo-nav prev" onclick="modalPhotoNav(-1)"><i class="fas fa-chevron-left"></i></button><button class="modal-photo-nav next" onclick="modalPhotoNav(1)"><i class="fas fa-chevron-right"></i></button>` : '';
+                photoSideHtml = `<div class="modal-photo-side">${counter}<img id="modalPhotoImg" src="${photoUrls[0]}">${navButtons}</div>`;
+                window._modalPhotos = photoUrls; window._modalPhotoIdx = 0;
+            } else { window._modalPhotos = null; }
+
+            // Comments
+            let commentsHtml = '';
             if (comments && comments.length > 0) {
                 comments.forEach(comment => {
-                    const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric'
-                    });
-
-                    commentsHtml += `
-                        <div class="modal-comment-item" id="modal-comment-${comment.id}">
-                            <div class="modal-comment-avatar">
-                                ${comment.is_official ? '🏨' : '👤'}
+                    const cd = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    const safeEdit = (comment.comment_text || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
+                    commentsHtml += `<div class="modal-comment-item" id="modal-comment-${comment.id}">
+                        <div class="modal-comment-avatar${comment.is_official ? ' official' : ''}">${comment.is_official ? '<i class="fas fa-hotel"></i>' : 'ðŸ‘¤'}</div>
+                        <div class="modal-comment-content">
+                            <div class="modal-comment-header">
+                                <span class="modal-comment-author">${comment.is_official ? 'Your Response' : 'Guest'}</span>
+                                ${comment.is_official ? '<span class="verified-badge" title="Verified"><i class="fas fa-check"></i></span>' : ''}
+                                <span class="comment-date-small">${cd}</span>
                             </div>
-                            <div class="modal-comment-content">
-                                <div class="modal-comment-header">
-                                    <span class="modal-comment-author">
-                                        ${comment.is_official ? 'Your Response' : 'Guest'}
-                                    </span>
-                                    ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
-                                    <span class="comment-date-small">${commentDate}</span>
-                                </div>
-                                <p class="modal-comment-text">${comment.comment_text}</p>
-                                ${comment.is_official ? `
-                                    <div class="modal-comment-actions">
-                                        <button onclick="modalEditComment(${comment.id}, '${comment.comment_text.replace(/'/g, "\\'")}')">Edit</button>
-                                        <button onclick="modalDeleteComment(${comment.id})">Delete</button>
-                                    </div>
-                                ` : ''}
-                            </div>
+                            <p class="modal-comment-text">${escapeHtml(comment.comment_text)}</p>
+                            ${comment.is_official ? `<div class="modal-comment-actions">
+                                <button onclick="modalEditComment(${comment.id}, '${safeEdit}')">Edit</button>
+                                <button onclick="modalDeleteComment(${comment.id})">Delete</button>
+                            </div>` : ''}
                         </div>
-                    `;
+                    </div>`;
                 });
             } else {
-                commentsHtml += '<div class="no-comments-modal">No comments yet</div>';
+                commentsHtml = '<div class="no-comments-modal">No comments yet.</div>';
             }
-            commentsHtml += '</div>';
 
-            const modalContent = `
-                <div class="modal-post">
-                    <div class="modal-post-header">
-                        <span class="modal-post-rating">${review.rating}/10</span>
-                        <span class="modal-post-date">${date}</span>
+            const noPhotos = photoUrls.length === 0;
+            const infoSideHtml = `<div class="modal-info-side"${noPhotos ? ' style="width:100%; border-left:none;"' : ''}>
+                <div class="modal-info-header">
+                    <div class="modal-info-resort">
+                        <a href="resort.html?id=${resortId}" class="modal-info-resort-name">${escapeHtml(resortName)}</a>
+                        <span class="modal-info-rating">${review.rating}/10</span>
                     </div>
-                    <p class="modal-post-text">${review.review_text}</p>
-                    ${photosHtml}
+                    <button class="modal-info-close" onclick="closeCommentModal()"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="modal-comments">
+                <div class="modal-info-body">
+                    <p class="modal-review-text">${escapeHtml(review.review_text)}</p>
+                    <div class="modal-review-date"><i class="far fa-calendar"></i> ${date}</div>
+                    <div class="modal-comments-divider"></div>
                     ${commentsHtml}
-                    <div class="modal-response-section" id="modal-response-${reviewId}">
-                        <div class="modal-response-input">
-                            <textarea id="modal-response-text" placeholder="Write your official response..."></textarea>
-                            <button onclick="submitModalResponse(${reviewId})">Post</button>
-                        </div>
-                    </div>
                 </div>
-            `;
+                <div class="modal-response-bar">
+                    <textarea id="modal-response-text" placeholder="Write your official responseâ€¦" rows="1"></textarea>
+                    <button onclick="submitModalResponse(${reviewId})">Post</button>
+                </div>
+            </div>`;
 
-            document.getElementById('commentModalContent').innerHTML = modalContent;
+            document.getElementById('commentModalContent').innerHTML = photoSideHtml + infoSideHtml;
+            const modalBox = document.querySelector('#commentModal .comment-modal');
+            if (modalBox) modalBox.classList.toggle('narrow', noPhotos);
             document.getElementById('commentModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         };
+
+        window.modalPhotoNav = function (delta) {
+            if (!window._modalPhotos) return;
+            const total = window._modalPhotos.length;
+            window._modalPhotoIdx = (window._modalPhotoIdx + delta + total) % total;
+            document.getElementById('modalPhotoImg').src = window._modalPhotos[window._modalPhotoIdx];
+            const idxEl = document.getElementById('modalPhotoIdx');
+            if (idxEl) idxEl.textContent = window._modalPhotoIdx + 1;
+        };
+
+        function escapeHtml(str) {
+            return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
 
         window.closeCommentModal = function () {
             document.getElementById('commentModal').classList.remove('active');
@@ -2892,11 +3070,11 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
         window.modalEditComment = function (commentId, currentText) {
             const commentDiv = document.getElementById(`modal-comment-${commentId}`);
             commentDiv.innerHTML = `
-                <div class="modal-comment-avatar">🏨</div>
+                <div class="modal-comment-avatar official"><i class="fas fa-hotel"></i></div>
                 <div class="modal-comment-content">
                     <div class="modal-comment-header">
                         <span class="modal-comment-author">Your Response</span>
-                        <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
+                        <span class="verified-badge" title="Verified"><i class="fas fa-check"></i></span>
                     </div>
                     <div class="modal-edit-mode">
                         <textarea id="modal-edit-${commentId}">${currentText}</textarea>
@@ -3098,7 +3276,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
                 if (updateError) {
                     alert('Error updating password: ' + updateError.message);
                 } else {
-                    alert('✅ Password changed successfully!');
+                    alert('âœ… Password changed successfully!');
                     closeChangePasswordModal();
                 }
             } catch (error) {
@@ -3147,7 +3325,7 @@ input:focus, textarea:focus { border-color: var(--blue) !important; outline: non
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
             const icon = document.getElementById('themeIcon');
-            if (icon) icon.className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            if (icon) icon.className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
             const toggle = document.getElementById('darkModeToggle');
             if (toggle) toggle.checked = next === 'dark';
         };

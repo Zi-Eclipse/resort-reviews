@@ -10,7 +10,15 @@
       "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" diff --stat)",
       "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add guest-feed.html index.html)",
       "Bash(git -C c:/Users/ziyer/OneDrive/Desktop/resort-reviews commit -m ' *)",
-      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" push)"
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" push)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add guest-feed.html)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add index.html)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add favicon.svg index.html about.html guest-feed.html resort.html resort-login.html resort-dashboard.html admin.html admin-verification.html)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add admin.html admin-verification.html admin-reports.html resort.html resort-login.html resort-dashboard.html favicon.svg)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add favicon.svg)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" diff --staged favicon.svg)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add resort-login.html guest-feed.html)",
+      "Bash(git -C \"c:/Users/ziyer/OneDrive/Desktop/resort-reviews\" add resort.html)"
     ]
   }
 }
