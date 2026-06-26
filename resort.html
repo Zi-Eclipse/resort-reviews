@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="modal-protection.js"></script>
     <style>
-        /* â”€â”€ DESIGN VARIABLES â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ DESIGN VARIABLES Ã¢â€â‚¬Ã¢â€â‚¬ */
         :root {
             --blue: #2E1745;
             --blue-light: #e8def8;
@@ -60,7 +60,7 @@
             line-height: 1.6;
         }
 
-        /* â”€â”€ NAVBAR â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ NAVBAR Ã¢â€â‚¬Ã¢â€â‚¬ */
         .resort-navbar {
             position: sticky;
             top: 0;
@@ -163,20 +163,20 @@
 
         .btn-resort-login:hover { background: var(--lavender-hover); }
 
-        /* â”€â”€ PROFILE PAGE CONTAINER â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ PROFILE PAGE CONTAINER Ã¢â€â‚¬Ã¢â€â‚¬ */
         .profile-page {
             max-width: 900px;
             margin: 0 auto;
             padding: 28px 20px 60px;
         }
 
-        /* â”€â”€ PROFILE TOP (cover + avatar wrapper) â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ PROFILE TOP (cover + avatar wrapper) Ã¢â€â‚¬Ã¢â€â‚¬ */
         .profile-top {
             position: relative;
             margin-bottom: 52px;
         }
 
-        /* â”€â”€ COVER PHOTO â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ COVER PHOTO Ã¢â€â‚¬Ã¢â€â‚¬ */
         .profile-cover {
             position: relative;
             height: 220px;
@@ -201,7 +201,7 @@
         .cover-placeholder i { font-size: 30px; }
         .cover-placeholder span { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
 
-        /* â”€â”€ PROFILE PICTURE â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ PROFILE PICTURE Ã¢â€â‚¬Ã¢â€â‚¬ */
         .profile-picture {
             position: absolute;
             bottom: -36px;
@@ -222,7 +222,7 @@
             z-index: 2;
         }
 
-        /* â”€â”€ PROFILE INFO â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ PROFILE INFO Ã¢â€â‚¬Ã¢â€â‚¬ */
         .profile-info {
             margin-left: 24px;
             margin-bottom: 20px;
@@ -245,18 +245,20 @@
         }
 
         .verified-badge-large {
-            background: var(--blue-light);
-            color: var(--blue);
-            padding: 3px 10px;
-            border-radius: 99px;
-            font-size: 12px;
+            width: 19px;
+            height: 19px;
+            background: #1877f2;
+            color: #ffffff;
+            border-radius: 50%;
+            font-size: 10px;
             font-weight: 500;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            padding: 0;
         }
 
-        /* â”€â”€ PROFILE NAV (underline tabs) â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ PROFILE NAV (underline tabs) Ã¢â€â‚¬Ã¢â€â‚¬ */
         .profile-nav {
             display: flex;
             gap: 0;
@@ -284,35 +286,31 @@
             border-bottom-color: var(--blue);
         }
 
-        /* â”€â”€ STATS BAR â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ STATS BAR Ã¢â€â‚¬Ã¢â€â‚¬ */
         .stats-bar {
-            display: flex;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--card-bg);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
             margin-bottom: 24px;
-            overflow: hidden;
         }
 
         .stat-item {
-            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 8px;
             text-align: center;
-            padding: 30px 16px;
-            border-right: 1px solid var(--border);
-            border-bottom: none;
+            padding: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
         }
-
-        .stat-item:last-child { border-right: none; border-bottom: none; }
 
         .stat-value {
             display: block;
             font-size: 32px;
-            font-weight: 800;
+            font-weight: 600;
             color: var(--blue) !important;
             letter-spacing: -0.02em;
             line-height: 1;
@@ -320,12 +318,12 @@
         }
 
         .stat-label {
-            font-size: 19px;
-            font-weight: 700;
-            color: var(--text);
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-muted);
         }
 
-        /* â”€â”€ OVERVIEW GRID â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ OVERVIEW GRID Ã¢â€â‚¬Ã¢â€â‚¬ */
         .overview-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -385,7 +383,7 @@
         .info-value a { color: var(--link); text-decoration: none; word-break: break-all; }
         .info-value a:hover { text-decoration: underline; }
 
-        /* â”€â”€ REVIEWS TAB â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ REVIEWS TAB Ã¢â€â‚¬Ã¢â€â‚¬ */
         .reviews-feed { display: flex; flex-direction: column; gap: 14px; }
 
         .review-card {
@@ -431,7 +429,7 @@
             margin: 8px 0;
         }
 
-        /* â”€â”€ PHOTOS TAB â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ PHOTOS TAB Ã¢â€â‚¬Ã¢â€â‚¬ */
         .photos-header {
             display: flex;
             justify-content: space-between;
@@ -504,7 +502,7 @@
         .category-name { font-size: 14px; font-weight: 600; color: var(--text); }
         .category-count { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-        /* â”€â”€ CATEGORY MODAL â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ CATEGORY MODAL Ã¢â€â‚¬Ã¢â€â‚¬ */
         .category-modal-overlay {
             display: none;
             position: fixed;
@@ -571,7 +569,7 @@
             background: var(--card-bg);
         }
 
-        /* â”€â”€ JOBS TAB â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ JOBS TAB Ã¢â€â‚¬Ã¢â€â‚¬ */
         .jobs-header {
             display: flex;
             justify-content: space-between;
@@ -691,7 +689,7 @@
             border-radius: 12px;
         }
 
-        /* â”€â”€ LOADING â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ LOADING Ã¢â€â‚¬Ã¢â€â‚¬ */
         .loading-spinner {
             text-align: center;
             padding: 60px;
@@ -712,7 +710,7 @@
             }
         }
 
-        /* â”€â”€ RESPONSIVE â”€â”€ */
+        /* Ã¢â€â‚¬Ã¢â€â‚¬ RESPONSIVE Ã¢â€â‚¬Ã¢â€â‚¬ */
         @media (max-width: 700px) {
             .overview-grid { grid-template-columns: 1fr; }
 
@@ -726,9 +724,7 @@
                 transform: translateX(-50%);
             }
 
-            .stats-bar { flex-direction: column; }
-            .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
-            .stat-item:last-child { border-bottom: none; }
+            .stats-bar { grid-template-columns: 1fr; }
 
             .job-header { flex-direction: column; align-items: flex-start; }
             .job-meta { flex-wrap: wrap; }
@@ -912,7 +908,7 @@
             </div>
 
             <div class="profile-info">
-                <h1>${resort.name} <span class="verified-badge-large"><i class="fas fa-check-circle"></i> Verified</span></h1>
+                <h1>${resort.name} <span class="verified-badge-large" title="Verified"><i class="fas fa-check"></i></span></h1>
             </div>
 
             <div class="profile-nav">
@@ -1136,7 +1132,7 @@
         allReviews.forEach(review => {
             const date = new Date(review.created_at).toLocaleDateString();
             const category = review.categories?.name || 'General';
-            const categoryIcon = review.categories?.icon || 'ðŸ“Œ';
+            const categoryIcon = review.categories?.icon || 'Ã°Å¸â€œÅ’';
 
             html += `
                 <div class="review-card">
@@ -1365,13 +1361,13 @@
         allPhotos.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(photo => {
             const date = new Date(photo.date).toLocaleDateString();
             const categoryName = photo.category?.name || 'Other';
-            const categoryIcon = photo.category?.icon || 'ðŸ“Œ';
+            const categoryIcon = photo.category?.icon || 'Ã°Å¸â€œÅ’';
             html += `
                 <div class="photo-card" onclick="openCommentModal(${photo.reviewId})">
                     <img src="${photo.url}" loading="lazy">
                     <div class="photo-info">
                         <div class="photo-category">${categoryIcon} ${categoryName}</div>
-                        <div class="photo-review">â­ ${photo.rating}/10 â€¢ ${date}</div>
+                        <div class="photo-review">Ã¢Â­Â ${photo.rating}/10 Ã¢â‚¬Â¢ ${date}</div>
                     </div>
                 </div>
             `;
@@ -1385,7 +1381,7 @@
         allPhotos.forEach(photo => {
             const categoryId = photo.categoryId || 'uncategorized';
             const categoryName = photo.category?.name || 'Other';
-            const categoryIcon = photo.category?.icon || 'ðŸ“Œ';
+            const categoryIcon = photo.category?.icon || 'Ã°Å¸â€œÅ’';
 
             if (!photosByCategory[categoryId]) {
                 photosByCategory[categoryId] = { name: categoryName, icon: categoryIcon, photos: [] };
@@ -1420,7 +1416,7 @@
             html += `
                 <div class="category-photo-card" onclick="openCommentModal(${photo.reviewId})">
                     <img src="${photo.url}" loading="lazy">
-                    <div class="photo-review-preview">â­ ${photo.rating}/10 â€¢ ${date}</div>
+                    <div class="photo-review-preview">Ã¢Â­Â ${photo.rating}/10 Ã¢â‚¬Â¢ ${date}</div>
                 </div>
             `;
         });
