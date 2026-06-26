@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <script>
@@ -24,6 +24,8 @@
             --bg: #f7f6f3;
             --bg-secondary: #f0efe9;
             --card-bg: #ffffff;
+            --lavender: #e8def8;
+            --ink: #2E1745;
         }
 
         [data-theme="dark"] {
@@ -108,9 +110,13 @@
         }
 
         .nav-icon-btn.active {
-            color: #1877f2;
-            border-bottom: 3px solid #1877f2;
+            color: var(--ink);
+            border-bottom: 3px solid var(--ink);
             border-radius: 0;
+        }
+        [data-theme="dark"] .nav-icon-btn.active {
+            color: var(--lavender);
+            border-bottom-color: var(--lavender);
         }
 
         /* Home icon — pink gradient when selected (darker in light mode) */
@@ -559,7 +565,8 @@
             gap: 8px;
         }
 
-        .feed-header h3 i { color: var(--blue); }
+        .feed-header h3 i { color: var(--ink); }
+        [data-theme="dark"] .feed-header h3 i { color: var(--lavender); }
         .feed-header h3 i.fa-newspaper { color: var(--text); }
 
         #review-count, #jobs-count { font-size: 13px; color: var(--text-muted); }
@@ -796,7 +803,8 @@
             flex-wrap: wrap;
         }
 
-        .job-meta i { color: var(--blue); margin-right: 4px; }
+        .job-meta i { color: var(--ink); margin-right: 4px; }
+        [data-theme="dark"] .job-meta i { color: var(--lavender); }
 
         .job-description { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 8px 0; }
 
@@ -821,7 +829,7 @@
         .job-date { color: var(--text-muted); font-size: 12px; }
 
         .view-details-btn {
-            background: var(--blue);
+            background: var(--ink);
             color: white;
             border: none;
             padding: 7px 18px;
@@ -833,15 +841,28 @@
             transition: opacity 0.15s;
         }
 
-        .view-details-btn:hover { opacity: 0.9; }
+        [data-theme="dark"] .view-details-btn {
+            background: var(--lavender);
+            color: var(--ink);
+        }
+
+        .view-details-btn:hover { opacity: 0.85; }
 
         .job-department {
-            background: var(--blue-light);
-            color: var(--blue);
+            display: inline-block;
+            background: rgba(46,23,69,0.08);
+            color: var(--ink);
             padding: 3px 10px;
             border-radius: 99px;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            margin-bottom: 8px;
+        }
+
+        [data-theme="dark"] .job-department {
+            background: rgba(232,222,248,0.15);
+            color: var(--lavender);
         }
 
         /* Three-dots menu */
@@ -937,15 +958,16 @@
         .comment-preview-author { font-weight: 600; font-size: 12px; color: var(--text); }
 
         .verified-badge {
+            width: 18px;
+            height: 18px;
             background: var(--blue);
             color: white;
-            padding: 1px 7px;
-            border-radius: 10px;
+            border-radius: 50%;
             font-size: 10px;
             font-weight: 500;
             display: inline-flex;
             align-items: center;
-            gap: 3px;
+            justify-content: center;
         }
 
         .comment-preview-date { color: var(--text-muted); font-size: 11px; margin-left: auto; }
@@ -1154,6 +1176,16 @@
             justify-content: center;
             font-size: 14px;
             flex-shrink: 0;
+        }
+
+        .official-avatar {
+            background: #2E1745;
+            color: white;
+        }
+
+        [data-theme="dark"] .official-avatar {
+            background: white;
+            color: #2E1745;
         }
 
         .modal-comment-content { flex: 1; min-width: 0; }
@@ -1928,7 +1960,7 @@ window.displayReviews = async function(reviews) {
                 latestComments.forEach(comment => {
                     const commentDate = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     const commentAuthor = comment.is_official ? 'Official Response' : 'Guest';
-                    commentsHtml += `<div class="comment-preview-item"><div class="comment-preview-avatar">${comment.is_official ? '🏨' : '👤'}</div><div class="comment-preview-content"><div class="comment-preview-header"><span class="comment-preview-author">${commentAuthor}</span>${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}<span class="comment-preview-date">${commentDate}</span></div><p class="comment-preview-text">${escapeHtml(comment.comment_text)}</p></div></div>`;
+                    commentsHtml += `<div class="comment-preview-item"><div class="comment-preview-avatar${comment.is_official ? ' official-avatar' : ''}">${comment.is_official ? '<i class="fas fa-hotel"></i>' : '👤'}</div><div class="comment-preview-content"><div class="comment-preview-header"><span class="comment-preview-author">${commentAuthor}</span>${comment.is_official ? '<span class="verified-badge" title="Verified"><i class="fas fa-check"></i></span>' : ''}<span class="comment-preview-date">${commentDate}</span></div><p class="comment-preview-text">${escapeHtml(comment.comment_text)}</p></div></div>`;
                 });
                 if (commentCount > 2) commentsHtml += `<div class="view-all-comments" onclick="openCommentModal(${review.id})">View all ${commentCount} comments</div>`;
                 commentsHtml += '</div>';
@@ -1986,7 +2018,22 @@ async function loadJobs() {
             let salaryText = 'Not specified';
             if (job.salary_min && job.salary_max) salaryText = `Rf ${job.salary_min.toLocaleString()} - ${job.salary_max.toLocaleString()}/${job.salary_period || 'month'}`;
             else if (job.salary_min) salaryText = `From Rf ${job.salary_min.toLocaleString()}/${job.salary_period || 'month'}`;
-            html += `<div class="review-item"><div class="review-header"><h3><a href="resort.html?id=${job.resort_id}" class="resort-link">${job.resorts?.name || 'Unknown Resort'}</a></h3><span class="job-department">${job.department}</span></div><h4 style="font-size:16px;margin:8px 0;color:var(--text);">${job.title}</h4><div class="job-meta"><span><i class="fas fa-clock"></i> ${job.job_type}</span><span><i class="fas fa-money-bill-wave"></i> ${salaryText}</span></div><p class="job-description">${job.description.substring(0, 200)}${job.description.length > 200 ? '...' : ''}</p>${job.requirements ? `<div class="job-requirements"><strong>Requirements:</strong> ${job.requirements.substring(0, 150)}${job.requirements.length > 150 ? '...' : ''}</div>` : ''}<div class="job-footer"><span class="job-date"><i class="far fa-calendar"></i> Posted: ${date}</span><button class="view-details-btn" onclick="viewJobDetails(${job.id})">View Details</button></div></div>`;
+            html += `<div class="review-item">
+                <div style="padding:16px;">
+                    <span class="job-department">${job.department}</span>
+                    <h4 style="font-size:17px;font-weight:700;margin:0 0 4px;color:var(--text);">${job.title}</h4>
+                    <div style="margin-bottom:10px;"><a href="resort.html?id=${job.resort_id}" class="resort-link" style="font-size:13px;">${job.resorts?.name || 'Unknown Resort'}</a></div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-clock"></i> ${job.job_type}</span>
+                        <span><i class="fas fa-money-bill-wave"></i> ${salaryText}</span>
+                    </div>
+                    <p class="job-description">${job.description.substring(0, 200)}${job.description.length > 200 ? '...' : ''}</p>
+                    <div class="job-footer">
+                        <span class="job-date"><i class="far fa-calendar"></i> ${date}</span>
+                        <button class="view-details-btn" onclick="viewJobDetails(${job.id})">View details</button>
+                    </div>
+                </div>
+            </div>`;
         });
         jobsFeed.innerHTML = html;
     } catch (error) {
@@ -2163,11 +2210,11 @@ window.openCommentModal = async function(reviewId) {
         comments.forEach(comment => {
             const cd = new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             commentsHtml += `<div class="modal-comment-item">
-                <div class="modal-comment-avatar">${comment.is_official ? '🏨' : '👤'}</div>
+                <div class="modal-comment-avatar${comment.is_official ? ' official-avatar' : ''}">${comment.is_official ? '<i class="fas fa-hotel"></i>' : '👤'}</div>
                 <div class="modal-comment-content">
                     <div class="modal-comment-header">
                         <span class="modal-comment-author">${comment.is_official ? 'Official Response' : 'Guest'}</span>
-                        ${comment.is_official ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                        ${comment.is_official ? '<span class="verified-badge" title="Verified"><i class="fas fa-check"></i></span>' : ''}
                         <span class="comment-date-small">${cd}</span>
                     </div>
                     <p class="modal-comment-text">${escapeHtml(comment.comment_text)}</p>
@@ -2246,43 +2293,11 @@ window.shareWithGallery = function(e) {
 
 window.shareWithCamera = function(e) {
     if (e) e.stopPropagation();
-
-    // Remove any existing popup
-    const existing = document.getElementById('cameraPermPopup');
-    if (existing) existing.remove();
-
-    const popup = document.createElement('div');
-    popup.id = 'cameraPermPopup';
-    popup.style.cssText = `
-        position: fixed; inset: 0; z-index: 9999;
-        display: flex; align-items: center; justify-content: center;
-        background: rgba(0,0,0,0.45);
-    `;
-    popup.innerHTML = `
-        <div style="background:#fff;border-radius:18px;padding:28px 24px 20px;max-width:300px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
-            <div style="font-size:2rem;margin-bottom:10px;">📷</div>
-            <p style="font-size:15px;font-weight:600;margin:0 0 6px;color:#1a1a1a;">Allow Camera Access</p>
-            <p style="font-size:13px;color:#666;margin:0 0 20px;">ResortReviews would like to use your camera to take a photo for your review.</p>
-            <div style="display:flex;gap:10px;justify-content:center;">
-                <button id="cameraPermNo" style="flex:1;padding:10px;border:1.5px solid #ddd;border-radius:10px;background:#f5f5f5;font-size:14px;cursor:pointer;color:#555;">No thanks</button>
-                <button id="cameraPermYes" style="flex:1;padding:10px;border:none;border-radius:10px;background:#2E1745;font-size:14px;font-weight:600;cursor:pointer;color:#fff;">Yes, open camera</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(popup);
-
-    document.getElementById('cameraPermNo').onclick = function() { popup.remove(); };
-    popup.onclick = function(ev) { if (ev.target === popup) popup.remove(); };
-
-    document.getElementById('cameraPermYes').onclick = function() {
-        popup.remove();
-        openModal();
-        const inp = document.getElementById('modal_photos');
-        if (!inp) return;
-        inp.setAttribute('capture', 'environment');
-        setTimeout(() => inp.click(), 120);
-    };
+    openModal();
+    const inp = document.getElementById('modal_photos');
+    if (!inp) return;
+    inp.setAttribute('capture', 'environment');
+    setTimeout(() => inp.click(), 120);
 };
 function closeModal() { document.getElementById('shareModal').classList.remove('active'); document.body.style.overflow = ''; }
 
