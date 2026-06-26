@@ -31,6 +31,8 @@
             --ink-hover: #3d1f5c;
             --lavender: #e8def8;
             --lavender-hover: #ddd0f5;
+            --teal: #1fb39e;
+            --teal-divider: rgba(31, 179, 158, 0.4);
         }
 
         [data-theme="dark"] {
@@ -290,8 +292,9 @@
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 24px;
+            border-top: 1px solid var(--teal);
+            border-bottom: 1px solid var(--teal);
+            margin: 4px 0 24px;
         }
 
         .stat-item {
@@ -299,28 +302,27 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             text-align: center;
-            padding: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            padding: 30px 16px;
+            border-right: 1px solid var(--teal-divider);
         }
+
+        .stat-item:last-child { border-right: none; }
 
         .stat-value {
             display: block;
             font-size: 32px;
-            font-weight: 600;
-            color: var(--blue) !important;
+            font-weight: 700;
+            color: var(--text);
             letter-spacing: -0.02em;
             line-height: 1;
-            margin-bottom: 0;
         }
 
         .stat-label {
             font-size: 14px;
             font-weight: 400;
-            color: var(--text-muted);
+            color: var(--teal);
         }
 
         /* Ã¢â€â‚¬Ã¢â€â‚¬ OVERVIEW GRID Ã¢â€â‚¬Ã¢â€â‚¬ */
@@ -725,6 +727,8 @@
             }
 
             .stats-bar { grid-template-columns: 1fr; }
+            .stat-item { border-right: none; border-bottom: 1px solid var(--teal-divider); }
+            .stat-item:last-child { border-bottom: none; }
 
             .job-header { flex-direction: column; align-items: flex-start; }
             .job-meta { flex-wrap: wrap; }
