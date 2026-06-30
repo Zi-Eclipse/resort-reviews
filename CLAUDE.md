@@ -4,7 +4,8 @@ Anonymous review platform for Maldives resort staff. Live at https://resortrevie
 
 ## Owner & working style
 
-- **Owner: Eclipse.** No coding background — works entirely through conversation.
+- **Owner: Eclipse.** Reservations agent at LUX* South Ari Atoll (Maldives). 5 years in resort hospitality, 4th resort. No coding background — works entirely through conversation.
+- Built this platform from personal experience: previous resort (Taj Exotica Maldives) had badly substandard staff accommodation, and there was no way to know that before accepting the role. The product exists to give incoming staff honest visibility into conditions that HR won't disclose.
 - Communicate in plain English, not jargon.
 - Always show diffs before applying file changes.
 - Push back if I'm wrong — don't just agree. If a "fix" I describe doesn't match what's actually in the code, tell me before changing anything.

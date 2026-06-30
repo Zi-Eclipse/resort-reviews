@@ -2,6 +2,17 @@
 
 A running log of architectural and design choices, with reasoning. New entries on top. Update this when something non-obvious changes — saves future-you (and future-Claude) from having to reverse-engineer the "why."
 
+## June 2026 — Product north star: staff-side honesty
+
+**Decision:** All product decisions are filtered through one question: "Does this help a prospective hire know what they're walking into before they sign?"
+
+**Why:** The platform exists because the owner personally took a role at a resort with badly substandard staff accommodation that wasn't disclosed during hiring. HR has structural incentive to hide that information. Anonymous staff reviews are the only honest signal.
+
+**Implications:**
+- Anonymity for reviewers is non-negotiable — never feature anything that risks de-anonymization
+- Resort official responses are valuable but must be clearly labeled and visually subordinate to the staff review
+- Optimize for fast useful signal — someone with a job offer has days to decide, not weeks
+
 ## June 2026 — Modal drag-close fix
 
 **Decision:** Added global `modal-protection.js` that intercepts clicks on modal overlays in the capture phase and blocks the close if mousedown started elsewhere.
